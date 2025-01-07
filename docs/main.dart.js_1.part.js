@@ -2,12 +2,12 @@
 a[b][c]=a[b][c]||[]
 a[b][c].push({p:"main.dart.js_1",e:"beginPart"})})(self,"$__dart_deferred_initializers__","eventLog")
 $__dart_deferred_initializers__.current=function(a,b,c,$){var B,C,A={
-aPI(d,e,f){var w=new B.xq(C.kc,d),v=new A.X3(w)
-w.r=A.b6F(v)
+aPT(d,e,f){var w=new B.xt(C.kc,d),v=new A.Xa(w)
+w.r=A.b6R(v)
 return v},
-b6D(d,e){var w="Fran\xe7ais"
+b6P(d,e){var w="Fran\xe7ais"
 switch(e){case"mainScreen.title":return"Le titre fran\xe7ais"
-case"mainScreen.counter":return new A.aDk(d)
+case"mainScreen.counter":return new A.aDv(d)
 case"mainScreen.tapMe":return"Appuyez-moi"
 case"locales.en":return"Anglais"
 case"locales.fr":return w
@@ -19,7 +19,7 @@ case"home_screen.skills":return"Comp\xe9tences"
 case"home_screen.contact":return"Contacter"
 case"home_screen.settings":return"Param\xe8tres"
 case"home_screen.myName":return"Hiu Tung Chan"
-case"home_screen.iAm":return"Je suis"
+case"home_screen.iAm":return"Je suis "
 case"home_screen.developer":return"D\xe9veloppeur"
 case"home_screen.designer":return"Designer"
 case"home_screen.freelancer":return"Pigiste"
@@ -36,10 +36,9 @@ case"home_screen.email":return"Courriel"
 case"home_screen.freelance":return"Ind\xe9pendant"
 case"home_screen.available":return"Disponible"
 case"home_screen.happyClients":return"Clients satisfaits"
-case"home_screen.projects":return"Projects"
+case"home_screen.projects":return"Projets"
 case"home_screen.trainedStudent":return"\xc9tudiants form\xe9s"
 case"home_screen.hoursOfSupport":return"heures d'assistance"
-case"home_screen.view":return"vue"
 case"home_screen.coreSkills":return"Comp\xe9tences de base"
 case"home_screen.allSkills":return"Toutes les comp\xe9tences"
 case"home_screen.french":return w
@@ -47,82 +46,88 @@ case"home_screen.english":return"Anglais"
 case"home_screen.themeMode":return"Mode th\xe8me"
 case"home_screen.themeColor":return"Couleur du th\xe8me"
 case"home_screen.language":return"Langue"
+case"home_screen.collapse":return"R\xe9duire"
+case"home_screen.expand":return"D\xe9velopper"
+case"home_screen.projectLink":return"Lien du projet"
 default:return null}},
-b6F(d){return new A.aDm(d)},
-X3:function X3(d){this.a=d
+b6R(d){return new A.aDx(d)},
+Xa:function Xa(d){this.a=d
 this.d=this.b=$},
-aCj:function aCj(){},
-aDm:function aDm(d){this.a=d},
-aDk:function aDk(d){this.a=d}}
+aCu:function aCu(){},
+aDx:function aDx(d){this.a=d},
+aDv:function aDv(d){this.a=d}}
 B=c[0]
 C=c[2]
 A=a.updateHolder(c[3],A)
-A.X3.prototype={
-i(d,e){return this.a.M5(e)},
-gT5(){var w=this.b
-if(w===$){w!==$&&B.aa()
+A.Xa.prototype={
+i(d,e){return this.a.M8(e)},
+gT9(){var w=this.b
+if(w===$){w!==$&&B.a9()
 w=this.b=this}return w},
-gKd(){var w=x.c
-return B.ay(["en","Anglais","fr","Fran\xe7ais"],w,w)},
-gZw(){return"Page introuvable"},
-gcd(){var w=this,v=w.d
-if(v===$){w.gT5()
-w.d!==$&&B.aa()
-v=w.d=new A.aCj()}return v},
-$iil:1,
-$iiz:1,
-gxI(){return this.a}}
-A.aCj.prototype={
-gJN(){return"D'accueil"},
-gA9(){return"\xc0 propos de"},
-gCN(){return"Reprendre"},
-gyf(){return"Comp\xe9tences"},
-gy9(){return"Param\xe8tres"},
-gKn(){return"Hiu Tung Chan"},
-gYG(){return"Je suis"},
-gXj(){return"D\xe9veloppeur"},
-gXi(){return"Designer"},
-gY8(){return"Pigiste"},
-gVG(){return y.p},
-gVF(){return y.n},
-gML(){return"Statistiques"},
-ga0p(){return"Site Web"},
-gZP(){return"Num\xe9ro de t\xe9l\xe9phone"},
-gWz(){return"Ville"},
-gZs(){return"Toronto, ON, CA"},
-gXe(){return"Degr\xe9"},
-gZt(){return y.o},
-gXH(){return"Courriel"},
-gY7(){return"Ind\xe9pendant"},
-gWd(){return"Disponible"},
-gYq(){return"Clients satisfaits"},
-gZY(){return"Projects"},
-ga_V(){return"\xc9tudiants form\xe9s"},
-gYF(){return"heures d'assistance"},
-gX_(){return"Comp\xe9tences de base"},
-gVT(){return"Toutes les comp\xe9tences"},
-gY9(){return"Fran\xe7ais"},
-gXM(){return"Anglais"},
-ga_F(){return"Mode th\xe8me"},
-ga_E(){return"Couleur du th\xe8me"},
-gK6(){return"Langue"}}
+gKf(){var w=x.c
+return B.az(["en","Anglais","fr","Fran\xe7ais"],w,w)},
+gZC(){return"Page introuvable"},
+gbZ(){var w=this,v=w.d
+if(v===$){w.gT9()
+w.d!==$&&B.a9()
+v=w.d=new A.aCu()}return v},
+$iim:1,
+$iiA:1,
+gxK(){return this.a}}
+A.aCu.prototype={
+gJP(){return"D'accueil"},
+gAd(){return"\xc0 propos de"},
+gCP(){return"Reprendre"},
+gyi(){return"Comp\xe9tences"},
+gyc(){return"Param\xe8tres"},
+gKp(){return"Hiu Tung Chan"},
+gYM(){return"Je suis "},
+gXo(){return"D\xe9veloppeur"},
+gXn(){return"Designer"},
+gYe(){return"Pigiste"},
+gVK(){return y.p},
+gVJ(){return y.n},
+gMO(){return"Statistiques"},
+ga0w(){return"Site Web"},
+gZV(){return"Num\xe9ro de t\xe9l\xe9phone"},
+gWD(){return"Ville"},
+gZy(){return"Toronto, ON, CA"},
+gXj(){return"Degr\xe9"},
+gZz(){return y.o},
+gXM(){return"Courriel"},
+gYd(){return"Ind\xe9pendant"},
+gWh(){return"Disponible"},
+gYw(){return"Clients satisfaits"},
+ga_4(){return"Projets"},
+ga01(){return"\xc9tudiants form\xe9s"},
+gYL(){return"heures d'assistance"},
+gX4(){return"Comp\xe9tences de base"},
+gVX(){return"Toutes les comp\xe9tences"},
+gYf(){return"Fran\xe7ais"},
+gXR(){return"Anglais"},
+ga_M(){return"Mode th\xe8me"},
+ga_L(){return"Couleur du th\xe8me"},
+gK8(){return"Langue"},
+gWK(){return"R\xe9duire"},
+gXT(d){return"D\xe9velopper"},
+ga_3(){return"Lien du projet"}}
 var z=a.updateTypes([])
-A.aDm.prototype={
-$1(d){return A.b6D(this.a,d)},
-$S:76}
-A.aDk.prototype={
+A.aDx.prototype={
+$1(d){return A.b6P(this.a,d)},
+$S:82}
+A.aDv.prototype={
 $1$n(d){var w
-this.a.gT5()
-w=B.aOc("fr")
+this.a.gT9()
+w=B.aOn("fr")
 return w.$3$one$other(d,"Vous avez appuy\xe9 une fois.","Vous avez appuy\xe9 "+B.j(d)+" fois.")},
 $C:"$1$n",
 $R:0,
 $D(){return{n:C.hi}},
-$S:217};(function inheritance(){var w=a.inheritMany
-w(B.D,[A.X3,A.aCj])
-w(B.lB,[A.aDm,A.aDk])})()
-B.aQK(b.typeUniverse,JSON.parse('{"X3":{"il":[],"iz":["hI","il"]}}'))
+$S:143};(function inheritance(){var w=a.inheritMany
+w(B.D,[A.Xa,A.aCu])
+w(B.lC,[A.aDx,A.aDv])})()
+B.aQV(b.typeUniverse,JSON.parse('{"Xa":{"im":[],"iA":["hJ","im"]}}'))
 var y={o:"Bachelor d'ing\xe9nieur en g\xe9nie informatique",p:"D\xe9veloppeur Flutter et sp\xe9cialiste des applications mobiles",n:"D\xe9veloppeur Flutter exp\xe9riment\xe9 avec 4 ans d'exp\xe9rience dans le d\xe9veloppement d'applications mobiles, fournissant des applications hautes performances centr\xe9es sur l'utilisateur. Comp\xe9tent dans la conception frontale, la mise en \u0153uvre de fonctionnalit\xe9s et l'optimisation de l'\xe9volutivit\xe9 pour r\xe9pondre \xe0 divers objectifs commerciaux."}
 var x={c:B.a6("f")}};
 ((a,b)=>{a[b]=a.current
-a.eventLog.push({p:"main.dart.js_1",e:"endPart",h:b})})($__dart_deferred_initializers__,"oLj3SfAJhuIWZnQiV4dHdvaBqyc=");
+a.eventLog.push({p:"main.dart.js_1",e:"endPart",h:b})})($__dart_deferred_initializers__,"RosAl3aU+kexFjKDhAgXWq5DxeI=");
