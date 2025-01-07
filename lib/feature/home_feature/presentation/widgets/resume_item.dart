@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/theme/dimens.dart';
 import '../../../../core/widgets/app_space.dart';
@@ -105,10 +106,29 @@ class _ResumeItemState extends State<ResumeItem> {
         ListTile(
             title: Column(
           children: [
+            const AppVSpace(),
             Image.asset(
               widget.imagePath,
               fit: BoxFit.cover,
             ),
+            if (widget.projectLink.isNotEmpty) const AppVSpace(),
+            if (widget.projectLink.isNotEmpty)
+              InkWell(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    'Project link : ${widget.projectLink}',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+                onTap: () async {
+                  await launchUrl(Uri.parse(widget.projectLink));
+                },
+              ),
+            const AppVSpace(),
             Text(
               widget.description,
             ),
