@@ -47,8 +47,9 @@ class AppButton extends StatelessWidget {
               : MainAxisAlignment.center,
           children: [
             if (icon == null) const SizedBox.shrink() else Icon(icon, size: 20),
-            Text(
-              title ?? '',
+            Expanded(
+              child: Text(title ?? '',
+                  maxLines: 1, overflow: TextOverflow.ellipsis),
             ),
             if (icon == null)
               const SizedBox.shrink()

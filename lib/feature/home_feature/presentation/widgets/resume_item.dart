@@ -61,9 +61,10 @@ class _ResumeItemState extends State<ResumeItem> {
               setDefaultColor: false,
             ),
       trailing: SizedBox(
-        width: 100,
+        width: 105,
         child: AppButton(
-            title: t.home_screen.view,
+            // title: t.home_screen.view,
+            title: (_tileExpanded) ? "Collapse" : "Expand",
             onPressed: () {
               // setState(() {});
               if (_expansionTileController.isExpanded) {
@@ -89,13 +90,14 @@ class _ResumeItemState extends State<ResumeItem> {
           ),
           Row(
             children: [
-              Expanded(
-                child: Text(
-                  widget.description,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
+              if (!_tileExpanded)
+                Expanded(
+                  child: Text(
+                    widget.description,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
               const SizedBox(width: Dimens.largePadding),
             ],
           ),

@@ -21,7 +21,9 @@ class ThemeCubit extends Cubit<ThemeMode?> {
   Future<void> initTheme() async {
     final String storedTheme = await HomeStorage().getTheme() ?? '';
     if (storedTheme == '') {
-      return;
+      emit(
+        ThemeMode.dark,
+      );
     }
     if (storedTheme == 'light') {
       emit(
