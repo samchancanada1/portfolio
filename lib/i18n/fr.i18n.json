@@ -20,7 +20,7 @@
     "contact": "Contacter",
     "settings": "Paramètres",
     "myName": "Hiu Tung Chan",
-    "iAm": "Je suis",
+    "iAm": "Je suis ",
     "developer": "Développeur",
     "designer": "Designer",
     "freelancer": "Pigiste",
@@ -37,16 +37,18 @@
     "freelance": "Indépendant",
     "available": "Disponible",
     "happyClients": "Clients satisfaits",
-    "projects": "Projects",
+    "projects": "Projets",
     "trainedStudent": "Étudiants formés",
     "hoursOfSupport": "heures d'assistance",
-    "view": "vue",
     "coreSkills": "Compétences de base",
     "allSkills": "Toutes les compétences",
     "french": "Français",
     "english": "Anglais",
     "themeMode": "Mode thème",
     "themeColor": "Couleur du thème",
-    "language": "Langue"
+    "language": "Langue",
+    "collapse": "Réduire",
+    "expand": "Développer",
+    "projectLink": "Lien du projet"
   }
 }

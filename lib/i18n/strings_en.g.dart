@@ -95,7 +95,6 @@ class TranslationsHomeScreenEn {
 	String get projects => 'Projects';
 	String get trainedStudent => 'Trained students';
 	String get hoursOfSupport => 'Hours of support';
-	String get view => 'view';
 	String get coreSkills => 'Core skills';
 	String get allSkills => 'All skills';
 	String get french => 'French';
@@ -103,6 +102,9 @@ class TranslationsHomeScreenEn {
 	String get themeMode => 'Theme Mode';
 	String get themeColor => 'Theme Color';
 	String get language => 'Language';
+	String get collapse => 'Collapse';
+	String get expand => 'Expand';
+	String get projectLink => 'Project link';
 }
 
 /// Flat map(s) containing all translations.
@@ -146,7 +148,6 @@ extension on Translations {
 			case 'home_screen.projects': return 'Projects';
 			case 'home_screen.trainedStudent': return 'Trained students';
 			case 'home_screen.hoursOfSupport': return 'Hours of support';
-			case 'home_screen.view': return 'view';
 			case 'home_screen.coreSkills': return 'Core skills';
 			case 'home_screen.allSkills': return 'All skills';
 			case 'home_screen.french': return 'French';
@@ -154,6 +155,9 @@ extension on Translations {
 			case 'home_screen.themeMode': return 'Theme Mode';
 			case 'home_screen.themeColor': return 'Theme Color';
 			case 'home_screen.language': return 'Language';
+			case 'home_screen.collapse': return 'Collapse';
+			case 'home_screen.expand': return 'Expand';
+			case 'home_screen.projectLink': return 'Project link';
 			default: return null;
 		}
 	}

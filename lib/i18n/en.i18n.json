@@ -40,13 +40,15 @@
         "projects": "Projects",
         "trainedStudent": "Trained students",
         "hoursOfSupport": "Hours of support",
-        "view": "view",
         "coreSkills": "Core skills",
         "allSkills": "All skills",
         "french": "French",
         "english": "English",
         "themeMode": "Theme Mode",
         "themeColor": "Theme Color",
-        "language": "Language"
+        "language": "Language",
+        "collapse": "Collapse",
+        "expand": "Expand",
+        "projectLink": "Project link"
     }
 }

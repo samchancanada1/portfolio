@@ -71,7 +71,7 @@ class _TranslationsHomeScreenFr implements TranslationsHomeScreenEn {
 	@override String get contact => 'Contacter';
 	@override String get settings => 'Paramètres';
 	@override String get myName => 'Hiu Tung Chan';
-	@override String get iAm => 'Je suis';
+	@override String get iAm => 'Je suis ';
 	@override String get developer => 'Développeur';
 	@override String get designer => 'Designer';
 	@override String get freelancer => 'Pigiste';
@@ -88,10 +88,9 @@ class _TranslationsHomeScreenFr implements TranslationsHomeScreenEn {
 	@override String get freelance => 'Indépendant';
 	@override String get available => 'Disponible';
 	@override String get happyClients => 'Clients satisfaits';
-	@override String get projects => 'Projects';
+	@override String get projects => 'Projets';
 	@override String get trainedStudent => 'Étudiants formés';
 	@override String get hoursOfSupport => 'heures d\'assistance';
-	@override String get view => 'vue';
 	@override String get coreSkills => 'Compétences de base';
 	@override String get allSkills => 'Toutes les compétences';
 	@override String get french => 'Français';
@@ -99,6 +98,9 @@ class _TranslationsHomeScreenFr implements TranslationsHomeScreenEn {
 	@override String get themeMode => 'Mode thème';
 	@override String get themeColor => 'Couleur du thème';
 	@override String get language => 'Langue';
+	@override String get collapse => 'Réduire';
+	@override String get expand => 'Développer';
+	@override String get projectLink => 'Lien du projet';
 }
 
 /// Flat map(s) containing all translations.
@@ -122,7 +124,7 @@ extension on TranslationsFr {
 			case 'home_screen.contact': return 'Contacter';
 			case 'home_screen.settings': return 'Paramètres';
 			case 'home_screen.myName': return 'Hiu Tung Chan';
-			case 'home_screen.iAm': return 'Je suis';
+			case 'home_screen.iAm': return 'Je suis ';
 			case 'home_screen.developer': return 'Développeur';
 			case 'home_screen.designer': return 'Designer';
 			case 'home_screen.freelancer': return 'Pigiste';
@@ -139,10 +141,9 @@ extension on TranslationsFr {
 			case 'home_screen.freelance': return 'Indépendant';
 			case 'home_screen.available': return 'Disponible';
 			case 'home_screen.happyClients': return 'Clients satisfaits';
-			case 'home_screen.projects': return 'Projects';
+			case 'home_screen.projects': return 'Projets';
 			case 'home_screen.trainedStudent': return 'Étudiants formés';
 			case 'home_screen.hoursOfSupport': return 'heures d\'assistance';
-			case 'home_screen.view': return 'vue';
 			case 'home_screen.coreSkills': return 'Compétences de base';
 			case 'home_screen.allSkills': return 'Toutes les compétences';
 			case 'home_screen.french': return 'Français';
@@ -150,6 +151,9 @@ extension on TranslationsFr {
 			case 'home_screen.themeMode': return 'Mode thème';
 			case 'home_screen.themeColor': return 'Couleur du thème';
 			case 'home_screen.language': return 'Langue';
+			case 'home_screen.collapse': return 'Réduire';
+			case 'home_screen.expand': return 'Développer';
+			case 'home_screen.projectLink': return 'Lien du projet';
 			default: return null;
 		}
 	}

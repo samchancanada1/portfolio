@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/core/utils/locale_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/theme/dimens.dart';
@@ -61,10 +62,10 @@ class _ResumeItemState extends State<ResumeItem> {
               setDefaultColor: false,
             ),
       trailing: SizedBox(
-        width: 105,
+        width: (!_tileExpanded && !checkEnState(context)) ? 120 : 105,
         child: AppButton(
-            // title: t.home_screen.view,
-            title: (_tileExpanded) ? "Collapse" : "Expand",
+            title:
+                (_tileExpanded) ? t.home_screen.collapse : t.home_screen.expand,
             onPressed: () {
               // setState(() {});
               if (_expansionTileController.isExpanded) {
@@ -119,7 +120,7 @@ class _ResumeItemState extends State<ResumeItem> {
                 child: Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Text(
-                    'Project link : ${widget.projectLink}',
+                    '${t.home_screen.projectLink} : ${widget.projectLink}',
                     style: TextStyle(
                       color: Colors.blue,
                       decoration: TextDecoration.underline,
