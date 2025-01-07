@@ -35,7 +35,7 @@ class HomeSectionWidget extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: Dimens.largePadding+60,
+            horizontal: Dimens.largePadding+55,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,14 +47,14 @@ class HomeSectionWidget extends StatelessWidget {
               Text(
                 t.home_screen.myName,
                 style: TextStyle(
-                  fontSize: 60.0,
+                  fontSize: 50.0,
                   fontWeight: FontWeight.bold,
                   height: 1,
                   color: getPrimaryColor(context),
                 ),
               ),
               SizedBox(
-                width: 250.0,
+                width: 300.0,
                 child: Row(
                   children: [
                     Text(
