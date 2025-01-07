@@ -1,6 +1,6 @@
 class GoRoutesPath {
   GoRoutesPath._();
-  // static const String splash = '/';
+  static const String splash = '/';
   // static const String introduction = '/introduction';
   // static const String login = '/login';
   // static const String verifyOtp = '/verify-otp/:mobile_number';
