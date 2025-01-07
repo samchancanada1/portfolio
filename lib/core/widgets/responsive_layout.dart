@@ -20,26 +20,27 @@ class ResponsiveLayout extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    return Center(
-      child: checkDesktopSize(context)
-          ? Row(
-              mainAxisAlignment:
-                  mainAxisAlignment ?? MainAxisAlignment.spaceBetween,
-              crossAxisAlignment:
-                  crossAxisAlignment ?? CrossAxisAlignment.start,
-              children: (rowWithExpanded)
-                  ? children.map((e) => Expanded(child: e)).toList()
-                  : children,
-            )
-          : Column(
-              mainAxisAlignment:
-                  mainAxisAlignment ?? MainAxisAlignment.spaceBetween,
-              crossAxisAlignment:
-                  crossAxisAlignment ?? CrossAxisAlignment.center,
-              children: (columnWithExpanded)
-                  ? children.map((e) => Expanded(child: e)).toList()
-                  : children,
-            ),
-    );
+    return Center(child: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+      if (checkDesktopSize(context)) {
+        return Row(
+          mainAxisAlignment:
+              mainAxisAlignment ?? MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: crossAxisAlignment ?? CrossAxisAlignment.start,
+          children: (rowWithExpanded)
+              ? children.map((e) => Expanded(child: e)).toList()
+              : children,
+        );
+      } else {
+        return Column(
+          mainAxisAlignment:
+              mainAxisAlignment ?? MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: crossAxisAlignment ?? CrossAxisAlignment.center,
+          children: (columnWithExpanded)
+              ? children.map((e) => Expanded(child: e)).toList()
+              : children,
+        );
+      }
+    }));
   }
 }
