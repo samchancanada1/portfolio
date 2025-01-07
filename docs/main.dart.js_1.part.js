@@ -2,7 +2,7 @@
 a[b][c]=a[b][c]||[]
 a[b][c].push({p:"main.dart.js_1",e:"beginPart"})})(self,"$__dart_deferred_initializers__","eventLog")
 $__dart_deferred_initializers__.current=function(a,b,c,$){var B,C,A={
-aPI(d,e,f){var w=new B.xq(C.kb,d),v=new A.X3(w)
+aPI(d,e,f){var w=new B.xq(C.kc,d),v=new A.X3(w)
 w.r=A.b6F(v)
 return v},
 b6D(d,e){var w="Fran\xe7ais"
@@ -65,7 +65,7 @@ w=this.b=this}return w},
 gKd(){var w=x.c
 return B.ay(["en","Anglais","fr","Fran\xe7ais"],w,w)},
 gZw(){return"Page introuvable"},
-gc6(){var w=this,v=w.d
+gcd(){var w=this,v=w.d
 if(v===$){w.gT5()
 w.d!==$&&B.aa()
 v=w.d=new A.aCj()}return v},
@@ -86,7 +86,7 @@ gY8(){return"Pigiste"},
 gVG(){return y.p},
 gVF(){return y.n},
 gML(){return"Statistiques"},
-ga0q(){return"Site Web"},
+ga0p(){return"Site Web"},
 gZP(){return"Num\xe9ro de t\xe9l\xe9phone"},
 gWz(){return"Ville"},
 gZs(){return"Toronto, ON, CA"},
@@ -99,7 +99,6 @@ gYq(){return"Clients satisfaits"},
 gZY(){return"Projects"},
 ga_V(){return"\xc9tudiants form\xe9s"},
 gYF(){return"heures d'assistance"},
-ga04(){return"vue"},
 gX_(){return"Comp\xe9tences de base"},
 gVT(){return"Toutes les comp\xe9tences"},
 gY9(){return"Fran\xe7ais"},
@@ -126,4 +125,4 @@ B.aQK(b.typeUniverse,JSON.parse('{"X3":{"il":[],"iz":["hI","il"]}}'))
 var y={o:"Bachelor d'ing\xe9nieur en g\xe9nie informatique",p:"D\xe9veloppeur Flutter et sp\xe9cialiste des applications mobiles",n:"D\xe9veloppeur Flutter exp\xe9riment\xe9 avec 4 ans d'exp\xe9rience dans le d\xe9veloppement d'applications mobiles, fournissant des applications hautes performances centr\xe9es sur l'utilisateur. Comp\xe9tent dans la conception frontale, la mise en \u0153uvre de fonctionnalit\xe9s et l'optimisation de l'\xe9volutivit\xe9 pour r\xe9pondre \xe0 divers objectifs commerciaux."}
 var x={c:B.a6("f")}};
 ((a,b)=>{a[b]=a.current
-a.eventLog.push({p:"main.dart.js_1",e:"endPart",h:b})})($__dart_deferred_initializers__,"ZnL2QQOEjg8qDE36BDSSCbqmxPY=");
+a.eventLog.push({p:"main.dart.js_1",e:"endPart",h:b})})($__dart_deferred_initializers__,"oLj3SfAJhuIWZnQiV4dHdvaBqyc=");
