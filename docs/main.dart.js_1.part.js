@@ -2,12 +2,12 @@
 a[b][c]=a[b][c]||[]
 a[b][c].push({p:"main.dart.js_1",e:"beginPart"})})(self,"$__dart_deferred_initializers__","eventLog")
 $__dart_deferred_initializers__.current=function(a,b,c,$){var B,C,A={
-aPH(d,e,f){var w=new B.xp(C.ka,d),v=new A.X3(w)
-w.r=A.b6E(v)
+aPI(d,e,f){var w=new B.xq(C.kb,d),v=new A.X3(w)
+w.r=A.b6F(v)
 return v},
-b6C(d,e){var w="Fran\xe7ais"
+b6D(d,e){var w="Fran\xe7ais"
 switch(e){case"mainScreen.title":return"Le titre fran\xe7ais"
-case"mainScreen.counter":return new A.aDj(d)
+case"mainScreen.counter":return new A.aDk(d)
 case"mainScreen.tapMe":return"Appuyez-moi"
 case"locales.en":return"Anglais"
 case"locales.fr":return w
@@ -48,12 +48,12 @@ case"home_screen.themeMode":return"Mode th\xe8me"
 case"home_screen.themeColor":return"Couleur du th\xe8me"
 case"home_screen.language":return"Langue"
 default:return null}},
-b6E(d){return new A.aDl(d)},
+b6F(d){return new A.aDm(d)},
 X3:function X3(d){this.a=d
 this.d=this.b=$},
-aCi:function aCi(){},
-aDl:function aDl(d){this.a=d},
-aDj:function aDj(d){this.a=d}}
+aCj:function aCj(){},
+aDm:function aDm(d){this.a=d},
+aDk:function aDk(d){this.a=d}}
 B=c[0]
 C=c[2]
 A=a.updateHolder(c[3],A)
@@ -68,11 +68,11 @@ gZw(){return"Page introuvable"},
 gc6(){var w=this,v=w.d
 if(v===$){w.gT5()
 w.d!==$&&B.aa()
-v=w.d=new A.aCi()}return v},
+v=w.d=new A.aCj()}return v},
 $iil:1,
 $iiz:1,
 gxI(){return this.a}}
-A.aCi.prototype={
+A.aCj.prototype={
 gJN(){return"D'accueil"},
 gA9(){return"\xc0 propos de"},
 gCN(){return"Reprendre"},
@@ -108,22 +108,22 @@ ga_F(){return"Mode th\xe8me"},
 ga_E(){return"Couleur du th\xe8me"},
 gK6(){return"Langue"}}
 var z=a.updateTypes([])
-A.aDl.prototype={
-$1(d){return A.b6C(this.a,d)},
+A.aDm.prototype={
+$1(d){return A.b6D(this.a,d)},
 $S:76}
-A.aDj.prototype={
+A.aDk.prototype={
 $1$n(d){var w
 this.a.gT5()
-w=B.aOb("fr")
+w=B.aOc("fr")
 return w.$3$one$other(d,"Vous avez appuy\xe9 une fois.","Vous avez appuy\xe9 "+B.j(d)+" fois.")},
 $C:"$1$n",
 $R:0,
 $D(){return{n:C.hi}},
 $S:217};(function inheritance(){var w=a.inheritMany
-w(B.D,[A.X3,A.aCi])
-w(B.lB,[A.aDl,A.aDj])})()
-B.aQJ(b.typeUniverse,JSON.parse('{"X3":{"il":[],"iz":["hI","il"]}}'))
+w(B.D,[A.X3,A.aCj])
+w(B.lB,[A.aDm,A.aDk])})()
+B.aQK(b.typeUniverse,JSON.parse('{"X3":{"il":[],"iz":["hI","il"]}}'))
 var y={o:"Bachelor d'ing\xe9nieur en g\xe9nie informatique",p:"D\xe9veloppeur Flutter et sp\xe9cialiste des applications mobiles",n:"D\xe9veloppeur Flutter exp\xe9riment\xe9 avec 4 ans d'exp\xe9rience dans le d\xe9veloppement d'applications mobiles, fournissant des applications hautes performances centr\xe9es sur l'utilisateur. Comp\xe9tent dans la conception frontale, la mise en \u0153uvre de fonctionnalit\xe9s et l'optimisation de l'\xe9volutivit\xe9 pour r\xe9pondre \xe0 divers objectifs commerciaux."}
 var x={c:B.a6("f")}};
 ((a,b)=>{a[b]=a.current
-a.eventLog.push({p:"main.dart.js_1",e:"endPart",h:b})})($__dart_deferred_initializers__,"L7i8oNAPasbbSWuYa2yCvuQi76Y=");
+a.eventLog.push({p:"main.dart.js_1",e:"endPart",h:b})})($__dart_deferred_initializers__,"ZnL2QQOEjg8qDE36BDSSCbqmxPY=");
