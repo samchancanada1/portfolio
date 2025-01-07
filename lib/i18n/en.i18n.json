@@ -1,0 +1,52 @@
+{
+    "mainScreen": {
+        "title": "An English Title",
+        "counter": {
+            "one": "You pressed $n time.",
+            "other": "You pressed $n times."
+        },
+        "tapMe": "Tap me"
+    },
+    "locales(map)": {
+        "en": "English",
+        "fr": "French"
+    },
+    "notFound": "Page Not Found",
+    "home_screen": {
+        "home": "Home",
+        "about": "About",
+        "resume": "Resume",
+        "skills": "Skills",
+        "contact": "Contact",
+        "settings": "Settings",
+        "myName": "Hiu Tung Chan",
+        "iAm": "I am ",
+        "developer": "Developer",
+        "designer": "Designer",
+        "freelancer": "Freelancer",
+        "aboutTitle": "Flutter Developer and Mobile Application Specialist",
+        "aboutMeDescription": "Experienced Flutter Developer with 4 years of mobile application development, delivering user-centric, high-performance apps. Skilled in front-end design, feature implementation, and optimizing scalability to meet diverse business objectives.",
+        "statistics": "Statistics",
+        "website": "Website",
+        "phone": "Phone number",
+        "city": "City",
+        "myCity": "Toronto, ON, CA",
+        "degree": "Degree",
+        "myDegree": "Bachelor of Engineering in Computer Engineering",
+        "email": "E-mail",
+        "freelance": "Freelance",
+        "available": "Available",
+        "happyClients": "Happy clients",
+        "projects": "Projects",
+        "trainedStudent": "Trained students",
+        "hoursOfSupport": "Hours of support",
+        "view": "view",
+        "coreSkills": "Core skills",
+        "allSkills": "All skills",
+        "french": "French",
+        "english": "English",
+        "themeMode": "Theme Mode",
+        "themeColor": "Theme Color",
+        "language": "Language"
+    }
+}

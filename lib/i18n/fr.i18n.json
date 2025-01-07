@@ -1,0 +1,52 @@
+{
+  "mainScreen": {
+    "title": "Le titre français",
+    "counter": {
+      "one": "Vous avez appuyé une fois.",
+      "other": "Vous avez appuyé $n fois."
+    },
+    "tapMe": "Appuyez-moi"
+  },
+  "locales(map)": {
+    "en": "Anglais",
+    "fr": "Français"
+  },
+  "notFound": "Page introuvable",
+  "home_screen": {
+    "home": "D'accueil",
+    "about": "À propos de",
+    "resume": "Reprendre",
+    "skills": "Compétences",
+    "contact": "Contacter",
+    "settings": "Paramètres",
+    "myName": "Hiu Tung Chan",
+    "iAm": "Je suis",
+    "developer": "Développeur",
+    "designer": "Designer",
+    "freelancer": "Pigiste",
+    "aboutTitle": "Développeur Flutter et spécialiste des applications mobiles",
+    "aboutMeDescription": "Développeur Flutter expérimenté avec 4 ans d'expérience dans le développement d'applications mobiles, fournissant des applications hautes performances centrées sur l'utilisateur. Compétent dans la conception frontale, la mise en œuvre de fonctionnalités et l'optimisation de l'évolutivité pour répondre à divers objectifs commerciaux.",
+    "statistics": "Statistiques",
+    "website": "Site Web",
+    "phone": "Numéro de téléphone",
+    "city": "Ville",
+    "myCity": "Toronto, ON, CA",
+    "degree": "Degré",
+    "myDegree": "Bachelor d'ingénieur en génie informatique",
+    "email": "Courriel",
+    "freelance": "Indépendant",
+    "available": "Disponible",
+    "happyClients": "Clients satisfaits",
+    "projects": "Projects",
+    "trainedStudent": "Étudiants formés",
+    "hoursOfSupport": "heures d'assistance",
+    "view": "vue",
+    "coreSkills": "Compétences de base",
+    "allSkills": "Toutes les compétences",
+    "french": "Français",
+    "english": "Anglais",
+    "themeMode": "Mode thème",
+    "themeColor": "Couleur du thème",
+    "language": "Langue"
+  }
+}
