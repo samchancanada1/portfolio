@@ -89,6 +89,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  github_pages: ^2.0.0
+
 flutter_native_splash:
   color: '#221a15'
   image: "assets/images/splash.jpg"
