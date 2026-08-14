@@ -17,7 +17,7 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     await setupServiceLocator();
     await LocaleSettings.setLocale(AppLocale.en);
-    routes.go('/');
+    routes.go('/home');
   });
 
   Widget buildTestApp() {
@@ -53,6 +53,22 @@ void main() {
       ),
     );
   }
+
+  testWidgets('splash screen animates then opens home', (
+    final WidgetTester tester,
+  ) async {
+    routes.go('/');
+
+    await tester.pumpWidget(buildTestApp());
+
+    expect(find.byType(Image), findsWidgets);
+    expect(find.text('Hiu Tung Chan'), findsNothing);
+
+    await tester.pump(const Duration(milliseconds: 2100));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Hiu Tung Chan'), findsWidgets);
+  });
 
   testWidgets('portfolio app renders updated resume content', (
     final WidgetTester tester,

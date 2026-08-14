@@ -1,0 +1,28 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1024" height="1024" fill="#030B10"/>
+  <path d="M0 0H1024V1024H0V0Z" fill="url(#bg)"/>
+  <path d="M270 170H754L854 270V754L754 854H270L170 754V270L270 170Z" stroke="#00E7C8" stroke-width="24" stroke-linejoin="miter"/>
+  <path d="M324 244H700L780 324V700L700 780H324L244 700V324L324 244Z" stroke="#0D5F59" stroke-width="10" stroke-linejoin="miter"/>
+  <path d="M118 118H286M118 118V286M906 118H738M906 118V286M118 906H286M118 906V738M906 906H738M906 906V738" stroke="#6FFFE9" stroke-opacity="0.45" stroke-width="14" stroke-linecap="square"/>
+  <path d="M512 224V324M512 700V800M224 512H324M700 512H800" stroke="#F8F6EF" stroke-opacity="0.14" stroke-width="8"/>
+  <path d="M380 308H644L716 380V644L644 716H380L308 644V380L380 308Z" stroke="#27F4DC" stroke-opacity="0.46" stroke-width="18" stroke-linejoin="miter"/>
+  <path d="M512 392L616 452V572L512 632L408 572V452L512 392Z" fill="#061316" stroke="#F8F6EF" stroke-opacity="0.9" stroke-width="30" stroke-linejoin="miter"/>
+  <path d="M512 454L562 483V541L512 570L462 541V483L512 454Z" fill="#00E7C8"/>
+  <path d="M512 454V392M562 483L616 452M562 541L616 572M512 570V632M462 541L408 572M462 483L408 452" stroke="#6FFFE9" stroke-width="16" stroke-linecap="square"/>
+  <path d="M512 214V346M512 678V810M214 512H346M678 512H810" stroke="#00E7C8" stroke-width="18" stroke-linecap="square"/>
+  <path d="M346 400H250L206 356M678 400H774L818 356M346 624H250L206 668M678 624H774L818 668" stroke="#27F4DC" stroke-width="18" stroke-linecap="square" stroke-linejoin="miter"/>
+  <circle cx="206" cy="356" r="16" fill="#E76F51"/>
+  <circle cx="818" cy="356" r="14" fill="#27F4DC"/>
+  <circle cx="206" cy="668" r="14" fill="#27F4DC"/>
+  <circle cx="818" cy="668" r="16" fill="#E76F51"/>
+  <path d="M360 262H664M360 762H664" stroke="#F8F6EF" stroke-opacity="0.18" stroke-width="8" stroke-dasharray="34 24"/>
+  <path d="M262 360V664M762 360V664" stroke="#F8F6EF" stroke-opacity="0.12" stroke-width="8" stroke-dasharray="34 24"/>
+  <path d="M314 174H452M572 174H710M314 850H452M572 850H710M174 314V452M174 572V710M850 314V452M850 572V710" stroke="#27F4DC" stroke-opacity="0.26" stroke-width="10"/>
+  <defs>
+    <radialGradient id="bg" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(512 512) rotate(90) scale(540)">
+      <stop stop-color="#0A282B"/>
+      <stop offset="0.58" stop-color="#061316"/>
+      <stop offset="1" stop-color="#02080C"/>
+    </radialGradient>
+  </defs>
+</svg>
