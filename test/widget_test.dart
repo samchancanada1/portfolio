@@ -24,7 +24,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Hiu Tung Chan'), findsWidgets);
-    expect(find.textContaining('production Flutter apps'), findsOneWidget);
+    expect(
+      find.textContaining('cross-platform iOS and Android apps'),
+      findsOneWidget,
+    );
+    expect(find.text('Core stack'), findsOneWidget);
+    expect(find.text('Clean Architecture'), findsWidgets);
 
     await tester.tap(find.text('About'));
     await tester.pumpAndSettle();
@@ -36,6 +41,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('BoursePad'), findsOneWidget);
+    expect(find.text('CORE COMPETENCIES'), findsOneWidget);
+    expect(find.text('Core competencies from the resume'), findsOneWidget);
     expect(find.text('KeelWorks Foundation'), findsOneWidget);
     expect(find.text('Computer And Technologies Holdings'), findsOneWidget);
   });
@@ -59,7 +66,7 @@ void main() {
     await tester.tap(find.text('Resume'));
     await tester.pumpAndSettle();
 
-    expect(find.text('BoursePad'), findsOneWidget);
+    expect(find.text('BoursePad'), findsWidgets);
     expect(find.text('KeelWorks Foundation'), findsOneWidget);
   });
 
@@ -75,6 +82,26 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Hiu Tung Chan'), findsWidgets);
-    expect(find.text('Production mobile apps'), findsOneWidget);
+    expect(find.text('Currently shipping'), findsOneWidget);
+  });
+
+  testWidgets('skills page presents resume-aligned technical categories', (
+    final WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(buildTestApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Skills'));
+    await tester.pumpAndSettle();
+
+    expect(
+        find.text('Technical skills from the updated resume'), findsOneWidget);
+    expect(find.text('Mobile'), findsOneWidget);
+    expect(find.text('Architecture'), findsWidgets);
+    expect(find.text('Backend and APIs'), findsOneWidget);
+    expect(find.text('CI/CD and release'), findsOneWidget);
+    expect(find.text('Mobile features'), findsOneWidget);
+    expect(find.text('Detailed toolbox'), findsOneWidget);
+    expect(find.text('Firebase Auth'), findsWidgets);
   });
 }

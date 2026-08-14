@@ -104,36 +104,70 @@ class _PortfolioBackground extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: AppColors.ink,
-        image: DecorationImage(
-          image: AssetImage(Assets.images.homeBackground.path),
-          fit: BoxFit.cover,
-          opacity: checkDarkMode(context) ? 0.14 : 0.07,
+    final bool dark = checkDarkMode(context);
+
+    return CustomPaint(
+      foregroundPainter: _StudioGridPainter(
+        lineColor: (dark ? AppColors.ivory : AppColors.ink).withValues(
+          alpha: dark ? 0.035 : 0.04,
         ),
       ),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: checkDarkMode(context)
-                ? const [
-                    Color(0xff061316),
-                    Color(0xff11181A),
-                    Color(0xff1F1B24),
-                  ]
-                : const [
-                    Color(0xffF8F6EF),
-                    Color(0xffEDF6F5),
-                    Color(0xffF6F1E8),
-                  ],
+          color: AppColors.ink,
+          image: DecorationImage(
+            image: AssetImage(Assets.images.homeBackground.path),
+            fit: BoxFit.cover,
+            opacity: dark ? 0.12 : 0.06,
           ),
         ),
-        child: child,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: dark
+                  ? const [
+                      Color(0xff061316),
+                      Color(0xff11181A),
+                      Color(0xff2A2634),
+                    ]
+                  : const [
+                      Color(0xffF8F6EF),
+                      Color(0xffEAF5F3),
+                      Color(0xffF7EEE7),
+                    ],
+            ),
+          ),
+          child: child,
+        ),
       ),
     );
+  }
+}
+
+class _StudioGridPainter extends CustomPainter {
+  const _StudioGridPainter({required this.lineColor});
+
+  final Color lineColor;
+
+  @override
+  void paint(final Canvas canvas, final Size size) {
+    final Paint paint = Paint()
+      ..color = lineColor
+      ..strokeWidth = 1;
+
+    for (double x = 0; x < size.width; x += 96) {
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
+    }
+    for (double y = 0; y < size.height; y += 96) {
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(final _StudioGridPainter oldDelegate) {
+    return oldDelegate.lineColor != lineColor;
   }
 }
 
@@ -388,7 +422,7 @@ class _HomeView extends StatelessWidget {
                     ),
                   ),
                 if (!isWide) const SizedBox(height: Dimens.largePadding),
-                _Eyebrow('Markham / Flutter / Mobile architecture'),
+                _Eyebrow('Markham / Flutter / Clean Architecture / Release'),
                 const SizedBox(height: Dimens.largePadding),
                 if (isWide)
                   Row(
@@ -396,9 +430,12 @@ class _HomeView extends StatelessWidget {
                     children: [
                       Expanded(
                         flex: 6,
-                        child: _HomeIntro(
-                          mutedColor: scheme.onSurfaceVariant,
-                          onViewProjects: () => _jumpTo(context, 2),
+                        child: Transform.translate(
+                          offset: const Offset(0, -96),
+                          child: _HomeIntro(
+                            mutedColor: scheme.onSurfaceVariant,
+                            onViewProjects: () => _jumpTo(context, 2),
+                          ),
                         ),
                       ),
                       const SizedBox(width: Dimens.extraLargePadding),
@@ -420,6 +457,8 @@ class _HomeView extends StatelessWidget {
                       const _HeroDashboard(isWide: false),
                     ],
                   ),
+                const SizedBox(height: Dimens.extraLargePadding),
+                const _DesignLensStrip(),
                 const SizedBox(height: Dimens.extraLargePadding),
                 const _ContactStrip(),
               ],
@@ -455,14 +494,14 @@ class _HomeIntro extends StatelessWidget {
         Text(
           t.home_screen.myName,
           style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                fontSize: compact ? 48 : null,
+                fontSize: compact ? 46 : 76,
                 fontWeight: FontWeight.w900,
                 height: 0.96,
               ),
         ),
         const SizedBox(height: Dimens.largePadding),
         Text(
-          'I build and maintain production Flutter apps for iOS and Android, with clean architecture, Firebase, native integrations, CI/CD, and store releases.',
+          'Flutter Mobile Developer building cross-platform iOS and Android apps with Clean Architecture, Firebase, REST APIs, native modules, CI/CD, and store release workflows.',
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 color: mutedColor,
                 height: 1.24,
@@ -506,11 +545,11 @@ class _HeroDashboard extends StatelessWidget {
       child: Column(
         children: [
           _BentoSpotlightCard(
-            icon: Icons.rocket_launch_rounded,
-            title: 'Production mobile apps',
-            value: 'iOS + Android',
+            icon: Icons.draw_rounded,
+            title: 'Currently shipping',
+            value: 'BoursePad',
             description:
-                'Release-ready Flutter work across app stores, Firebase, CI/CD, native bridges, and long-term maintenance.',
+                'Production scholarship-matching app maintained for scalability, accessibility, performance, Firebase-backed data, CI/CD, and App Store / Google Play releases.',
           ),
           const SizedBox(height: Dimens.padding),
           if (twoColumns)
@@ -554,11 +593,11 @@ class _HeroDashboard extends StatelessWidget {
             title: 'Core stack',
             chips: const [
               'Flutter',
+              'Clean Architecture',
               'Riverpod',
-              'BLoC',
               'Firebase',
-              'GoRouter',
-              'GetIt',
+              'GitHub Actions',
+              'Store release',
             ],
             accent: scheme.primary,
           ),
@@ -579,7 +618,7 @@ class _HeroDashboard extends StatelessWidget {
                   child: _BentoSmallCard(
                     icon: Icons.bluetooth_connected_rounded,
                     title: 'Native range',
-                    text: 'Kotlin, Swift, BLE, sensors, offline-first storage',
+                    text: 'Kotlin, Swift, BLE, Platform Channels, lifecycle',
                     color: AppColors.secondColor,
                   ),
                 ),
@@ -598,13 +637,122 @@ class _HeroDashboard extends StatelessWidget {
                 _BentoSmallCard(
                   icon: Icons.bluetooth_connected_rounded,
                   title: 'Native range',
-                  text: 'Kotlin, Swift, BLE, sensors, offline-first storage',
+                  text: 'Kotlin, Swift, BLE, Platform Channels, lifecycle',
                   color: AppColors.secondColor,
                 ),
               ],
             ),
         ],
       ),
+    );
+  }
+}
+
+class _DesignLensStrip extends StatelessWidget {
+  const _DesignLensStrip();
+
+  @override
+  Widget build(final BuildContext context) {
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+    final List<_DesignLens> lenses = [
+      const _DesignLens(
+        'UX flows',
+        'Clear journeys from first tap to released feature.',
+        Icons.route_rounded,
+      ),
+      const _DesignLens(
+        'Visual systems',
+        'Reusable spacing, type, color, and component rules.',
+        Icons.dashboard_customize_rounded,
+      ),
+      const _DesignLens(
+        'Responsive craft',
+        'Independent sizing for phone, tablet, desktop, and web.',
+        Icons.devices_rounded,
+      ),
+      const _DesignLens(
+        'Product polish',
+        'Empty, loading, error, accessibility, and release states.',
+        Icons.auto_awesome_rounded,
+      ),
+    ];
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(Dimens.largePadding),
+      decoration: BoxDecoration(
+        color: scheme.surface.withValues(
+          alpha: checkDarkMode(context) ? 0.54 : 0.72,
+        ),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: scheme.outlineVariant.withValues(alpha: 0.3),
+        ),
+      ),
+      child: LayoutBuilder(
+        builder: (final context, final constraints) {
+          final bool wide = constraints.maxWidth >= 900;
+          final int columns = wide
+              ? 4
+              : constraints.maxWidth >= 560
+                  ? 2
+                  : 1;
+          return GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: lenses.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: columns,
+              mainAxisSpacing: Dimens.largePadding,
+              crossAxisSpacing: Dimens.largePadding,
+              childAspectRatio: wide
+                  ? 2.35
+                  : columns == 2
+                      ? 1.65
+                      : 2.35,
+            ),
+            itemBuilder: (final context, final index) {
+              return _DesignLensItem(lens: lenses[index]);
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _DesignLensItem extends StatelessWidget {
+  const _DesignLensItem({required this.lens});
+
+  final _DesignLens lens;
+
+  @override
+  Widget build(final BuildContext context) {
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(lens.icon, color: scheme.primary, size: 24),
+        const SizedBox(height: Dimens.mediumPadding),
+        Text(
+          lens.title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontWeight: FontWeight.w900),
+        ),
+        const SizedBox(height: Dimens.smallPadding),
+        Text(
+          lens.description,
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: scheme.onSurfaceVariant,
+            height: 1.32,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -873,11 +1021,12 @@ class _AboutView extends StatelessWidget {
   Widget build(final BuildContext context) {
     final bool isWide = MediaQuery.sizeOf(context).width >= 900;
     const String summary =
-        'Flutter Mobile Developer with 6+ years of experience designing, building, and maintaining cross-platform mobile applications for iOS and Android. Strong background in Flutter, Dart, Clean Architecture, Firebase, REST API integration, native Kotlin/Swift modules, CI/CD automation, and App Store / Google Play release workflows. Experienced across scholarship technology, retail POS, IoT, fitness, and enterprise applications.';
+        'Flutter Mobile Developer with 6+ years of experience designing, building, and maintaining cross-platform mobile applications for iOS and Android. Strong background in Flutter, Dart, Clean Architecture, Firebase, REST API integration, native Kotlin/Swift modules, CI/CD automation, and App Store / Google Play release workflows. Experienced across scholarship technology, retail POS, IoT, fitness, and enterprise applications, with the ability to translate business logic and client requirements into scalable, maintainable mobile solutions.';
 
     return _SectionScaffold(
       eyebrow: 'Profile',
-      title: 'Flutter Mobile Developer with 6+ years shipping production apps',
+      title:
+          'Flutter Mobile Developer shipping scalable, maintainable iOS and Android apps',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -935,6 +1084,7 @@ class _InfoPanel extends StatelessWidget {
           _InfoRow(t.home_screen.degree, t.home_screen.myDegree),
           _InfoRow(t.home_screen.email, 'samchancanada1@gmail.com'),
           _InfoRow(t.home_screen.freelance, t.home_screen.available),
+          const _InfoRow('Work', 'Authorized to work in Canada'),
         ],
       ),
     );
@@ -1052,14 +1202,220 @@ class _ResumeView extends StatelessWidget {
   Widget build(final BuildContext context) {
     return _SectionScaffold(
       eyebrow: 'Experience',
-      title: 'Recent roles and production work from the updated resume',
+      title: 'Production roles shaped with product craft and mobile depth',
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const _CoreCompetenciesCard(),
+          const SizedBox(height: Dimens.extraLargePadding),
           for (final _Experience experience in _experiences)
             Padding(
               padding: const EdgeInsets.only(bottom: Dimens.largePadding),
               child: _ExperienceCard(experience: experience),
             ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CoreCompetenciesCard extends StatelessWidget {
+  const _CoreCompetenciesCard();
+
+  @override
+  Widget build(final BuildContext context) {
+    final bool isWide = MediaQuery.sizeOf(context).width >= 820;
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+
+    return _Panel(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _Eyebrow('Core competencies'),
+          const SizedBox(height: Dimens.mediumPadding),
+          if (isWide)
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Expanded(flex: 5, child: _CoreCompetenciesIntro()),
+                const SizedBox(width: Dimens.extraLargePadding),
+                Expanded(
+                  flex: 4,
+                  child: _ImpactGrid(accent: scheme.primary),
+                ),
+              ],
+            )
+          else
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const _CoreCompetenciesIntro(),
+                const SizedBox(height: Dimens.largePadding),
+                _ImpactGrid(accent: scheme.primary),
+              ],
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CoreCompetenciesIntro extends StatelessWidget {
+  const _CoreCompetenciesIntro();
+
+  @override
+  Widget build(final BuildContext context) {
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Cross-platform Flutter, architecture, release, APIs, offline-first, and BLE',
+          style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                fontSize: 38,
+                fontWeight: FontWeight.w900,
+                height: 1.02,
+              ),
+        ),
+        const SizedBox(height: Dimens.padding),
+        Text(
+          'Core competencies from the resume',
+          style: TextStyle(
+            color: scheme.primary,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+        const SizedBox(height: Dimens.largePadding),
+        Text(
+          'Focused on cross-platform Flutter development, mobile app architecture, App Store / Google Play release management, REST API and third-party SDK integration, offline-first apps, Bluetooth / IoT integration, and translating business logic into maintainable mobile workflows.',
+          style: TextStyle(color: scheme.onSurfaceVariant, height: 1.5),
+        ),
+        const SizedBox(height: Dimens.largePadding),
+        Wrap(
+          spacing: Dimens.padding,
+          runSpacing: Dimens.padding,
+          children: const [
+            _MiniBadge('Cross-platform Flutter'),
+            _MiniBadge('Clean Architecture'),
+            _MiniBadge('REST API integration'),
+            _MiniBadge('Offline-first'),
+            _MiniBadge('Bluetooth / IoT'),
+            _MiniBadge('Business logic'),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _ImpactGrid extends StatelessWidget {
+  const _ImpactGrid({required this.accent});
+
+  final Color accent;
+
+  @override
+  Widget build(final BuildContext context) {
+    return LayoutBuilder(
+      builder: (final context, final constraints) {
+        final bool wide = constraints.maxWidth > 360;
+        final List<Widget> cards = [
+          _ImpactCard(
+            icon: Icons.phone_iphone_rounded,
+            title: 'Mobile',
+            text: 'Flutter, Dart, Android, iOS, Kotlin, Swift',
+            color: accent,
+          ),
+          _ImpactCard(
+            icon: Icons.api_rounded,
+            title: 'APIs',
+            text: 'Firebase Auth, Firestore, FCM, Analytics, REST APIs',
+            color: accent,
+          ),
+          _ImpactCard(
+            icon: Icons.account_tree_rounded,
+            title: 'Architecture',
+            text: 'Clean Architecture, Riverpod, GoRouter, Firebase',
+            color: accent,
+          ),
+          _ImpactCard(
+            icon: Icons.storefront_rounded,
+            title: 'Release',
+            text: 'Xcode 16, Android API 35+, App Store, Google Play',
+            color: accent,
+          ),
+        ];
+
+        if (!wide) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (final Widget card in cards)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: Dimens.padding),
+                  child: card,
+                ),
+            ],
+          );
+        }
+
+        return GridView.count(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          crossAxisCount: 2,
+          crossAxisSpacing: Dimens.padding,
+          mainAxisSpacing: Dimens.padding,
+          childAspectRatio: 1.45,
+          children: cards,
+        );
+      },
+    );
+  }
+}
+
+class _ImpactCard extends StatelessWidget {
+  const _ImpactCard({
+    required this.icon,
+    required this.title,
+    required this.text,
+    required this.color,
+  });
+
+  final IconData icon;
+  final String title;
+  final String text;
+  final Color color;
+
+  @override
+  Widget build(final BuildContext context) {
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(Dimens.mediumPadding),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerHighest.withValues(alpha: 0.58),
+        borderRadius: BorderRadius.circular(8),
+        border:
+            Border.all(color: scheme.outlineVariant.withValues(alpha: 0.28)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: color, size: 20),
+          const SizedBox(height: Dimens.padding),
+          Text(title, style: const TextStyle(fontWeight: FontWeight.w900)),
+          const SizedBox(height: Dimens.smallPadding),
+          Text(
+            text,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: scheme.onSurfaceVariant,
+              fontSize: 12,
+              height: 1.28,
+            ),
+          ),
         ],
       ),
     );
@@ -1210,19 +1566,84 @@ class _SkillsView extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    final List<_SkillScore> coreSkills = [
-      _SkillScore('Flutter', 94),
-      _SkillScore('Dart', 90),
-      _SkillScore('Clean Architecture', 86),
-      _SkillScore('Firebase', 82),
-      _SkillScore('Riverpod / BLoC', 82),
-      _SkillScore('REST APIs', 80),
-      _SkillScore('CI/CD & Store Release', 76),
-      _SkillScore('Kotlin / Swift Modules', 72),
-      _SkillScore('BLE / IoT Integration', 70),
-      _SkillScore('Offline-first Apps', 68),
-      _SkillScore('Python / FastAPI', 64),
-      _SkillScore('Elasticsearch', 58),
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+    const List<_CapabilityGroup> capabilityGroups = [
+      _CapabilityGroup(
+        title: 'Mobile',
+        description:
+            'Cross-platform mobile development for Android, iOS, and web using Flutter and Dart, with native Kotlin and Swift modules when platform capabilities are needed.',
+        icon: Icons.phone_iphone_rounded,
+        skills: ['Flutter', 'Dart', 'Android', 'iOS', 'Kotlin', 'Swift'],
+      ),
+      _CapabilityGroup(
+        title: 'Architecture',
+        description:
+            'Maintainable Flutter app structures with Clean Architecture, modular service layers, dependency injection, and practical state management.',
+        icon: Icons.account_tree_rounded,
+        skills: ['Clean Architecture', 'BLoC', 'Riverpod', 'Provider', 'GetIt'],
+      ),
+      _CapabilityGroup(
+        title: 'Backend and APIs',
+        description:
+            'Firebase-backed app features and API integrations for authentication, real-time data, notifications, analytics, and business workflows.',
+        icon: Icons.cloud_done_rounded,
+        skills: [
+          'Firebase Auth',
+          'Firestore',
+          'Cloud Messaging',
+          'Analytics',
+          'REST APIs',
+          '.NET APIs',
+          'Spring APIs',
+        ],
+      ),
+      _CapabilityGroup(
+        title: 'CI/CD and release',
+        description:
+            'Release workflows covering automated builds, testing, signing, TestFlight, App Store, Google Play, Docker, and GitHub Actions.',
+        icon: Icons.rocket_launch_rounded,
+        skills: [
+          'Git',
+          'GitHub Actions',
+          'Docker',
+          'TestFlight',
+          'App Store',
+          'Google Play',
+          'Code Signing',
+        ],
+      ),
+      _CapabilityGroup(
+        title: 'Mobile features',
+        description:
+            'Practical app features that support production mobile behavior, device connectivity, offline use, deep linking, lifecycle handling, and notifications.',
+        icon: Icons.hub_rounded,
+        skills: [
+          'Push Notifications',
+          'Deep Linking',
+          'Platform Channels',
+          'App Lifecycle',
+          'Offline-first',
+          'BLE',
+          'SQLite',
+          'Hive',
+        ],
+      ),
+      _CapabilityGroup(
+        title: 'Testing and other',
+        description:
+            'Testing, backend proof-of-concept, search, and tooling experience from production work and the AI Resume Parser project.',
+        icon: Icons.fact_check_rounded,
+        skills: [
+          'flutter_test',
+          'mockito',
+          'integration_test',
+          'Python',
+          'C#',
+          'FastAPI',
+          'Elasticsearch',
+          'Unity',
+        ],
+      ),
     ];
     const List<String> allSkills = [
       'Flutter (Android, iOS, Web)',
@@ -1269,33 +1690,45 @@ class _SkillsView extends StatelessWidget {
 
     return _SectionScaffold(
       eyebrow: 'Capabilities',
-      title:
-          'Mobile architecture depth with the release, backend, and native range to ship complete products',
+      title: 'Technical skills from the updated resume',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 780),
+            child: Text(
+              'Grouped around the resume categories: mobile development, architecture, backend and APIs, CI/CD and release, mobile features, testing, and additional tooling.',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                    height: 1.5,
+                  ),
+            ),
+          ),
+          const SizedBox(height: Dimens.extraLargePadding),
           LayoutBuilder(
             builder: (final context, final constraints) {
-              final int columns = constraints.maxWidth > 820 ? 2 : 1;
-              return GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: coreSkills.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: columns,
-                  mainAxisSpacing: Dimens.mediumPadding,
-                  crossAxisSpacing: Dimens.mediumPadding,
-                  childAspectRatio: columns == 2 ? 5.6 : 4.8,
-                ),
-                itemBuilder: (final context, final index) {
-                  return _SkillBar(skill: coreSkills[index]);
-                },
+              final bool twoColumns = constraints.maxWidth >= 860;
+              final double spacing = Dimens.largePadding;
+              final double cardWidth = twoColumns
+                  ? (constraints.maxWidth - spacing) / 2
+                  : constraints.maxWidth;
+
+              return Wrap(
+                spacing: spacing,
+                runSpacing: spacing,
+                children: [
+                  for (final _CapabilityGroup group in capabilityGroups)
+                    SizedBox(
+                      width: cardWidth,
+                      child: _CapabilityCard(group: group),
+                    ),
+                ],
               );
             },
           ),
           const SizedBox(height: Dimens.extraLargePadding),
           Text(
-            t.home_screen.allSkills,
+            'Detailed toolbox',
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           const SizedBox(height: Dimens.largePadding),
@@ -1312,10 +1745,10 @@ class _SkillsView extends StatelessWidget {
   }
 }
 
-class _SkillBar extends StatelessWidget {
-  const _SkillBar({required this.skill});
+class _CapabilityCard extends StatelessWidget {
+  const _CapabilityCard({required this.group});
 
-  final _SkillScore skill;
+  final _CapabilityGroup group;
 
   @override
   Widget build(final BuildContext context) {
@@ -1324,35 +1757,37 @@ class _SkillBar extends StatelessWidget {
     return _Panel(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              _IconFrame(icon: group.icon, color: scheme.primary),
+              const SizedBox(width: Dimens.mediumPadding),
               Expanded(
                 child: Text(
-                  skill.label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontWeight: FontWeight.w800),
-                ),
-              ),
-              Text(
-                '${skill.value.round()}%',
-                style: TextStyle(
-                  color: scheme.primary,
-                  fontWeight: FontWeight.w900,
+                  group.title,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w900,
+                      ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: Dimens.mediumPadding),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(100),
-            child: LinearProgressIndicator(
-              minHeight: 8,
-              value: skill.value / 100,
-              backgroundColor: scheme.surfaceContainerHighest,
+          const SizedBox(height: Dimens.largePadding),
+          Text(
+            group.description,
+            style: TextStyle(
+              color: scheme.onSurfaceVariant,
+              height: 1.46,
             ),
+          ),
+          const SizedBox(height: Dimens.largePadding),
+          Wrap(
+            spacing: Dimens.padding,
+            runSpacing: Dimens.padding,
+            children: [
+              for (final String skill in group.skills) _TechPill(label: skill),
+            ],
           ),
         ],
       ),
@@ -1815,11 +2250,26 @@ class _ResumeLink {
   final String url;
 }
 
-class _SkillScore {
-  const _SkillScore(this.label, this.value);
+class _DesignLens {
+  const _DesignLens(this.title, this.description, this.icon);
 
-  final String label;
-  final double value;
+  final String title;
+  final String description;
+  final IconData icon;
+}
+
+class _CapabilityGroup {
+  const _CapabilityGroup({
+    required this.title,
+    required this.description,
+    required this.icon,
+    required this.skills,
+  });
+
+  final String title;
+  final String description;
+  final IconData icon;
+  final List<String> skills;
 }
 
 class _Stat {
@@ -1850,6 +2300,8 @@ final List<_Experience> _experiences = [
       'Upgraded the app for Xcode 16 and Android API 35+ requirements, keeping releases aligned with current App Store and Google Play standards.',
       'Integrated Firebase Auth, Firestore, Cloud Messaging, and Analytics for authentication, real-time data, notifications, communication, and product insights.',
       'Built CI/CD pipelines from scratch using GitHub Actions for automated build, test, deployment, multi-environment release workflows, and regression risk reduction.',
+      'Managed App Store and Google Play release workflows including provisioning profiles, code signing, release builds, version control, and store submission requirements.',
+      'Implemented cross-platform mobile features including App Lifecycle handling, Platform Channels, deep linking, and native integration for reliable iOS and Android behavior.',
     ],
     tech: const [
       'Flutter',
@@ -1896,6 +2348,8 @@ final List<_Experience> _experiences = [
       'Built early-stage Flutter apps and internal tools for clients across retail, IoT, and fitness domains.',
       'Worked directly with clients to clarify business logic and translate operational needs into practical mobile workflows.',
       'Designed scalable Flutter structures with Dart, BLoC/Provider, reusable UI components, and modular service layers.',
+      'Made architecture and implementation decisions by balancing performance, development timeline, budget constraints, and long-term maintainability.',
+      'Integrated REST APIs, push notifications, authentication flows, and third-party SDKs for MVP and internal-use app requirements.',
       'Developed platform-specific Kotlin and Swift modules for native device capabilities including sensors, Bluetooth communication, and background behavior.',
       'Implemented Bluetooth Low Energy and offline-first functionality with SQLite and Hive for reliability under network and device constraints.',
     ],
@@ -1917,7 +2371,9 @@ final List<_Experience> _experiences = [
     period: 'Sep 2019 - May 2022',
     points: const [
       'Contributed to migrating a legacy POS system into a mobile-first Flutter solution for COACH Asia retail operations.',
+      'Worked with business and technical stakeholders to understand retail transaction logic, inventory workflows, payment scenarios, and operational requirements.',
       'Integrated Flutter apps with a .NET backend and REST APIs for order processing, inventory updates, and retail workflow synchronization.',
+      'Designed modular UI components and service layers to improve maintainability, reduce repeated implementation effort, and support future feature expansion.',
       'Implemented deep linking and Alipay payment integration to support smoother and more secure transaction flows.',
       'Integrated BLE communication for portable barcode scanners and thermal printers.',
       'Supported multilingual Chinese and English retail workflows, code reviews, debugging, and production stability improvements.',
