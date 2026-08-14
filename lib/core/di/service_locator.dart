@@ -58,5 +58,7 @@ Future<void> setupServiceLocator() async {
   locator.registerFactory<HomeContentCubit>(
     () => HomeContentCubit(locator<GetHomeContentUseCase>()),
   );
-  locator.registerFactory<HomeNavigationCubit>(HomeNavigationCubit.new);
+  locator.registerFactoryParam<HomeNavigationCubit, HomeSection, void>(
+    (final section, _) => HomeNavigationCubit(section),
+  );
 }

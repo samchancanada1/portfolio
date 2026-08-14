@@ -1,10 +1,9 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../../../core/routes/go_routes_path.dart';
 import '../../../../core/theme/colors.dart';
+import 'home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({
@@ -23,6 +22,7 @@ class _SplashScreenState extends State<SplashScreen>
   late final AnimationController _controller;
   late final Animation<double> _logoScale;
   late final Animation<double> _logoOpacity;
+  bool _showHome = false;
 
   @override
   void initState() {
@@ -39,15 +39,17 @@ class _SplashScreenState extends State<SplashScreen>
       parent: _controller,
       curve: const Interval(0.0, 0.42, curve: Curves.easeOut),
     );
-    _openHomeAfterSplash();
+    _showHomeAfterSplash();
   }
 
-  Future<void> _openHomeAfterSplash() async {
+  Future<void> _showHomeAfterSplash() async {
     await Future<void>.delayed(widget.duration);
     if (!mounted) {
       return;
     }
-    context.go(GoRoutesPath.home);
+    setState(() {
+      _showHome = true;
+    });
   }
 
   @override
@@ -58,6 +60,10 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(final BuildContext context) {
+    if (_showHome) {
+      return const HomeScreen();
+    }
+
     return Scaffold(
       backgroundColor: AppColors.ink,
       body: AnimatedBuilder(

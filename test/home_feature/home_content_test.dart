@@ -96,6 +96,14 @@ void main() {
     cubit.close();
   });
 
+  test('home navigation cubit can start from a deep-linked section', () {
+    final cubit = HomeNavigationCubit(HomeSection.resume);
+
+    expect(cubit.state, HomeSection.resume);
+
+    cubit.close();
+  });
+
   test('portfolio content value objects expose constructor data', () {
     const link = ResumeLink('Store', 'https://example.com');
     const stat = PortfolioStat('1', 'Release', HomeIconKey.rocketLaunch);

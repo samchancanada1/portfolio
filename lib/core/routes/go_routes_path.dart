@@ -5,6 +5,10 @@ class GoRoutesPath {
   // static const String login = '/login';
   // static const String verifyOtp = '/verify-otp/:mobile_number';
   static const String home = '/home';
+  static const String about = '/about';
+  static const String resume = '/resume';
+  static const String skills = '/skills';
+  static const String settings = '/settings';
   // static const String myStores = 'my-stores';
   // static const String nearbyStore = 'nearby-stores';
   // static const String tabScreen = '/tab-screen';

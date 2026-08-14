@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../core/routes/go_routes_path.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/dimens.dart';
 import '../../../../core/utils/check_theme_status.dart';
@@ -21,13 +22,20 @@ import '../cubit/theme_cubit.dart';
 import '../mappers/home_icon_mapper.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({
+    super.key,
+    this.initialSection = HomeSection.home,
+  });
+
+  final HomeSection initialSection;
 
   @override
   Widget build(final BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => locator<HomeNavigationCubit>()),
+        BlocProvider(
+          create: (_) => locator<HomeNavigationCubit>(param1: initialSection),
+        ),
         BlocProvider(create: (_) => locator<HomeContentCubit>()),
       ],
       child: const _HomeScreenView(),
@@ -86,9 +94,10 @@ class _HomeScreenView extends StatelessWidget {
                     _SideNavigation(
                       items: items,
                       selectedIndex: selectedIndex,
-                      onSelected: (final index) => context
-                          .read<HomeNavigationCubit>()
-                          .select(items[index].section),
+                      onSelected: (final index) => _openSection(
+                        context,
+                        items[index].section,
+                      ),
                     ),
                   Expanded(
                     child: PageTransitionSwitcher(
@@ -119,13 +128,40 @@ class _HomeScreenView extends StatelessWidget {
               : _BottomNavigation(
                   items: items,
                   selectedIndex: selectedIndex,
-                  onSelected: (final index) => context
-                      .read<HomeNavigationCubit>()
-                      .select(items[index].section),
+                  onSelected: (final index) => _openSection(
+                    context,
+                    items[index].section,
+                  ),
                 ),
         );
       },
     );
+  }
+
+  void _openSection(
+    final BuildContext context,
+    final HomeSection section,
+  ) {
+    context.read<HomeNavigationCubit>().select(section);
+    final String routePath = _routePathFor(section);
+    if (GoRouterState.of(context).uri.path != routePath) {
+      context.go(routePath);
+    }
+  }
+
+  String _routePathFor(final HomeSection section) {
+    switch (section) {
+      case HomeSection.home:
+        return GoRoutesPath.home;
+      case HomeSection.about:
+        return GoRoutesPath.about;
+      case HomeSection.resume:
+        return GoRoutesPath.resume;
+      case HomeSection.skills:
+        return GoRoutesPath.skills;
+      case HomeSection.settings:
+        return GoRoutesPath.settings;
+    }
   }
 
   Widget _sectionFor(final HomeSection section) {
@@ -521,6 +557,9 @@ class _HomeView extends StatelessWidget {
 
   void _jumpToResume(final BuildContext context) {
     context.read<HomeNavigationCubit>().select(HomeSection.resume);
+    if (GoRouterState.of(context).uri.path != GoRoutesPath.resume) {
+      context.go(GoRoutesPath.resume);
+    }
   }
 }
 

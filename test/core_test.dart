@@ -22,6 +22,10 @@ void main() {
   test('route paths expose the public home locations', () {
     expect(GoRoutesPath.splash, '/');
     expect(GoRoutesPath.home, '/home');
+    expect(GoRoutesPath.about, '/about');
+    expect(GoRoutesPath.resume, '/resume');
+    expect(GoRoutesPath.skills, '/skills');
+    expect(GoRoutesPath.settings, '/settings');
   });
 
   test('dimension constants derive from the shared base unit', () {

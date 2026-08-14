@@ -101,6 +101,37 @@ void main() {
     expect(find.text('Computer And Technologies Holdings'), findsOneWidget);
   });
 
+  testWidgets('section tags update the browser route', (
+    final WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(buildTestApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('About'));
+    await tester.pumpAndSettle();
+
+    expect(routes.routeInformationProvider.value.uri.path, '/about');
+
+    await tester.tap(find.text('Resume'));
+    await tester.pumpAndSettle();
+
+    expect(routes.routeInformationProvider.value.uri.path, '/resume');
+  });
+
+  testWidgets('direct section routes open the matching tab', (
+    final WidgetTester tester,
+  ) async {
+    routes.go('/skills');
+
+    await tester.pumpWidget(buildTestApp());
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Technical skills from the updated resume'),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('mobile layout can navigate about and resume', (
     final WidgetTester tester,
   ) async {
