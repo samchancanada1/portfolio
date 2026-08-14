@@ -13,6 +13,8 @@ extension HomeIconMapper on HomeIconKey {
         return Icons.devices_rounded;
       case HomeIconKey.autoAwesome:
         return Icons.auto_awesome_rounded;
+      case HomeIconKey.checkCircle:
+        return Icons.check_circle_rounded;
       case HomeIconKey.timeline:
         return Icons.timeline_rounded;
       case HomeIconKey.rocketLaunch:
@@ -21,12 +23,18 @@ extension HomeIconMapper on HomeIconKey {
         return Icons.android_rounded;
       case HomeIconKey.phone:
         return Icons.phone_iphone_rounded;
+      case HomeIconKey.api:
+        return Icons.api_rounded;
       case HomeIconKey.accountTree:
         return Icons.account_tree_rounded;
+      case HomeIconKey.storefront:
+        return Icons.storefront_rounded;
       case HomeIconKey.cloudDone:
         return Icons.cloud_done_rounded;
       case HomeIconKey.hub:
         return Icons.hub_rounded;
+      case HomeIconKey.bluetooth:
+        return Icons.bluetooth_connected_rounded;
       case HomeIconKey.factCheck:
         return Icons.fact_check_rounded;
       case HomeIconKey.businessCenter:

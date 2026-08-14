@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
-import '../../feature/home_feature/data/data_sources/local/home_storage.dart';
+import '../di/service_locator.dart';
+import '../../feature/home_feature/domain/use_cases/get_language_locale_use_case.dart';
+import '../../feature/home_feature/domain/use_cases/set_language_locale_use_case.dart';
 import '../../i18n/strings.g.dart';
 
 class LocaleHandler {
   Future<AppLocale> getLocale() async {
-    final String storedLocale = await HomeStorage().getLanguageLocale() ?? '';
+    final String storedLocale =
+        await locator<GetLanguageLocaleUseCase>()() ?? '';
     if (storedLocale == '') {
       return AppLocale.en;
     }
@@ -25,22 +28,22 @@ class LocaleHandler {
 
   void setFaLocale(final BuildContext context) {
     LocaleSettings.setLocale(AppLocale.fr);
-    HomeStorage().setLanguageLocale('fr');
+    locator<SetLanguageLocaleUseCase>()('fr');
   }
 
   void setEnLocale(final BuildContext context) {
     LocaleSettings.setLocale(AppLocale.en);
-    HomeStorage().setLanguageLocale('en');
+    locator<SetLanguageLocaleUseCase>()('en');
   }
 }
 
 void changeLocale(final BuildContext context) {
   if (checkEnState(context)) {
     LocaleSettings.setLocale(AppLocale.fr);
-    HomeStorage().setLanguageLocale('fr');
+    locator<SetLanguageLocaleUseCase>()('fr');
   } else {
     LocaleSettings.setLocale(AppLocale.en);
-    HomeStorage().setLanguageLocale('en');
+    locator<SetLanguageLocaleUseCase>()('en');
   }
 }
 

@@ -11,12 +11,13 @@ import '../../../../core/utils/locale_handler.dart';
 import '../../../../core/di/service_locator.dart';
 import '../../../../gen/assets.gen.dart';
 import '../../../../i18n/strings.g.dart';
+import '../../domain/entities/home_icon_key.dart';
 import '../../domain/entities/portfolio_content.dart';
-import '../bloc/primary_color_cubit.dart';
-import '../bloc/theme_cubit.dart';
 import '../cubit/home_content_cubit.dart';
 import '../cubit/home_content_state.dart';
 import '../cubit/home_navigation_cubit.dart';
+import '../cubit/primary_color_cubit.dart';
+import '../cubit/theme_cubit.dart';
 import '../mappers/home_icon_mapper.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -266,7 +267,7 @@ class _SideNavigation extends StatelessWidget {
                           ),
                     ),
                     Text(
-                      'Flutter Mobile Developer',
+                      _homeContent(context).hero.role,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: scheme.onSurfaceVariant,
                           ),
@@ -443,6 +444,7 @@ class _HomeView extends StatelessWidget {
   Widget build(final BuildContext context) {
     final bool isWide = MediaQuery.sizeOf(context).width >= 900;
     final ColorScheme scheme = Theme.of(context).colorScheme;
+    final HeroProfile hero = _homeContent(context).hero;
 
     return CustomScrollView(
       slivers: [
@@ -468,7 +470,7 @@ class _HomeView extends StatelessWidget {
                     ),
                   ),
                 if (!isWide) const SizedBox(height: Dimens.largePadding),
-                _Eyebrow('Markham / Flutter / Clean Architecture / Release'),
+                _Eyebrow(hero.eyebrow),
                 const SizedBox(height: Dimens.largePadding),
                 if (isWide)
                   Row(
@@ -479,15 +481,16 @@ class _HomeView extends StatelessWidget {
                         child: Transform.translate(
                           offset: const Offset(0, -96),
                           child: _HomeIntro(
+                            hero: hero,
                             mutedColor: scheme.onSurfaceVariant,
                             onViewProjects: () => _jumpToResume(context),
                           ),
                         ),
                       ),
                       const SizedBox(width: Dimens.extraLargePadding),
-                      const Expanded(
+                      Expanded(
                         flex: 4,
-                        child: _HeroDashboard(isWide: true),
+                        child: _HeroDashboard(hero: hero, isWide: true),
                       ),
                     ],
                   )
@@ -496,11 +499,12 @@ class _HomeView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _HomeIntro(
+                        hero: hero,
                         mutedColor: scheme.onSurfaceVariant,
                         onViewProjects: () => _jumpToResume(context),
                       ),
                       const SizedBox(height: Dimens.extraLargePadding),
-                      const _HeroDashboard(isWide: false),
+                      _HeroDashboard(hero: hero, isWide: false),
                     ],
                   ),
                 const SizedBox(height: Dimens.extraLargePadding),
@@ -522,10 +526,12 @@ class _HomeView extends StatelessWidget {
 
 class _HomeIntro extends StatelessWidget {
   const _HomeIntro({
+    required this.hero,
     required this.mutedColor,
     required this.onViewProjects,
   });
 
+  final HeroProfile hero;
   final Color mutedColor;
   final VoidCallback onViewProjects;
 
@@ -546,7 +552,7 @@ class _HomeIntro extends StatelessWidget {
         ),
         const SizedBox(height: Dimens.largePadding),
         Text(
-          'Flutter Mobile Developer building cross-platform iOS and Android apps with Clean Architecture, Firebase, REST APIs, native modules, CI/CD, and store release workflows.',
+          hero.summary,
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 color: mutedColor,
                 height: 1.24,
@@ -558,12 +564,12 @@ class _HomeIntro extends StatelessWidget {
           runSpacing: Dimens.mediumPadding,
           children: [
             _ActionButton(
-              label: 'View resume',
+              label: hero.primaryActionLabel,
               icon: Icons.arrow_forward_rounded,
               onTap: onViewProjects,
             ),
             _ActionButton(
-              label: 'Contact',
+              label: hero.secondaryActionLabel,
               icon: Icons.mail_rounded,
               secondary: true,
               onTap: () => _launchMail(),
@@ -576,8 +582,9 @@ class _HomeIntro extends StatelessWidget {
 }
 
 class _HeroDashboard extends StatelessWidget {
-  const _HeroDashboard({required this.isWide});
+  const _HeroDashboard({required this.hero, required this.isWide});
 
+  final HeroProfile hero;
   final bool isWide;
 
   @override
@@ -590,60 +597,53 @@ class _HeroDashboard extends StatelessWidget {
       child: Column(
         children: [
           _BentoSpotlightCard(
-            icon: Icons.draw_rounded,
-            title: 'Currently shipping',
-            value: 'BoursePad',
-            description:
-                'Production scholarship-matching app maintained for scalability, accessibility, performance, Firebase-backed data, CI/CD, and App Store / Google Play releases.',
+            icon: hero.spotlight.icon.icon,
+            title: hero.spotlight.title,
+            value: hero.spotlight.value,
+            description: hero.spotlight.description,
           ),
           const SizedBox(height: Dimens.padding),
           if (twoColumns)
             Row(
-              children: const [
+              children: [
                 Expanded(
                   child: _BentoMetricCard(
-                    value: '6+',
-                    label: 'Years mobile dev',
-                    icon: Icons.timeline_rounded,
+                    value: hero.metrics[0].value,
+                    label: hero.metrics[0].label,
+                    icon: hero.metrics[0].icon.icon,
                   ),
                 ),
-                SizedBox(width: Dimens.mediumPadding),
+                const SizedBox(width: Dimens.mediumPadding),
                 Expanded(
                   child: _BentoMetricCard(
-                    value: '35+',
-                    label: 'Android API target',
-                    icon: Icons.android_rounded,
+                    value: hero.metrics[1].value,
+                    label: hero.metrics[1].label,
+                    icon: hero.metrics[1].icon.icon,
                   ),
                 ),
               ],
             )
           else
-            const Column(
+            Column(
               children: [
                 _BentoMetricCard(
-                  value: '6+',
-                  label: 'Years mobile dev',
-                  icon: Icons.timeline_rounded,
+                  value: hero.metrics[0].value,
+                  label: hero.metrics[0].label,
+                  icon: hero.metrics[0].icon.icon,
                 ),
-                SizedBox(height: Dimens.padding),
+                const SizedBox(height: Dimens.padding),
                 _BentoMetricCard(
-                  value: '35+',
-                  label: 'Android API target',
-                  icon: Icons.android_rounded,
+                  value: hero.metrics[1].value,
+                  label: hero.metrics[1].label,
+                  icon: hero.metrics[1].icon.icon,
                 ),
               ],
             ),
           const SizedBox(height: Dimens.padding),
           _BentoStackCard(
-            title: 'Core stack',
-            chips: const [
-              'Flutter',
-              'Clean Architecture',
-              'Riverpod',
-              'Firebase',
-              'GitHub Actions',
-              'Store release',
-            ],
+            title: hero.stack.title,
+            icon: hero.stack.icon.icon,
+            chips: hero.stack.chips,
             accent: scheme.primary,
           ),
           const SizedBox(height: Dimens.padding),
@@ -652,18 +652,18 @@ class _HeroDashboard extends StatelessWidget {
               children: [
                 Expanded(
                   child: _BentoSmallCard(
-                    icon: Icons.check_circle_rounded,
-                    title: 'Store releases',
-                    text: 'TestFlight, code signing, App Store, Google Play',
+                    icon: hero.highlights[0].icon.icon,
+                    title: hero.highlights[0].title,
+                    text: hero.highlights[0].description,
                     color: scheme.primary,
                   ),
                 ),
                 const SizedBox(width: Dimens.mediumPadding),
                 Expanded(
                   child: _BentoSmallCard(
-                    icon: Icons.bluetooth_connected_rounded,
-                    title: 'Native range',
-                    text: 'Kotlin, Swift, BLE, Platform Channels, lifecycle',
+                    icon: hero.highlights[1].icon.icon,
+                    title: hero.highlights[1].title,
+                    text: hero.highlights[1].description,
                     color: AppColors.secondColor,
                   ),
                 ),
@@ -673,16 +673,16 @@ class _HeroDashboard extends StatelessWidget {
             Column(
               children: [
                 _BentoSmallCard(
-                  icon: Icons.check_circle_rounded,
-                  title: 'Store releases',
-                  text: 'TestFlight, code signing, App Store, Google Play',
+                  icon: hero.highlights[0].icon.icon,
+                  title: hero.highlights[0].title,
+                  text: hero.highlights[0].description,
                   color: scheme.primary,
                 ),
                 const SizedBox(height: Dimens.padding),
                 _BentoSmallCard(
-                  icon: Icons.bluetooth_connected_rounded,
-                  title: 'Native range',
-                  text: 'Kotlin, Swift, BLE, Platform Channels, lifecycle',
+                  icon: hero.highlights[1].icon.icon,
+                  title: hero.highlights[1].title,
+                  text: hero.highlights[1].description,
                   color: AppColors.secondColor,
                 ),
               ],
@@ -883,11 +883,13 @@ class _BentoMetricCard extends StatelessWidget {
 class _BentoStackCard extends StatelessWidget {
   const _BentoStackCard({
     required this.title,
+    required this.icon,
     required this.chips,
     required this.accent,
   });
 
   final String title;
+  final IconData icon;
   final List<String> chips;
   final Color accent;
 
@@ -901,7 +903,7 @@ class _BentoStackCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.account_tree_rounded, color: accent),
+              Icon(icon, color: accent),
               const SizedBox(width: Dimens.padding),
               Text(
                 title,
@@ -1044,13 +1046,11 @@ class _AboutView extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     final bool isWide = MediaQuery.sizeOf(context).width >= 900;
-    const String summary =
-        'Flutter Mobile Developer with 6+ years of experience designing, building, and maintaining cross-platform mobile applications for iOS and Android. Strong background in Flutter, Dart, Clean Architecture, Firebase, REST API integration, native Kotlin/Swift modules, CI/CD automation, and App Store / Google Play release workflows. Experienced across scholarship technology, retail POS, IoT, fitness, and enterprise applications, with the ability to translate business logic and client requirements into scalable, maintainable mobile solutions.';
+    final AboutProfile about = _homeContent(context).about;
 
     return _SectionScaffold(
-      eyebrow: 'Profile',
-      title:
-          'Flutter Mobile Developer shipping scalable, maintainable iOS and Android apps',
+      eyebrow: about.eyebrow,
+      title: about.title,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1058,18 +1058,21 @@ class _AboutView extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(flex: 5, child: _AboutSummary(summary: summary)),
+                Expanded(
+                  flex: 5,
+                  child: _AboutSummary(summary: about.summary),
+                ),
                 const SizedBox(width: Dimens.extraLargePadding),
-                const Expanded(flex: 4, child: _InfoPanel()),
+                Expanded(flex: 4, child: _InfoPanel(rows: about.info)),
               ],
             )
           else
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _AboutSummary(summary: summary),
+                _AboutSummary(summary: about.summary),
                 const SizedBox(height: Dimens.largePadding),
-                const _InfoPanel(),
+                _InfoPanel(rows: about.info),
               ],
             ),
           const SizedBox(height: Dimens.extraLargePadding),
@@ -1095,20 +1098,16 @@ class _AboutSummary extends StatelessWidget {
 }
 
 class _InfoPanel extends StatelessWidget {
-  const _InfoPanel();
+  const _InfoPanel({required this.rows});
+
+  final List<ProfileInfo> rows;
 
   @override
   Widget build(final BuildContext context) {
     return _Panel(
       child: Column(
         children: [
-          _InfoRow(t.home_screen.website, 'samchancanada1.github.io/portfolio'),
-          _InfoRow(t.home_screen.phone, '+1 (437) 662-8303'),
-          _InfoRow(t.home_screen.city, t.home_screen.myCity),
-          _InfoRow(t.home_screen.degree, t.home_screen.myDegree),
-          _InfoRow(t.home_screen.email, 'samchancanada1@gmail.com'),
-          _InfoRow(t.home_screen.freelance, t.home_screen.available),
-          const _InfoRow('Work', 'Authorized to work in Canada'),
+          for (final ProfileInfo row in rows) _InfoRow(row.label, row.value),
         ],
       ),
     );
@@ -1220,14 +1219,16 @@ class _ResumeView extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     final List<Experience> experiences = _homeContent(context).experiences;
+    final CoreCompetencies competencies =
+        _homeContent(context).coreCompetencies;
 
     return _SectionScaffold(
-      eyebrow: 'Experience',
-      title: 'Production roles shaped with product craft and mobile depth',
+      eyebrow: competencies.sectionEyebrow,
+      title: competencies.sectionTitle,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const _CoreCompetenciesCard(),
+          _CoreCompetenciesCard(competencies: competencies),
           const SizedBox(height: Dimens.extraLargePadding),
           for (final Experience experience in experiences)
             Padding(
@@ -1241,7 +1242,9 @@ class _ResumeView extends StatelessWidget {
 }
 
 class _CoreCompetenciesCard extends StatelessWidget {
-  const _CoreCompetenciesCard();
+  const _CoreCompetenciesCard({required this.competencies});
+
+  final CoreCompetencies competencies;
 
   @override
   Widget build(final BuildContext context) {
@@ -1252,17 +1255,23 @@ class _CoreCompetenciesCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _Eyebrow('Core competencies'),
+          _Eyebrow(competencies.cardEyebrow),
           const SizedBox(height: Dimens.mediumPadding),
           if (isWide)
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Expanded(flex: 5, child: _CoreCompetenciesIntro()),
+                Expanded(
+                  flex: 5,
+                  child: _CoreCompetenciesIntro(competencies: competencies),
+                ),
                 const SizedBox(width: Dimens.extraLargePadding),
                 Expanded(
                   flex: 4,
-                  child: _ImpactGrid(accent: scheme.primary),
+                  child: _ImpactGrid(
+                    impacts: competencies.impacts,
+                    accent: scheme.primary,
+                  ),
                 ),
               ],
             )
@@ -1270,9 +1279,12 @@ class _CoreCompetenciesCard extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const _CoreCompetenciesIntro(),
+                _CoreCompetenciesIntro(competencies: competencies),
                 const SizedBox(height: Dimens.largePadding),
-                _ImpactGrid(accent: scheme.primary),
+                _ImpactGrid(
+                  impacts: competencies.impacts,
+                  accent: scheme.primary,
+                ),
               ],
             ),
         ],
@@ -1282,7 +1294,9 @@ class _CoreCompetenciesCard extends StatelessWidget {
 }
 
 class _CoreCompetenciesIntro extends StatelessWidget {
-  const _CoreCompetenciesIntro();
+  const _CoreCompetenciesIntro({required this.competencies});
+
+  final CoreCompetencies competencies;
 
   @override
   Widget build(final BuildContext context) {
@@ -1292,7 +1306,7 @@ class _CoreCompetenciesIntro extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Cross-platform Flutter, architecture, release, APIs, offline-first, and BLE',
+          competencies.title,
           style: Theme.of(context).textTheme.displaySmall?.copyWith(
                 fontSize: 38,
                 fontWeight: FontWeight.w900,
@@ -1301,7 +1315,7 @@ class _CoreCompetenciesIntro extends StatelessWidget {
         ),
         const SizedBox(height: Dimens.padding),
         Text(
-          'Core competencies from the resume',
+          competencies.subtitle,
           style: TextStyle(
             color: scheme.primary,
             fontWeight: FontWeight.w900,
@@ -1309,20 +1323,15 @@ class _CoreCompetenciesIntro extends StatelessWidget {
         ),
         const SizedBox(height: Dimens.largePadding),
         Text(
-          'Focused on cross-platform Flutter development, mobile app architecture, App Store / Google Play release management, REST API and third-party SDK integration, offline-first apps, Bluetooth / IoT integration, and translating business logic into maintainable mobile workflows.',
+          competencies.description,
           style: TextStyle(color: scheme.onSurfaceVariant, height: 1.5),
         ),
         const SizedBox(height: Dimens.largePadding),
         Wrap(
           spacing: Dimens.padding,
           runSpacing: Dimens.padding,
-          children: const [
-            _MiniBadge('Cross-platform Flutter'),
-            _MiniBadge('Clean Architecture'),
-            _MiniBadge('REST API integration'),
-            _MiniBadge('Offline-first'),
-            _MiniBadge('Bluetooth / IoT'),
-            _MiniBadge('Business logic'),
+          children: [
+            for (final String badge in competencies.badges) _MiniBadge(badge),
           ],
         ),
       ],
@@ -1331,8 +1340,9 @@ class _CoreCompetenciesIntro extends StatelessWidget {
 }
 
 class _ImpactGrid extends StatelessWidget {
-  const _ImpactGrid({required this.accent});
+  const _ImpactGrid({required this.impacts, required this.accent});
 
+  final List<CompetencyImpact> impacts;
   final Color accent;
 
   @override
@@ -1341,30 +1351,13 @@ class _ImpactGrid extends StatelessWidget {
       builder: (final context, final constraints) {
         final bool wide = constraints.maxWidth > 360;
         final List<Widget> cards = [
-          _ImpactCard(
-            icon: Icons.phone_iphone_rounded,
-            title: 'Mobile',
-            text: 'Flutter, Dart, Android, iOS, Kotlin, Swift',
-            color: accent,
-          ),
-          _ImpactCard(
-            icon: Icons.api_rounded,
-            title: 'APIs',
-            text: 'Firebase Auth, Firestore, FCM, Analytics, REST APIs',
-            color: accent,
-          ),
-          _ImpactCard(
-            icon: Icons.account_tree_rounded,
-            title: 'Architecture',
-            text: 'Clean Architecture, Riverpod, GoRouter, Firebase',
-            color: accent,
-          ),
-          _ImpactCard(
-            icon: Icons.storefront_rounded,
-            title: 'Release',
-            text: 'Xcode 16, Android API 35+, App Store, Google Play',
-            color: accent,
-          ),
+          for (final CompetencyImpact impact in impacts)
+            _ImpactCard(
+              icon: impact.icon.icon,
+              title: impact.title,
+              text: impact.description,
+              color: accent,
+            ),
         ];
 
         if (!wide) {
@@ -1591,17 +1584,18 @@ class _SkillsView extends StatelessWidget {
     final List<CapabilityGroup> capabilityGroups =
         _homeContent(context).capabilityGroups;
     final List<String> allSkills = _homeContent(context).allSkills;
+    final SkillsOverview overview = _homeContent(context).skillsOverview;
 
     return _SectionScaffold(
-      eyebrow: 'Capabilities',
-      title: 'Technical skills from the updated resume',
+      eyebrow: overview.eyebrow,
+      title: overview.title,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 780),
             child: Text(
-              'Grouped around the resume categories: mobile development, architecture, backend and APIs, CI/CD and release, mobile features, testing, and additional tooling.',
+              overview.description,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: scheme.onSurfaceVariant,
                     height: 1.5,
@@ -1632,7 +1626,7 @@ class _SkillsView extends StatelessWidget {
           ),
           const SizedBox(height: Dimens.extraLargePadding),
           Text(
-            'Detailed toolbox',
+            overview.toolboxTitle,
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           const SizedBox(height: Dimens.largePadding),
@@ -2147,6 +2141,62 @@ HomeContent _homeContent(final BuildContext context) {
 }
 
 const HomeContent _emptyHomeContent = HomeContent(
+  hero: HeroProfile(
+    role: '',
+    eyebrow: '',
+    summary: '',
+    primaryActionLabel: '',
+    secondaryActionLabel: '',
+    spotlight: SpotlightSummary(
+      title: '',
+      value: '',
+      description: '',
+      icon: HomeIconKey.autoAwesome,
+    ),
+    metrics: [
+      PortfolioStat('', '', HomeIconKey.timeline),
+      PortfolioStat('', '', HomeIconKey.android),
+    ],
+    stack: StackSummary(
+      title: '',
+      chips: [],
+      icon: HomeIconKey.accountTree,
+    ),
+    highlights: [
+      FeatureHighlight(
+        title: '',
+        description: '',
+        icon: HomeIconKey.checkCircle,
+      ),
+      FeatureHighlight(
+        title: '',
+        description: '',
+        icon: HomeIconKey.bluetooth,
+      ),
+    ],
+  ),
+  about: AboutProfile(
+    eyebrow: '',
+    title: '',
+    summary: '',
+    info: [],
+  ),
+  coreCompetencies: CoreCompetencies(
+    sectionEyebrow: '',
+    sectionTitle: '',
+    cardEyebrow: '',
+    title: '',
+    subtitle: '',
+    description: '',
+    badges: [],
+    impacts: [],
+  ),
+  skillsOverview: SkillsOverview(
+    eyebrow: '',
+    title: '',
+    description: '',
+    toolboxTitle: '',
+  ),
   designLenses: [],
   stats: [],
   experiences: [],

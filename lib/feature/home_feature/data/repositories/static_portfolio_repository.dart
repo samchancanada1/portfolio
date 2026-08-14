@@ -6,6 +6,18 @@ class StaticPortfolioRepository implements PortfolioRepository {
   const StaticPortfolioRepository();
 
   @override
+  HeroProfile getHeroProfile() => _heroProfile;
+
+  @override
+  AboutProfile getAboutProfile() => _aboutProfile;
+
+  @override
+  CoreCompetencies getCoreCompetencies() => _coreCompetencies;
+
+  @override
+  SkillsOverview getSkillsOverview() => _skillsOverview;
+
+  @override
   List<DesignLens> getDesignLenses() => _designLenses;
 
   @override
@@ -23,6 +35,116 @@ class StaticPortfolioRepository implements PortfolioRepository {
   @override
   List<ContactAction> getContactActions() => _contactActions;
 }
+
+const HeroProfile _heroProfile = HeroProfile(
+  role: 'Flutter Mobile Developer',
+  eyebrow: 'Markham / Flutter / Clean Architecture / Release',
+  summary:
+      'Flutter Mobile Developer building cross-platform iOS and Android apps with Clean Architecture, Firebase, REST APIs, native modules, CI/CD, and store release workflows.',
+  primaryActionLabel: 'View resume',
+  secondaryActionLabel: 'Contact',
+  spotlight: SpotlightSummary(
+    icon: HomeIconKey.autoAwesome,
+    title: 'Currently shipping',
+    value: 'BoursePad',
+    description:
+        'Production scholarship-matching app maintained for scalability, accessibility, performance, Firebase-backed data, CI/CD, and App Store / Google Play releases.',
+  ),
+  metrics: [
+    PortfolioStat('6+', 'Years mobile dev', HomeIconKey.timeline),
+    PortfolioStat('35+', 'Android API target', HomeIconKey.android),
+  ],
+  stack: StackSummary(
+    title: 'Core stack',
+    icon: HomeIconKey.accountTree,
+    chips: [
+      'Flutter',
+      'Clean Architecture',
+      'Riverpod',
+      'Firebase',
+      'GitHub Actions',
+      'Store release',
+    ],
+  ),
+  highlights: [
+    FeatureHighlight(
+      icon: HomeIconKey.checkCircle,
+      title: 'Store releases',
+      description: 'TestFlight, code signing, App Store, Google Play',
+    ),
+    FeatureHighlight(
+      icon: HomeIconKey.bluetooth,
+      title: 'Native range',
+      description: 'Kotlin, Swift, BLE, Platform Channels, lifecycle',
+    ),
+  ],
+);
+
+const AboutProfile _aboutProfile = AboutProfile(
+  eyebrow: 'Profile',
+  title:
+      'Flutter Mobile Developer shipping scalable, maintainable iOS and Android apps',
+  summary:
+      'Flutter Mobile Developer with 6+ years of experience designing, building, and maintaining cross-platform mobile applications for iOS and Android. Strong background in Flutter, Dart, Clean Architecture, Firebase, REST API integration, native Kotlin/Swift modules, CI/CD automation, and App Store / Google Play release workflows. Experienced across scholarship technology, retail POS, IoT, fitness, and enterprise applications, with the ability to translate business logic and client requirements into scalable, maintainable mobile solutions.',
+  info: [
+    ProfileInfo('Website', 'samchancanada1.github.io/portfolio'),
+    ProfileInfo('Phone', '+1 (437) 662-8303'),
+    ProfileInfo('City', 'Markham, ON, CA'),
+    ProfileInfo('Degree', 'Diploma'),
+    ProfileInfo('Email', 'samchancanada1@gmail.com'),
+    ProfileInfo('Freelance', 'Available'),
+    ProfileInfo('Work', 'Authorized to work in Canada'),
+  ],
+);
+
+const CoreCompetencies _coreCompetencies = CoreCompetencies(
+  sectionEyebrow: 'Experience',
+  sectionTitle: 'Production roles shaped with product craft and mobile depth',
+  cardEyebrow: 'Core competencies',
+  title:
+      'Cross-platform Flutter, architecture, release, APIs, offline-first, and BLE',
+  subtitle: 'Core competencies from the resume',
+  description:
+      'Focused on cross-platform Flutter development, mobile app architecture, App Store / Google Play release management, REST API and third-party SDK integration, offline-first apps, Bluetooth / IoT integration, and translating business logic into maintainable mobile workflows.',
+  badges: [
+    'Cross-platform Flutter',
+    'Clean Architecture',
+    'REST API integration',
+    'Offline-first',
+    'Bluetooth / IoT',
+    'Business logic',
+  ],
+  impacts: [
+    CompetencyImpact(
+      icon: HomeIconKey.phone,
+      title: 'Mobile',
+      description: 'Flutter, Dart, Android, iOS, Kotlin, Swift',
+    ),
+    CompetencyImpact(
+      icon: HomeIconKey.api,
+      title: 'APIs',
+      description: 'Firebase Auth, Firestore, FCM, Analytics, REST APIs',
+    ),
+    CompetencyImpact(
+      icon: HomeIconKey.accountTree,
+      title: 'Architecture',
+      description: 'Clean Architecture, Riverpod, GoRouter, Firebase',
+    ),
+    CompetencyImpact(
+      icon: HomeIconKey.storefront,
+      title: 'Release',
+      description: 'Xcode 16, Android API 35+, App Store, Google Play',
+    ),
+  ],
+);
+
+const SkillsOverview _skillsOverview = SkillsOverview(
+  eyebrow: 'Capabilities',
+  title: 'Technical skills from the updated resume',
+  description:
+      'Grouped around the resume categories: mobile development, architecture, backend and APIs, CI/CD and release, mobile features, testing, and additional tooling.',
+  toolboxTitle: 'Detailed toolbox',
+);
 
 const List<DesignLens> _designLenses = [
   DesignLens(

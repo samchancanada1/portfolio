@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:portfolio/core/di/service_locator.dart';
 import 'package:portfolio/core/theme/colors.dart';
 import 'package:portfolio/i18n/strings.g.dart';
 import 'package:portfolio/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  setUpAll(() async {
+    SharedPreferences.setMockInitialValues({});
+    await setupServiceLocator();
+  });
+
   Widget buildTestApp() {
     return TranslationProvider(
       child: MyApp(

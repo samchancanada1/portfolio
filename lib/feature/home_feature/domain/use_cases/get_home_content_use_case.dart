@@ -8,6 +8,10 @@ class GetHomeContentUseCase {
 
   HomeContent call() {
     return HomeContent(
+      hero: _repository.getHeroProfile(),
+      about: _repository.getAboutProfile(),
+      coreCompetencies: _repository.getCoreCompetencies(),
+      skillsOverview: _repository.getSkillsOverview(),
       designLenses: _repository.getDesignLenses(),
       stats: _repository.getStats(),
       experiences: _repository.getExperiences(),
