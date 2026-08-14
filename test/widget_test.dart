@@ -1,22 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:portfolio/core/di/service_locator.dart';
+import 'package:portfolio/core/routes/go_router_routes.dart';
 import 'package:portfolio/core/theme/colors.dart';
+import 'package:portfolio/core/utils/locale_handler.dart';
+import 'package:portfolio/feature/home_feature/presentation/cubit/primary_color_cubit.dart';
+import 'package:portfolio/feature/home_feature/presentation/cubit/theme_cubit.dart';
 import 'package:portfolio/i18n/strings.g.dart';
 import 'package:portfolio/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  setUpAll(() async {
+  setUp(() async {
+    await locator.reset();
     SharedPreferences.setMockInitialValues({});
     await setupServiceLocator();
+    await LocaleSettings.setLocale(AppLocale.en);
+    routes.go('/');
   });
 
   Widget buildTestApp() {
-    return TranslationProvider(
-      child: MyApp(
-        primaryColor: AppColors.primaryColor,
-        lightPrimaryColor: AppColors.lightPrimaryColor,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (final BuildContext context) => locator<ThemeCubit>(),
+        ),
+        BlocProvider(
+          create: (final BuildContext context) => PrimaryColorCubit(),
+        ),
+      ],
+      child: TranslationProvider(
+        child: BlocBuilder<ThemeCubit, ThemeMode?>(
+          builder: (
+            final BuildContext context,
+            final ThemeMode? themeState,
+          ) {
+            return BlocBuilder<PrimaryColorCubit, PrimaryColorState>(
+              builder: (
+                final BuildContext context,
+                final PrimaryColorState state,
+              ) {
+                return MyApp(
+                  themeMode: themeState,
+                  primaryColor: state.primaryColor,
+                  lightPrimaryColor: state.lightPrimaryColor,
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
@@ -108,5 +141,70 @@ void main() {
     expect(find.text('Mobile features'), findsOneWidget);
     expect(find.text('Detailed toolbox'), findsOneWidget);
     expect(find.text('Firebase Auth'), findsWidgets);
+  });
+
+  testWidgets('settings page can change theme and primary color', (
+    final WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(buildTestApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Settings').first);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Theme Mode'), findsOneWidget);
+    expect(tester.widget<Switch>(find.byType(Switch)).value, isTrue);
+
+    await tester.tap(find.byType(Switch));
+    await tester.pumpAndSettle();
+
+    expect(tester.widget<Switch>(find.byType(Switch)).value, isFalse);
+
+    await tester.tap(find.byTooltip('Select color').last);
+    await tester.pumpAndSettle();
+
+    final context = tester.element(find.text('Theme Color'));
+    expect(
+      Theme.of(context).colorScheme.primary,
+      ColorScheme.fromSeed(
+        seedColor: Colors.red,
+        brightness: Brightness.light,
+        surface: AppColors.ivory,
+      ).primary,
+    );
+  });
+
+  testWidgets('settings page can open language sheet and keep English', (
+    final WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(buildTestApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Settings').first);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Language'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('French'), findsWidgets);
+    expect(find.text('English'), findsWidgets);
+
+    await tester.tap(find.text('English').last);
+    await tester.pumpAndSettle();
+
+    expect(await LocaleHandler().getLocale(), AppLocale.en);
+  });
+
+  testWidgets('unknown route renders the not found screen', (
+    final WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(buildTestApp());
+    await tester.pumpAndSettle();
+
+    routes.go('/missing');
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    expect(find.text('Page Not Found'), findsOneWidget);
   });
 }

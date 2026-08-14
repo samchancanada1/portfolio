@@ -31,16 +31,8 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.8
-
   # Routing
   go_router: ^14.6.2
-
-  # Allow motify splash screen
-  # Only implement remove splash screen this time
-  flutter_native_splash: ^2.4.4
 
   # Localization
   # Use 'dart run slang'
@@ -57,30 +49,14 @@ dependencies:
   # Objects Compare
   equatable: ^2.0.7
 
-  # Simplify form representation and validation in a generic way
-  formz: ^0.8.0
-
   # Service Locator
   get_it: ^8.0.3
-
-  # Web service handler
-  dio: ^5.7.0
-
-  # Generator for your assets, fonts, colors
-  # Use 'fluttergen'
-  flutter_gen: ^5.4.0
 
   # Load the json file and run the animation indefinitely
   lottie: ^3.3.0
 
-  # Text animations
-  animated_text_kit: ^4.2.2
-
   # Pre-canned animations for commonly-desired effects
   animations: ^2.0.11
-
-  # SVG file viewer
-  flutter_svg: ^2.0.16
 
   # A Flutter plugin for launching a URL.
   url_launcher: ^6.3.1
@@ -91,11 +67,6 @@ dev_dependencies:
 
   github_pages: ^2.0.0
   flutter_lints: ^5.0.0
-
-flutter_native_splash:
-  color: '#221a15'
-  image: "assets/images/splash.jpg"
-  # web: false
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -26,24 +26,24 @@ class LocaleHandler {
     }
   }
 
-  void setFaLocale(final BuildContext context) {
-    LocaleSettings.setLocale(AppLocale.fr);
-    locator<SetLanguageLocaleUseCase>()('fr');
+  Future<void> setFaLocale(final BuildContext context) async {
+    await LocaleSettings.setLocale(AppLocale.fr);
+    await locator<SetLanguageLocaleUseCase>()('fr');
   }
 
-  void setEnLocale(final BuildContext context) {
-    LocaleSettings.setLocale(AppLocale.en);
-    locator<SetLanguageLocaleUseCase>()('en');
+  Future<void> setEnLocale(final BuildContext context) async {
+    await LocaleSettings.setLocale(AppLocale.en);
+    await locator<SetLanguageLocaleUseCase>()('en');
   }
 }
 
-void changeLocale(final BuildContext context) {
+Future<void> changeLocale(final BuildContext context) async {
   if (checkEnState(context)) {
-    LocaleSettings.setLocale(AppLocale.fr);
-    locator<SetLanguageLocaleUseCase>()('fr');
+    await LocaleSettings.setLocale(AppLocale.fr);
+    await locator<SetLanguageLocaleUseCase>()('fr');
   } else {
-    LocaleSettings.setLocale(AppLocale.en);
-    locator<SetLanguageLocaleUseCase>()('en');
+    await LocaleSettings.setLocale(AppLocale.en);
+    await locator<SetLanguageLocaleUseCase>()('en');
   }
 }
 

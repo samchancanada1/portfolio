@@ -27,7 +27,7 @@ void main() async {
   setUrlStrategy(PathUrlStrategy());
 
   /// Get locale from device storage and set it
-  LocaleSettings.setLocale(await LocaleHandler().getLocale());
+  await LocaleSettings.setLocale(await LocaleHandler().getLocale());
 
   runApp(MultiBlocProvider(
     providers: [
