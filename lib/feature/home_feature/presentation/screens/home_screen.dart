@@ -10,90 +10,135 @@ import '../../../../core/utils/check_theme_status.dart';
 import '../../../../core/utils/locale_handler.dart';
 import '../../../../gen/assets.gen.dart';
 import '../../../../i18n/strings.g.dart';
+import '../../data/repositories/static_portfolio_repository.dart';
+import '../../domain/entities/portfolio_content.dart';
+import '../../domain/repositories/portfolio_repository.dart';
 import '../bloc/primary_color_cubit.dart';
 import '../bloc/theme_cubit.dart';
+import '../cubit/home_navigation_cubit.dart';
+import '../mappers/home_icon_mapper.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  Widget build(final BuildContext context) {
+    return RepositoryProvider<PortfolioRepository>(
+      create: (_) => const StaticPortfolioRepository(),
+      child: BlocProvider(
+        create: (_) => HomeNavigationCubit(),
+        child: const _HomeScreenView(),
+      ),
+    );
+  }
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  int selectedIndex = 0;
+class _HomeScreenView extends StatelessWidget {
+  const _HomeScreenView();
 
   List<_NavItem> get _items => [
-        _NavItem(t.home_screen.home, Icons.grid_view_rounded),
-        _NavItem(t.home_screen.about, Icons.person_pin_rounded),
-        _NavItem(t.home_screen.resume, Icons.work_history_rounded),
-        _NavItem(t.home_screen.skills, Icons.auto_awesome_motion_rounded),
-        _NavItem(t.home_screen.settings, Icons.tune_rounded),
+        _NavItem(
+          t.home_screen.home,
+          Icons.grid_view_rounded,
+          HomeSection.home,
+        ),
+        _NavItem(
+          t.home_screen.about,
+          Icons.person_pin_rounded,
+          HomeSection.about,
+        ),
+        _NavItem(
+          t.home_screen.resume,
+          Icons.work_history_rounded,
+          HomeSection.resume,
+        ),
+        _NavItem(
+          t.home_screen.skills,
+          Icons.auto_awesome_motion_rounded,
+          HomeSection.skills,
+        ),
+        _NavItem(
+          t.home_screen.settings,
+          Icons.tune_rounded,
+          HomeSection.settings,
+        ),
       ];
 
   @override
   Widget build(final BuildContext context) {
     final bool isWide = MediaQuery.sizeOf(context).width >= 960;
-    final List<Widget> sections = [
-      const _HomeView(),
-      const _AboutView(),
-      const _ResumeView(),
-      const _SkillsView(),
-      const _SettingsView(),
-    ];
+    final List<_NavItem> items = _items;
 
-    return Scaffold(
-      extendBody: true,
-      backgroundColor: AppColors.ink,
-      body: _PortfolioBackground(
-        child: SafeArea(
-          bottom: false,
-          child: Row(
-            children: [
-              if (isWide)
-                _SideNavigation(
-                  items: _items,
-                  selectedIndex: selectedIndex,
-                  onSelected: _selectSection,
-                ),
-              Expanded(
-                child: PageTransitionSwitcher(
-                  transitionBuilder: (
-                    final Widget child,
-                    final Animation<double> animation,
-                    final Animation<double> secondaryAnimation,
-                  ) {
-                    return SharedAxisTransition(
-                      animation: animation,
-                      secondaryAnimation: secondaryAnimation,
-                      transitionType: SharedAxisTransitionType.scaled,
-                      child: child,
-                    );
-                  },
-                  child: KeyedSubtree(
-                    key: ValueKey<int>(selectedIndex),
-                    child: sections[selectedIndex],
+    return BlocBuilder<HomeNavigationCubit, HomeSection>(
+      builder: (final context, final selectedSection) {
+        final int selectedIndex = selectedSection.index;
+        return Scaffold(
+          extendBody: true,
+          backgroundColor: AppColors.ink,
+          body: _PortfolioBackground(
+            child: SafeArea(
+              bottom: false,
+              child: Row(
+                children: [
+                  if (isWide)
+                    _SideNavigation(
+                      items: items,
+                      selectedIndex: selectedIndex,
+                      onSelected: (final index) => context
+                          .read<HomeNavigationCubit>()
+                          .select(items[index].section),
+                    ),
+                  Expanded(
+                    child: PageTransitionSwitcher(
+                      transitionBuilder: (
+                        final Widget child,
+                        final Animation<double> animation,
+                        final Animation<double> secondaryAnimation,
+                      ) {
+                        return SharedAxisTransition(
+                          animation: animation,
+                          secondaryAnimation: secondaryAnimation,
+                          transitionType: SharedAxisTransitionType.scaled,
+                          child: child,
+                        );
+                      },
+                      child: KeyedSubtree(
+                        key: ValueKey<HomeSection>(selectedSection),
+                        child: _sectionFor(selectedSection),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: isWide
-          ? null
-          : _BottomNavigation(
-              items: _items,
-              selectedIndex: selectedIndex,
-              onSelected: _selectSection,
             ),
+          ),
+          bottomNavigationBar: isWide
+              ? null
+              : _BottomNavigation(
+                  items: items,
+                  selectedIndex: selectedIndex,
+                  onSelected: (final index) => context
+                      .read<HomeNavigationCubit>()
+                      .select(items[index].section),
+                ),
+        );
+      },
     );
   }
 
-  void _selectSection(final int index) {
-    setState(() {
-      selectedIndex = index;
-    });
+  Widget _sectionFor(final HomeSection section) {
+    switch (section) {
+      case HomeSection.home:
+        return const _HomeView();
+      case HomeSection.about:
+        return const _AboutView();
+      case HomeSection.resume:
+        return const _ResumeView();
+      case HomeSection.skills:
+        return const _SkillsView();
+      case HomeSection.settings:
+        return const _SettingsView();
+    }
   }
 }
 
@@ -434,7 +479,7 @@ class _HomeView extends StatelessWidget {
                           offset: const Offset(0, -96),
                           child: _HomeIntro(
                             mutedColor: scheme.onSurfaceVariant,
-                            onViewProjects: () => _jumpTo(context, 2),
+                            onViewProjects: () => _jumpToResume(context),
                           ),
                         ),
                       ),
@@ -451,7 +496,7 @@ class _HomeView extends StatelessWidget {
                     children: [
                       _HomeIntro(
                         mutedColor: scheme.onSurfaceVariant,
-                        onViewProjects: () => _jumpTo(context, 2),
+                        onViewProjects: () => _jumpToResume(context),
                       ),
                       const SizedBox(height: Dimens.extraLargePadding),
                       const _HeroDashboard(isWide: false),
@@ -469,9 +514,8 @@ class _HomeView extends StatelessWidget {
     );
   }
 
-  void _jumpTo(final BuildContext context, final int index) {
-    final state = context.findAncestorStateOfType<_HomeScreenState>();
-    state?._selectSection(index);
+  void _jumpToResume(final BuildContext context) {
+    context.read<HomeNavigationCubit>().select(HomeSection.resume);
   }
 }
 
@@ -654,28 +698,8 @@ class _DesignLensStrip extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     final ColorScheme scheme = Theme.of(context).colorScheme;
-    final List<_DesignLens> lenses = [
-      const _DesignLens(
-        'UX flows',
-        'Clear journeys from first tap to released feature.',
-        Icons.route_rounded,
-      ),
-      const _DesignLens(
-        'Visual systems',
-        'Reusable spacing, type, color, and component rules.',
-        Icons.dashboard_customize_rounded,
-      ),
-      const _DesignLens(
-        'Responsive craft',
-        'Independent sizing for phone, tablet, desktop, and web.',
-        Icons.devices_rounded,
-      ),
-      const _DesignLens(
-        'Product polish',
-        'Empty, loading, error, accessibility, and release states.',
-        Icons.auto_awesome_rounded,
-      ),
-    ];
+    final List<DesignLens> lenses =
+        context.read<PortfolioRepository>().getDesignLenses();
 
     return Container(
       width: double.infinity,
@@ -724,7 +748,7 @@ class _DesignLensStrip extends StatelessWidget {
 class _DesignLensItem extends StatelessWidget {
   const _DesignLensItem({required this.lens});
 
-  final _DesignLens lens;
+  final DesignLens lens;
 
   @override
   Widget build(final BuildContext context) {
@@ -734,7 +758,7 @@ class _DesignLensItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(lens.icon, color: scheme.primary, size: 24),
+        Icon(lens.icon.icon, color: scheme.primary, size: 24),
         const SizedBox(height: Dimens.mediumPadding),
         Text(
           lens.title,
@@ -1133,12 +1157,8 @@ class _StatsGrid extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    final List<_Stat> stats = [
-      const _Stat('6+', 'Years mobile development', Icons.timeline_rounded),
-      const _Stat('2', 'Live store releases', Icons.rocket_launch_rounded),
-      const _Stat('5', 'Product domains', Icons.dashboard_customize_rounded),
-      const _Stat('35+', 'Android API target', Icons.android_rounded),
-    ];
+    final List<PortfolioStat> stats =
+        context.read<PortfolioRepository>().getStats();
 
     return LayoutBuilder(
       builder: (final context, final constraints) {
@@ -1165,7 +1185,7 @@ class _StatsGrid extends StatelessWidget {
 class _StatCard extends StatelessWidget {
   const _StatCard({required this.stat});
 
-  final _Stat stat;
+  final PortfolioStat stat;
 
   @override
   Widget build(final BuildContext context) {
@@ -1176,7 +1196,7 @@ class _StatCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(stat.icon, color: scheme.primary),
+          Icon(stat.icon.icon, color: scheme.primary),
           Text(
             stat.value,
             style: Theme.of(
@@ -1200,6 +1220,9 @@ class _ResumeView extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
+    final List<Experience> experiences =
+        context.read<PortfolioRepository>().getExperiences();
+
     return _SectionScaffold(
       eyebrow: 'Experience',
       title: 'Production roles shaped with product craft and mobile depth',
@@ -1208,7 +1231,7 @@ class _ResumeView extends StatelessWidget {
         children: [
           const _CoreCompetenciesCard(),
           const SizedBox(height: Dimens.extraLargePadding),
-          for (final _Experience experience in _experiences)
+          for (final Experience experience in experiences)
             Padding(
               padding: const EdgeInsets.only(bottom: Dimens.largePadding),
               child: _ExperienceCard(experience: experience),
@@ -1425,7 +1448,7 @@ class _ImpactCard extends StatelessWidget {
 class _ExperienceCard extends StatelessWidget {
   const _ExperienceCard({required this.experience});
 
-  final _Experience experience;
+  final Experience experience;
 
   @override
   Widget build(final BuildContext context) {
@@ -1462,7 +1485,7 @@ class _ExperienceCard extends StatelessWidget {
               spacing: Dimens.padding,
               runSpacing: Dimens.padding,
               children: [
-                for (final _ResumeLink link in experience.links)
+                for (final ResumeLink link in experience.links)
                   _TextLink(label: link.label, onTap: () => _launch(link.url)),
               ],
             ),
@@ -1476,7 +1499,7 @@ class _ExperienceCard extends StatelessWidget {
 class _ExperienceHeader extends StatelessWidget {
   const _ExperienceHeader({required this.experience});
 
-  final _Experience experience;
+  final Experience experience;
 
   @override
   Widget build(final BuildContext context) {
@@ -1504,7 +1527,7 @@ class _ExperienceHeader extends StatelessWidget {
 class _ExperienceDetails extends StatelessWidget {
   const _ExperienceDetails({required this.experience});
 
-  final _Experience experience;
+  final Experience experience;
 
   @override
   Widget build(final BuildContext context) {
@@ -1567,126 +1590,10 @@ class _SkillsView extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     final ColorScheme scheme = Theme.of(context).colorScheme;
-    const List<_CapabilityGroup> capabilityGroups = [
-      _CapabilityGroup(
-        title: 'Mobile',
-        description:
-            'Cross-platform mobile development for Android, iOS, and web using Flutter and Dart, with native Kotlin and Swift modules when platform capabilities are needed.',
-        icon: Icons.phone_iphone_rounded,
-        skills: ['Flutter', 'Dart', 'Android', 'iOS', 'Kotlin', 'Swift'],
-      ),
-      _CapabilityGroup(
-        title: 'Architecture',
-        description:
-            'Maintainable Flutter app structures with Clean Architecture, modular service layers, dependency injection, and practical state management.',
-        icon: Icons.account_tree_rounded,
-        skills: ['Clean Architecture', 'BLoC', 'Riverpod', 'Provider', 'GetIt'],
-      ),
-      _CapabilityGroup(
-        title: 'Backend and APIs',
-        description:
-            'Firebase-backed app features and API integrations for authentication, real-time data, notifications, analytics, and business workflows.',
-        icon: Icons.cloud_done_rounded,
-        skills: [
-          'Firebase Auth',
-          'Firestore',
-          'Cloud Messaging',
-          'Analytics',
-          'REST APIs',
-          '.NET APIs',
-          'Spring APIs',
-        ],
-      ),
-      _CapabilityGroup(
-        title: 'CI/CD and release',
-        description:
-            'Release workflows covering automated builds, testing, signing, TestFlight, App Store, Google Play, Docker, and GitHub Actions.',
-        icon: Icons.rocket_launch_rounded,
-        skills: [
-          'Git',
-          'GitHub Actions',
-          'Docker',
-          'TestFlight',
-          'App Store',
-          'Google Play',
-          'Code Signing',
-        ],
-      ),
-      _CapabilityGroup(
-        title: 'Mobile features',
-        description:
-            'Practical app features that support production mobile behavior, device connectivity, offline use, deep linking, lifecycle handling, and notifications.',
-        icon: Icons.hub_rounded,
-        skills: [
-          'Push Notifications',
-          'Deep Linking',
-          'Platform Channels',
-          'App Lifecycle',
-          'Offline-first',
-          'BLE',
-          'SQLite',
-          'Hive',
-        ],
-      ),
-      _CapabilityGroup(
-        title: 'Testing and other',
-        description:
-            'Testing, backend proof-of-concept, search, and tooling experience from production work and the AI Resume Parser project.',
-        icon: Icons.fact_check_rounded,
-        skills: [
-          'flutter_test',
-          'mockito',
-          'integration_test',
-          'Python',
-          'C#',
-          'FastAPI',
-          'Elasticsearch',
-          'Unity',
-        ],
-      ),
-    ];
-    const List<String> allSkills = [
-      'Flutter (Android, iOS, Web)',
-      'Dart',
-      'Clean Architecture',
-      'BLoC',
-      'Riverpod',
-      'Provider',
-      'GetIt',
-      'GoRouter',
-      'Firebase Auth',
-      'Firestore',
-      'Firebase Cloud Messaging',
-      'Firebase Analytics',
-      'REST APIs',
-      '.NET APIs',
-      'Spring APIs',
-      'GitHub Actions',
-      'Docker',
-      'TestFlight',
-      'App Store',
-      'Google Play',
-      'Code Signing',
-      'Platform Channels',
-      'Deep Linking',
-      'App Lifecycle',
-      'Push Notifications',
-      'Offline-first',
-      'BLE',
-      'SQLite',
-      'Hive',
-      'Kotlin',
-      'Swift',
-      'Git and GitHub',
-      'flutter_test',
-      'mockito',
-      'integration_test',
-      'Python',
-      'C#',
-      'FastAPI',
-      'Elasticsearch',
-      'Unity',
-    ];
+    final PortfolioRepository repository = context.read<PortfolioRepository>();
+    final List<CapabilityGroup> capabilityGroups =
+        repository.getCapabilityGroups();
+    final List<String> allSkills = repository.getAllSkills();
 
     return _SectionScaffold(
       eyebrow: 'Capabilities',
@@ -1717,7 +1624,7 @@ class _SkillsView extends StatelessWidget {
                 spacing: spacing,
                 runSpacing: spacing,
                 children: [
-                  for (final _CapabilityGroup group in capabilityGroups)
+                  for (final CapabilityGroup group in capabilityGroups)
                     SizedBox(
                       width: cardWidth,
                       child: _CapabilityCard(group: group),
@@ -1748,7 +1655,7 @@ class _SkillsView extends StatelessWidget {
 class _CapabilityCard extends StatelessWidget {
   const _CapabilityCard({required this.group});
 
-  final _CapabilityGroup group;
+  final CapabilityGroup group;
 
   @override
   Widget build(final BuildContext context) {
@@ -1761,7 +1668,7 @@ class _CapabilityCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _IconFrame(icon: group.icon, color: scheme.primary),
+              _IconFrame(icon: group.icon.icon, color: scheme.primary),
               const SizedBox(width: Dimens.mediumPadding),
               Expanded(
                 child: Text(
@@ -1994,43 +1901,14 @@ class _ContactStrip extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     final ColorScheme scheme = Theme.of(context).colorScheme;
-    final List<_ContactAction> actions = [
-      const _ContactAction(
-        'LinkedIn',
-        Icons.business_center_rounded,
-        'https://www.linkedin.com/in/hiu-tung-chan-051b61231/',
-        logoPath: 'assets/icons/linkedin_icon.png',
-      ),
-      const _ContactAction(
-        'GitHub',
-        Icons.code_rounded,
-        'https://github.com/samchancanada1',
-        logoPath: 'assets/icons/github_logo.png',
-      ),
-      const _ContactAction(
-        'Stack Overflow',
-        Icons.question_answer_rounded,
-        'https://stackoverflow.com/users/14233004/sam-chan',
-        logoPath: 'assets/icons/stackoverflow_icon.png',
-      ),
-      const _ContactAction(
-        'WhatsApp',
-        Icons.chat_rounded,
-        'https://wa.me/+14376628303',
-        logoPath: 'assets/icons/whatsapp_logo.png',
-      ),
-      const _ContactAction(
-        'Email',
-        Icons.mail_rounded,
-        'mailto:samchancanada1@gmail.com?subject=We%20are%20interested%20in%20you!',
-      ),
-    ];
+    final List<ContactAction> actions =
+        context.read<PortfolioRepository>().getContactActions();
 
     return Wrap(
       spacing: Dimens.padding,
       runSpacing: Dimens.padding,
       children: [
-        for (final _ContactAction action in actions)
+        for (final ContactAction action in actions)
           compact
               ? IconButton.filledTonal(
                   style: IconButton.styleFrom(
@@ -2050,7 +1928,7 @@ class _ContactStrip extends StatelessWidget {
 class _SocialButton extends StatelessWidget {
   const _SocialButton({required this.action});
 
-  final _ContactAction action;
+  final ContactAction action;
 
   @override
   Widget build(final BuildContext context) {
@@ -2079,13 +1957,13 @@ class _ContactActionIcon extends StatelessWidget {
     required this.size,
   });
 
-  final _ContactAction action;
+  final ContactAction action;
   final double size;
 
   @override
   Widget build(final BuildContext context) {
     if (action.logoPath == null) {
-      return Icon(action.icon, color: Colors.white, size: size);
+      return Icon(action.icon.icon, color: Colors.white, size: size);
     }
 
     return ImageIcon(
@@ -2260,193 +2138,12 @@ class _TextLink extends StatelessWidget {
 }
 
 class _NavItem {
-  const _NavItem(this.label, this.icon);
+  const _NavItem(this.label, this.icon, this.section);
 
   final String label;
   final IconData icon;
+  final HomeSection section;
 }
-
-class _Experience {
-  const _Experience({
-    required this.company,
-    required this.role,
-    required this.location,
-    required this.period,
-    required this.points,
-    required this.tech,
-    this.links = const [],
-  });
-
-  final String company;
-  final String role;
-  final String location;
-  final String period;
-  final List<String> points;
-  final List<String> tech;
-  final List<_ResumeLink> links;
-}
-
-class _ResumeLink {
-  const _ResumeLink(this.label, this.url);
-
-  final String label;
-  final String url;
-}
-
-class _DesignLens {
-  const _DesignLens(this.title, this.description, this.icon);
-
-  final String title;
-  final String description;
-  final IconData icon;
-}
-
-class _CapabilityGroup {
-  const _CapabilityGroup({
-    required this.title,
-    required this.description,
-    required this.icon,
-    required this.skills,
-  });
-
-  final String title;
-  final String description;
-  final IconData icon;
-  final List<String> skills;
-}
-
-class _Stat {
-  const _Stat(this.value, this.label, this.icon);
-
-  final String value;
-  final String label;
-  final IconData icon;
-}
-
-class _ContactAction {
-  const _ContactAction(
-    this.label,
-    this.icon,
-    this.url, {
-    this.logoPath,
-  });
-
-  final String label;
-  final IconData icon;
-  final String url;
-  final String? logoPath;
-}
-
-final List<_Experience> _experiences = [
-  _Experience(
-    company: 'BoursePad',
-    role: 'Flutter Developer',
-    location: 'Remote / Toronto',
-    period: 'Jun 2025 - Present',
-    points: const [
-      'Enhanced and maintained a production Flutter scholarship-matching application with a focus on scalability, accessibility, performance, and long-term maintainability.',
-      'Applied Clean Architecture with Riverpod, GoRouter, GetIt, and modular feature-based structure to improve separation, testability, and maintainability.',
-      'Upgraded the app for Xcode 16 and Android API 35+ requirements, keeping releases aligned with current App Store and Google Play standards.',
-      'Integrated Firebase Auth, Firestore, Cloud Messaging, and Analytics for authentication, real-time data, notifications, communication, and product insights.',
-      'Built CI/CD pipelines from scratch using GitHub Actions for automated build, test, deployment, multi-environment release workflows, and regression risk reduction.',
-      'Managed App Store and Google Play release workflows including provisioning profiles, code signing, release builds, version control, and store submission requirements.',
-      'Implemented cross-platform mobile features including App Lifecycle handling, Platform Channels, deep linking, and native integration for reliable iOS and Android behavior.',
-    ],
-    tech: const [
-      'Flutter',
-      'Clean Architecture',
-      'Riverpod',
-      'GoRouter',
-      'GetIt',
-      'Firebase',
-      'GitHub Actions',
-      'App Store',
-      'Google Play',
-    ],
-    links: const [
-      _ResumeLink(
-        'App Store',
-        'https://apps.apple.com/us/app/boursepad/id6738283933',
-      ),
-      _ResumeLink(
-        'Google Play',
-        'https://play.google.com/store/apps/details?id=com.eruditio.boursepad',
-      ),
-    ],
-  ),
-  _Experience(
-    company: 'KeelWorks Foundation',
-    role: 'Mobile Developer',
-    location: 'Remote',
-    period: 'Jan 2025 - Jun 2025',
-    points: const [
-      'Developed a Flutter mobile application for real-time water usage tracking and conservation insights.',
-      'Structured core modules with BLoC to separate business logic from UI and improve maintainability.',
-      'Integrated secure REST APIs with backend services for reliable user-specific usage records.',
-      'Built interactive charts and dashboard components to present consumption trends clearly on mobile.',
-      'Improved onboarding, navigation, and UI flows for a smoother cross-platform user experience.',
-    ],
-    tech: const ['Flutter', 'BLoC', 'REST APIs', 'Charts', 'Mobile UX'],
-  ),
-  _Experience(
-    company: 'Independent Flutter Developer',
-    role: 'Flutter Developer',
-    location: 'Remote / Part-time Contract',
-    period: 'May 2022 - Present',
-    points: const [
-      'Built early-stage Flutter apps and internal tools for clients across retail, IoT, and fitness domains.',
-      'Worked directly with clients to clarify business logic and translate operational needs into practical mobile workflows.',
-      'Designed scalable Flutter structures with Dart, BLoC/Provider, reusable UI components, and modular service layers.',
-      'Made architecture and implementation decisions by balancing performance, development timeline, budget constraints, and long-term maintainability.',
-      'Integrated REST APIs, push notifications, authentication flows, and third-party SDKs for MVP and internal-use app requirements.',
-      'Developed platform-specific Kotlin and Swift modules for native device capabilities including sensors, Bluetooth communication, and background behavior.',
-      'Implemented Bluetooth Low Energy and offline-first functionality with SQLite and Hive for reliability under network and device constraints.',
-    ],
-    tech: const [
-      'Flutter',
-      'BLoC',
-      'Provider',
-      'Kotlin',
-      'Swift',
-      'BLE',
-      'SQLite',
-      'Hive',
-    ],
-  ),
-  _Experience(
-    company: 'Computer And Technologies Holdings',
-    role: 'Developer',
-    location: 'Hong Kong',
-    period: 'Sep 2019 - May 2022',
-    points: const [
-      'Contributed to migrating a legacy POS system into a mobile-first Flutter solution for COACH Asia retail operations.',
-      'Worked with business and technical stakeholders to understand retail transaction logic, inventory workflows, payment scenarios, and operational requirements.',
-      'Integrated Flutter apps with a .NET backend and REST APIs for order processing, inventory updates, and retail workflow synchronization.',
-      'Designed modular UI components and service layers to improve maintainability, reduce repeated implementation effort, and support future feature expansion.',
-      'Implemented deep linking and Alipay payment integration to support smoother and more secure transaction flows.',
-      'Integrated BLE communication for portable barcode scanners and thermal printers.',
-      'Supported multilingual Chinese and English retail workflows, code reviews, debugging, and production stability improvements.',
-    ],
-    tech: const ['Flutter', '.NET APIs', 'REST APIs', 'Alipay', 'BLE'],
-    links: const [
-      _ResumeLink(
-        'Coach Asia POS',
-        'https://www.chainstoreplus.com/en/products/mpos',
-      ),
-    ],
-  ),
-  _Experience(
-    company: 'AI Resume Parser',
-    role: 'Additional Project',
-    location: 'Proof of concept',
-    period: 'Project',
-    points: const [
-      'Built a proof-of-concept AI-powered resume screening backend with FastAPI REST APIs.',
-      'Implemented Elasticsearch search and retrieval, contextual skill matching, custom scoring workflows, and Dockerized development/deployment support.',
-    ],
-    tech: const ['Python', 'spaCy', 'FastAPI', 'Docker', 'Elasticsearch'],
-  ),
-];
 
 double _contentInset(final BuildContext context) {
   final double width = MediaQuery.sizeOf(context).width;
