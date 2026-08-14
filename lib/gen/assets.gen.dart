@@ -22,16 +22,6 @@ class $AssetsAnimationsGen {
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
-  /// File path: assets/icons/cloack.svg
-  String get cloack => 'assets/icons/cloack.svg';
-
-  /// File path: assets/icons/cv_icon.svg
-  String get cvIcon => 'assets/icons/cv_icon.svg';
-
-  /// File path: assets/icons/email_icon.png
-  AssetGenImage get emailIcon =>
-      const AssetGenImage('assets/icons/email_icon.png');
-
   /// File path: assets/icons/github_logo.png
   AssetGenImage get githubLogo =>
       const AssetGenImage('assets/icons/github_logo.png');
@@ -40,99 +30,38 @@ class $AssetsIconsGen {
   AssetGenImage get linkedinIcon =>
       const AssetGenImage('assets/icons/linkedin_icon.png');
 
-  /// File path: assets/icons/mall_icon.svg
-  String get mallIcon => 'assets/icons/mall_icon.svg';
-
-  /// File path: assets/icons/pos_icon.svg
-  String get posIcon => 'assets/icons/pos_icon.svg';
-
-  /// File path: assets/icons/projects-list.svg
-  String get projectsList => 'assets/icons/projects-list.svg';
-
   /// File path: assets/icons/stackoverflow_icon.png
   AssetGenImage get stackoverflowIcon =>
       const AssetGenImage('assets/icons/stackoverflow_icon.png');
-
-  /// File path: assets/icons/users.svg
-  String get users => 'assets/icons/users.svg';
-
-  /// File path: assets/icons/vr_icon.svg
-  String get vrIcon => 'assets/icons/vr_icon.svg';
 
   /// File path: assets/icons/whatsapp_logo.png
   AssetGenImage get whatsappLogo =>
       const AssetGenImage('assets/icons/whatsapp_logo.png');
 
-  /// File path: assets/icons/youtube_logo.png
-  AssetGenImage get youtubeLogo =>
-      const AssetGenImage('assets/icons/youtube_logo.png');
-
   /// List of all assets
-  List<dynamic> get values => [
-        cloack,
-        cvIcon,
-        emailIcon,
+  List<AssetGenImage> get values => [
         githubLogo,
         linkedinIcon,
-        mallIcon,
-        posIcon,
-        projectsList,
         stackoverflowIcon,
-        users,
-        vrIcon,
         whatsappLogo,
-        youtubeLogo
       ];
 }
 
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
-  /// File path: assets/images/cv_image.png
-  AssetGenImage get cvImage =>
-      const AssetGenImage('assets/images/cv_image.png');
-
   /// File path: assets/images/home-background.jpg
   AssetGenImage get homeBackground =>
       const AssetGenImage('assets/images/home-background.jpg');
-
-  /// File path: assets/images/mall_image.png
-  AssetGenImage get mallImage =>
-      const AssetGenImage('assets/images/mall_image.png');
-
-  /// File path: assets/images/pos_image.png
-  AssetGenImage get posImage =>
-      const AssetGenImage('assets/images/pos_image.png');
 
   /// File path: assets/images/profile-image.jpg
   AssetGenImage get profileImage =>
       const AssetGenImage('assets/images/profile-image.jpg');
 
-  /// File path: assets/images/small-home-bg.jpg
-  AssetGenImage get smallHomeBg =>
-      const AssetGenImage('assets/images/small-home-bg.jpg');
-
-  /// File path: assets/images/splash.jpg
-  AssetGenImage get splash => const AssetGenImage('assets/images/splash.jpg');
-
-  /// File path: assets/images/tung-logo.svg
-  String get tungLogo => 'assets/images/tung-logo.svg';
-
-  /// File path: assets/images/vr_image.png
-  AssetGenImage get vrImage =>
-      const AssetGenImage('assets/images/vr_image.png');
-
   /// List of all assets
-  List<dynamic> get values => [
-        cvImage,
+  List<AssetGenImage> get values => [
         homeBackground,
-        mallImage,
-        posImage,
         profileImage,
-        smallHomeBg,
-        splash,
-        tungLogo,
-        vrImage
       ];
 }
 

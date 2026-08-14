@@ -17,8 +17,6 @@ void main() {
       child: MyApp(
         primaryColor: AppColors.primaryColor,
         lightPrimaryColor: AppColors.lightPrimaryColor,
-        debugShowMaterialGrid: false,
-        showPerformanceOverlay: false,
       ),
     );
   }
