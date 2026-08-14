@@ -4,9 +4,9 @@ import 'package:go_router/go_router.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_web_plugins/url_strategy.dart';
 // import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'core/di/service_locator.dart';
 import 'core/routes/go_router_routes.dart';
 import 'core/theme/theme.dart';
-import 'feature/home_feature/presentation/bloc/counter_cubit.dart';
 import 'feature/home_feature/presentation/bloc/show_material_grids_cubit.dart';
 import 'feature/home_feature/presentation/bloc/show_performance_overlay_cubit.dart';
 import 'feature/home_feature/presentation/bloc/theme_cubit.dart';
@@ -20,8 +20,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   /// Setup all get_it locators
-  /// TODO:
-  // setupAuthenticationLocators();
+  setupServiceLocator();
 
   /// Allow the imperative API affects browser URL bar.
   GoRouter.optionURLReflectsImperativeAPIs = true;
@@ -37,7 +36,6 @@ void main() async {
 
   runApp(MultiBlocProvider(
     providers: [
-      BlocProvider(create: (final BuildContext context) => CounterCubit()),
       BlocProvider(
         create: (final BuildContext context) => ShowPerformanceOverlayCubit(),
       ),
@@ -110,6 +108,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
+    setupServiceLocator();
+
     return MaterialApp.router(
       routerConfig: routes,
       title: 'portfolio',

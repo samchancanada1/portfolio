@@ -70,3 +70,21 @@ class ContactAction {
   final String url;
   final String? logoPath;
 }
+
+class HomeContent {
+  const HomeContent({
+    required this.designLenses,
+    required this.stats,
+    required this.experiences,
+    required this.capabilityGroups,
+    required this.allSkills,
+    required this.contactActions,
+  });
+
+  final List<DesignLens> designLenses;
+  final List<PortfolioStat> stats;
+  final List<Experience> experiences;
+  final List<CapabilityGroup> capabilityGroups;
+  final List<String> allSkills;
+  final List<ContactAction> contactActions;
+}

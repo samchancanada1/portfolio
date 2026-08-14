@@ -8,13 +8,14 @@ import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/dimens.dart';
 import '../../../../core/utils/check_theme_status.dart';
 import '../../../../core/utils/locale_handler.dart';
+import '../../../../core/di/service_locator.dart';
 import '../../../../gen/assets.gen.dart';
 import '../../../../i18n/strings.g.dart';
-import '../../data/repositories/static_portfolio_repository.dart';
 import '../../domain/entities/portfolio_content.dart';
-import '../../domain/repositories/portfolio_repository.dart';
 import '../bloc/primary_color_cubit.dart';
 import '../bloc/theme_cubit.dart';
+import '../cubit/home_content_cubit.dart';
+import '../cubit/home_content_state.dart';
 import '../cubit/home_navigation_cubit.dart';
 import '../mappers/home_icon_mapper.dart';
 
@@ -23,12 +24,12 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    return RepositoryProvider<PortfolioRepository>(
-      create: (_) => const StaticPortfolioRepository(),
-      child: BlocProvider(
-        create: (_) => HomeNavigationCubit(),
-        child: const _HomeScreenView(),
-      ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => locator<HomeNavigationCubit>()),
+        BlocProvider(create: (_) => locator<HomeContentCubit>()),
+      ],
+      child: const _HomeScreenView(),
     );
   }
 }
@@ -698,8 +699,7 @@ class _DesignLensStrip extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     final ColorScheme scheme = Theme.of(context).colorScheme;
-    final List<DesignLens> lenses =
-        context.read<PortfolioRepository>().getDesignLenses();
+    final List<DesignLens> lenses = _homeContent(context).designLenses;
 
     return Container(
       width: double.infinity,
@@ -1157,8 +1157,7 @@ class _StatsGrid extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    final List<PortfolioStat> stats =
-        context.read<PortfolioRepository>().getStats();
+    final List<PortfolioStat> stats = _homeContent(context).stats;
 
     return LayoutBuilder(
       builder: (final context, final constraints) {
@@ -1220,8 +1219,7 @@ class _ResumeView extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    final List<Experience> experiences =
-        context.read<PortfolioRepository>().getExperiences();
+    final List<Experience> experiences = _homeContent(context).experiences;
 
     return _SectionScaffold(
       eyebrow: 'Experience',
@@ -1590,10 +1588,9 @@ class _SkillsView extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     final ColorScheme scheme = Theme.of(context).colorScheme;
-    final PortfolioRepository repository = context.read<PortfolioRepository>();
     final List<CapabilityGroup> capabilityGroups =
-        repository.getCapabilityGroups();
-    final List<String> allSkills = repository.getAllSkills();
+        _homeContent(context).capabilityGroups;
+    final List<String> allSkills = _homeContent(context).allSkills;
 
     return _SectionScaffold(
       eyebrow: 'Capabilities',
@@ -1901,8 +1898,7 @@ class _ContactStrip extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     final ColorScheme scheme = Theme.of(context).colorScheme;
-    final List<ContactAction> actions =
-        context.read<PortfolioRepository>().getContactActions();
+    final List<ContactAction> actions = _homeContent(context).contactActions;
 
     return Wrap(
       spacing: Dimens.padding,
@@ -2144,6 +2140,20 @@ class _NavItem {
   final IconData icon;
   final HomeSection section;
 }
+
+HomeContent _homeContent(final BuildContext context) {
+  final HomeContentState state = context.watch<HomeContentCubit>().state;
+  return state.content ?? _emptyHomeContent;
+}
+
+const HomeContent _emptyHomeContent = HomeContent(
+  designLenses: [],
+  stats: [],
+  experiences: [],
+  capabilityGroups: [],
+  allSkills: [],
+  contactActions: [],
+);
 
 double _contentInset(final BuildContext context) {
   final double width = MediaQuery.sizeOf(context).width;
