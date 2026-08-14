@@ -1993,28 +1993,33 @@ class _ContactStrip extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
+    final ColorScheme scheme = Theme.of(context).colorScheme;
     final List<_ContactAction> actions = [
-      _ContactAction(
+      const _ContactAction(
         'LinkedIn',
         Icons.business_center_rounded,
         'https://www.linkedin.com/in/hiu-tung-chan-051b61231/',
+        logoPath: 'assets/icons/linkedin_icon.png',
       ),
-      _ContactAction(
+      const _ContactAction(
         'GitHub',
         Icons.code_rounded,
         'https://github.com/samchancanada1',
+        logoPath: 'assets/icons/github_logo.png',
       ),
-      _ContactAction(
+      const _ContactAction(
         'Stack Overflow',
         Icons.question_answer_rounded,
         'https://stackoverflow.com/users/14233004/sam-chan',
+        logoPath: 'assets/icons/stackoverflow_icon.png',
       ),
-      _ContactAction(
+      const _ContactAction(
         'WhatsApp',
         Icons.chat_rounded,
         'https://wa.me/+14376628303',
+        logoPath: 'assets/icons/whatsapp_logo.png',
       ),
-      _ContactAction(
+      const _ContactAction(
         'Email',
         Icons.mail_rounded,
         'mailto:samchancanada1@gmail.com?subject=We%20are%20interested%20in%20you!',
@@ -2028,9 +2033,13 @@ class _ContactStrip extends StatelessWidget {
         for (final _ContactAction action in actions)
           compact
               ? IconButton.filledTonal(
+                  style: IconButton.styleFrom(
+                    backgroundColor: scheme.primary,
+                    foregroundColor: Colors.white,
+                  ),
                   tooltip: action.label,
                   onPressed: () => _launch(action.url),
-                  icon: Icon(action.icon),
+                  icon: _ContactActionIcon(action: action, size: 20),
                 )
               : _SocialButton(action: action),
       ],
@@ -2045,10 +2054,44 @@ class _SocialButton extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+
     return ActionChip(
-      avatar: Icon(action.icon, size: 18),
+      avatar: Container(
+        width: 24,
+        height: 24,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: scheme.primary,
+          shape: BoxShape.circle,
+        ),
+        child: _ContactActionIcon(action: action, size: 14),
+      ),
       label: Text(action.label),
       onPressed: () => _launch(action.url),
+    );
+  }
+}
+
+class _ContactActionIcon extends StatelessWidget {
+  const _ContactActionIcon({
+    required this.action,
+    required this.size,
+  });
+
+  final _ContactAction action;
+  final double size;
+
+  @override
+  Widget build(final BuildContext context) {
+    if (action.logoPath == null) {
+      return Icon(action.icon, color: Colors.white, size: size);
+    }
+
+    return ImageIcon(
+      AssetImage(action.logoPath!),
+      color: Colors.white,
+      size: size,
     );
   }
 }
@@ -2281,11 +2324,17 @@ class _Stat {
 }
 
 class _ContactAction {
-  const _ContactAction(this.label, this.icon, this.url);
+  const _ContactAction(
+    this.label,
+    this.icon,
+    this.url, {
+    this.logoPath,
+  });
 
   final String label;
   final IconData icon;
   final String url;
+  final String? logoPath;
 }
 
 final List<_Experience> _experiences = [
