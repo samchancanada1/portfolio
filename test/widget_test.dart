@@ -1,30 +1,80 @@
-// // This is a basic Flutter widget test.
-// //
-// // To perform an interaction with a widget in your test, use the WidgetTester
-// // utility in the flutter_test package. For example, you can send tap and scroll
-// // gestures. You can also use WidgetTester to find child widgets in the widget
-// // tree, read text, and verify that the values of widget properties are correct.
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:portfolio/core/theme/colors.dart';
+import 'package:portfolio/i18n/strings.g.dart';
+import 'package:portfolio/main.dart';
 
-// import 'package:flutter/material.dart';
-// import 'package:flutter_test/flutter_test.dart';
+void main() {
+  Widget buildTestApp() {
+    return TranslationProvider(
+      child: MyApp(
+        primaryColor: AppColors.primaryColor,
+        lightPrimaryColor: AppColors.lightPrimaryColor,
+        debugShowMaterialGrid: false,
+        showPerformanceOverlay: false,
+      ),
+    );
+  }
 
-// import 'package:portfolio/main.dart';
+  testWidgets('portfolio app renders updated resume content', (
+    final WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(buildTestApp());
 
-// void main() {
-//   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-//     // Build our app and trigger a frame.
-//     await tester.pumpWidget(const MyApp());
+    await tester.pumpAndSettle();
 
-//     // Verify that our counter starts at 0.
-//     expect(find.text('0'), findsOneWidget);
-//     expect(find.text('1'), findsNothing);
+    expect(find.text('Hiu Tung Chan'), findsWidgets);
+    expect(find.textContaining('production Flutter apps'), findsOneWidget);
 
-//     // Tap the '+' icon and trigger a frame.
-//     await tester.tap(find.byIcon(Icons.add));
-//     await tester.pump();
+    await tester.tap(find.text('About'));
+    await tester.pumpAndSettle();
 
-//     // Verify that our counter has incremented.
-//     expect(find.text('0'), findsNothing);
-//     expect(find.text('1'), findsOneWidget);
-//   });
-// }
+    expect(find.textContaining('6+ years'), findsWidgets);
+    expect(find.text('Markham, ON, CA'), findsOneWidget);
+
+    await tester.tap(find.text('Resume'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('BoursePad'), findsOneWidget);
+    expect(find.text('KeelWorks Foundation'), findsOneWidget);
+    expect(find.text('Computer And Technologies Holdings'), findsOneWidget);
+  });
+
+  testWidgets('mobile layout can navigate about and resume', (
+    final WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(buildTestApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('About'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('6+ years'), findsWidgets);
+
+    await tester.tap(find.text('Resume'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('BoursePad'), findsOneWidget);
+    expect(find.text('KeelWorks Foundation'), findsOneWidget);
+  });
+
+  testWidgets('home layout does not overflow in tall desktop viewport', (
+    final WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1180, 1054);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(buildTestApp());
+    await tester.pumpAndSettle();
+
+    expect(find.text('Hiu Tung Chan'), findsWidgets);
+    expect(find.text('Production mobile apps'), findsOneWidget);
+  });
+}

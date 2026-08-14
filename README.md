@@ -1,17 +1,17 @@
 Portfolio Project
 📂 Overview:
-This project showcases my work as a Flutter mobile application developer with a focus on delivering intuitive, high-performance apps. It highlights key projects, technical skills, and development expertise across various domains, including POS systems, VR applications, and mobile app architecture.
+This project showcases my work as a Flutter Mobile Developer with 6+ years of experience building and maintaining cross-platform iOS and Android applications. It highlights production mobile work across scholarship technology, retail POS, IoT, fitness, enterprise apps, and AI tooling.
 
 🔹 Features:
 
 Responsive Design: Adaptable and visually appealing across different devices.
-Project Highlights: Sections dedicated to major projects such as the Coach Asia POS system and freelance app development.
-Skills Section: Breakdown of technical proficiencies including Flutter, Dart, Unity, and API integration.
-Interactive Elements: Links to repositories and live demos where applicable.
+Project Highlights: Sections dedicated to BoursePad, KeelWorks Foundation, independent Flutter contract work, Coach Asia POS, and AI resume parsing.
+Skills Section: Breakdown of technical proficiencies including Flutter, Dart, Clean Architecture, Firebase, Riverpod, BLoC, REST APIs, CI/CD, native Kotlin/Swift modules, BLE, and offline-first storage.
+Interactive Elements: Links to portfolio, live apps, project pages, and professional profiles where applicable.
 🔹 Tech Stack:
 
 Frontend: Flutter (Dart)
-Backend: REST API Integrations
-Other Tools: Git, Unity, JSON
+Backend: REST API integrations, Firebase, FastAPI, Elasticsearch
+Other Tools: GitHub Actions, Docker, TestFlight, App Store, Google Play, Kotlin, Swift
 🔹 Purpose:
 To provide a comprehensive overview of my professional growth and project contributions, serving as a resource for potential employers and collaborators.

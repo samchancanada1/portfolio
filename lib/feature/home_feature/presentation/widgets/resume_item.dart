@@ -32,12 +32,12 @@ class ResumeItem extends StatefulWidget {
 
 class _ResumeItemState extends State<ResumeItem> {
   bool _tileExpanded = false;
-  late ExpansionTileController _expansionTileController;
+  late ExpansibleController _expansionTileController;
 
   @override
   void initState() {
     super.initState();
-    _expansionTileController = ExpansionTileController();
+    _expansionTileController = ExpansibleController();
   }
 
   @override
