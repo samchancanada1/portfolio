@@ -1,11 +1,11 @@
 ((a,b)=>{a[b]=a[b]||{}})(self,"$__dart_deferred_initializers__")
 $__dart_deferred_initializers__.current=function(a,b,c,$){var B,C,A={
-aND(d,e,f){var x=new B.oz(C.hk,d,y.c),w=new A.VG(x)
-x.r=A.b3z(w)
+aNJ(d,e,f){var x=new B.oB(C.hm,d,y.c),w=new A.VI(x)
+x.r=A.b3F(w)
 return w},
-b3y(d,e){var x="Fran\xe7ais"
+b3E(d,e){var x="Fran\xe7ais"
 switch(e){case"mainScreen.title":return"Le titre fran\xe7ais"
-case"mainScreen.counter":return new A.aBN(d)
+case"mainScreen.counter":return new A.aBT(d)
 case"mainScreen.tapMe":return"Appuyez-moi"
 case"locales.en":return"Anglais"
 case"locales.fr":return x
@@ -48,53 +48,53 @@ case"home_screen.collapse":return"R\xe9duire"
 case"home_screen.expand":return"D\xe9velopper"
 case"home_screen.projectLink":return"Lien du projet"
 default:return null}},
-b3z(d){return new A.aBO(d)},
-VG:function VG(d){this.a=d
+b3F(d){return new A.aBU(d)},
+VI:function VI(d){this.a=d
 this.d=this.b=$},
-aAR:function aAR(){},
-aBO:function aBO(d){this.a=d},
-aBN:function aBN(d){this.a=d}}
+aAX:function aAX(){},
+aBU:function aBU(d){this.a=d},
+aBT:function aBT(d){this.a=d}}
 B=c[0]
 C=c[2]
 A=a.updateHolder(c[3],A)
-A.VG.prototype={
-i(d,e){return this.a.KN(e)},
-gSz(){var x=this.b
+A.VI.prototype={
+i(d,e){return this.a.KO(e)},
+gSA(){var x=this.b
 return x===$?this.b=this:x},
-gJ_(){var x=y.g
+gJ2(){var x=y.g
 return B.aC(["en","Anglais","fr","Fran\xe7ais"],x,x)},
-gYd(){return"Page introuvable"},
+gYf(){return"Page introuvable"},
 ghX(){var x=this,w=x.d
-if(w===$){x.gSz()
+if(w===$){x.gSA()
 x.d!==$&&B.ay()
-w=x.d=new A.aAR()}return w},
+w=x.d=new A.aAX()}return w},
 $ifQ:1,
-$iil:1,
+$iim:1,
 gws(){return this.a}}
-A.aAR.prototype={
-gX5(){return"D'accueil"},
-gUi(){return"\xc0 propos de"},
-gZd(){return"Reprendre"},
-gLo(){return"Comp\xe9tences"},
-gCP(){return"Param\xe8tres"},
-gJc(){return"Hiu Tung Chan"},
-gWy(){return"Fran\xe7ais"},
-gW9(){return"Anglais"},
-gZj(){return"Mode th\xe8me"},
-gZi(){return"Couleur du th\xe8me"},
-gXS(){return"Langue"}}
+A.aAX.prototype={
+gX7(){return"D'accueil"},
+gUj(){return"\xc0 propos de"},
+gZf(){return"Reprendre"},
+gLp(){return"Comp\xe9tences"},
+gCR(){return"Param\xe8tres"},
+gJf(){return"Hiu Tung Chan"},
+gWA(){return"Fran\xe7ais"},
+gWb(){return"Anglais"},
+gZl(){return"Mode th\xe8me"},
+gZk(){return"Couleur du th\xe8me"},
+gXU(){return"Langue"}}
 var z=a.updateTypes([])
-A.aBO.prototype={
-$1(d){return A.b3y(this.a,d)},
+A.aBU.prototype={
+$1(d){return A.b3E(this.a,d)},
 $S:76}
-A.aBN.prototype={
+A.aBT.prototype={
 $1$n(d){var x
-this.a.gSz()
-x=B.aMl("fr")
+this.a.gSA()
+x=B.aMr("fr")
 return x.$3$one$other(d,"Vous avez appuy\xe9 une fois.","Vous avez appuy\xe9 "+B.k(d)+" fois.")},
 $S:215};(function inheritance(){var x=a.inheritMany
-x(B.z,[A.VG,A.aAR])
-x(B.ln,[A.aBO,A.aBN])})()
-B.aOE(b.typeUniverse,JSON.parse('{"VG":{"fQ":[],"il":["fE","fQ"]}}'))
-var y={g:B.ab("l"),c:B.ab("oz<fE,fQ>")}};
-(a=>{a["deE/nqlsYl08asNcgkM8jsr8kX0="]=a.current})($__dart_deferred_initializers__);
+x(B.z,[A.VI,A.aAX])
+x(B.lp,[A.aBU,A.aBT])})()
+B.aOK(b.typeUniverse,JSON.parse('{"VI":{"fQ":[],"im":["fE","fQ"]}}'))
+var y={g:B.ad("l"),c:B.ad("oB<fE,fQ>")}};
+(a=>{a["UIv0Wtrdb6GqwkrFQfTV1H9BAQ8="]=a.current})($__dart_deferred_initializers__);
