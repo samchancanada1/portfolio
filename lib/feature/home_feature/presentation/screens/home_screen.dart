@@ -3367,7 +3367,7 @@ class _ExperienceTimeline extends StatelessWidget {
   }
 }
 
-class _TimelineExperienceItem extends StatelessWidget {
+class _TimelineExperienceItem extends StatefulWidget {
   const _TimelineExperienceItem({
     required this.experience,
     required this.isFirst,
@@ -3381,64 +3381,176 @@ class _TimelineExperienceItem extends StatelessWidget {
   final bool useStickyMeta;
 
   @override
-  Widget build(final BuildContext context) {
-    final ColorScheme scheme = Theme.of(context).colorScheme;
+  State<_TimelineExperienceItem> createState() =>
+      _TimelineExperienceItemState();
+}
 
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          SizedBox(
-            width: useStickyMeta ? 236 : 180,
-            child: useStickyMeta
-                ? _StickyTimelineMeta(experience: experience)
-                : _TimelineInlineMeta(experience: experience),
-          ),
-          const SizedBox(width: Dimens.largePadding),
-          Column(
-            children: [
-              Container(
-                width: 42,
-                height: 42,
-                decoration: BoxDecoration(
-                  color: scheme.primary.withValues(alpha: 0.14),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: scheme.primary.withValues(alpha: 0.28),
+class _TimelineExperienceItemState extends State<_TimelineExperienceItem> {
+  final GlobalKey _sectionKey = GlobalKey();
+
+  @override
+  Widget build(final BuildContext context) {
+    return KeyedSubtree(
+      key: _sectionKey,
+      child: IntrinsicHeight(
+        child: widget.useStickyMeta
+            ? Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _StickyTimelineLead(
+                    experience: widget.experience,
+                    isLast: widget.isLast,
+                    sectionKey: _sectionKey,
                   ),
-                ),
-                child: Icon(
-                  _experienceIcon(experience.company),
-                  color: scheme.primary,
-                  size: 22,
-                ),
-              ),
-              if (!isLast)
-                Expanded(
-                  child: Container(
-                    width: 1,
-                    margin: const EdgeInsets.symmetric(
-                      vertical: Dimens.padding,
+                  const SizedBox(width: Dimens.largePadding),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        bottom: widget.isLast ? 0 : Dimens.extraLargePadding,
+                      ),
+                      child: _ExperienceCard(
+                        experience: widget.experience,
+                        showHeaderPeriod: false,
+                      ),
                     ),
-                    color: scheme.outlineVariant.withValues(alpha: 0.36),
                   ),
+                ],
+              )
+            : Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(
+                    width: 180,
+                    child: _TimelineInlineMeta(experience: widget.experience),
+                  ),
+                  const SizedBox(width: Dimens.largePadding),
+                  _TimelineNodeRail(
+                    experience: widget.experience,
+                    isLast: widget.isLast,
+                  ),
+                  const SizedBox(width: Dimens.largePadding),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        bottom: widget.isLast ? 0 : Dimens.extraLargePadding,
+                      ),
+                      child: _ExperienceCard(
+                        experience: widget.experience,
+                        showHeaderPeriod: false,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+      ),
+    );
+  }
+}
+
+class _StickyTimelineLead extends StatefulWidget {
+  const _StickyTimelineLead({
+    required this.experience,
+    required this.isLast,
+    required this.sectionKey,
+  });
+
+  static const double metaWidth = 236;
+  static const double nodeGap = 36;
+  static const double nodeBoxSize = 88;
+  static const double cardHeight = 164;
+  static const double width = metaWidth + nodeGap + nodeBoxSize;
+
+  final Experience experience;
+  final bool isLast;
+  final GlobalKey sectionKey;
+
+  @override
+  State<_StickyTimelineLead> createState() => _StickyTimelineLeadState();
+}
+
+class _StickyTimelineLeadState extends State<_StickyTimelineLead> {
+  ScrollPosition? _scrollPosition;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _scrollPosition = Scrollable.maybeOf(context)?.position;
+  }
+
+  @override
+  Widget build(final BuildContext context) {
+    final Listenable scrollSignal =
+        _scrollPosition ?? const AlwaysStoppedAnimation<double>(0);
+    const double lineLeft = _StickyTimelineLead.metaWidth +
+        _StickyTimelineLead.nodeGap +
+        (_StickyTimelineLead.nodeBoxSize / 2) -
+        0.5;
+    const double lineTop =
+        (_StickyTimelineLead.cardHeight + _StickyTimelineLead.nodeBoxSize) / 2 +
+            Dimens.padding;
+
+    return LayoutBuilder(
+      builder: (final context, final constraints) {
+        final double sectionHeight = constraints.hasBoundedHeight
+            ? constraints.maxHeight
+            : _StickyTimelineLead.cardHeight;
+
+        return SizedBox(
+          width: _StickyTimelineLead.width,
+          height: sectionHeight,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              if (!widget.isLast)
+                const Positioned(
+                  left: lineLeft,
+                  top: lineTop,
+                  bottom: 0,
+                  child: _TimelineConnector(),
                 ),
+              AnimatedBuilder(
+                animation: scrollSignal,
+                builder: (final context, final _) {
+                  final double top = _stickyOffsetForSection(
+                    context: context,
+                    sectionKey: widget.sectionKey,
+                    sectionHeight: sectionHeight,
+                    anchorHeight: _StickyTimelineLead.cardHeight,
+                  );
+                  final double progress = _stickyProgressForSection(
+                    context: context,
+                    sectionKey: widget.sectionKey,
+                    sectionHeight: sectionHeight,
+                    anchorHeight: _StickyTimelineLead.cardHeight,
+                  );
+
+                  return Positioned.fill(
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Transform.translate(
+                        offset: Offset(0, top),
+                        child: RepaintBoundary(
+                          child: SizedBox(
+                            width: _StickyTimelineLead.width,
+                            height: _StickyTimelineLead.cardHeight,
+                            child: _TimelineMetaCard(
+                              experience: widget.experience,
+                              elevated: true,
+                              showAttachedNode: true,
+                              animateAttachedNode: true,
+                              attachedNodeProgress: progress,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
             ],
           ),
-          const SizedBox(width: Dimens.largePadding),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(
-                bottom: isLast ? 0 : Dimens.extraLargePadding,
-              ),
-              child: _ExperienceCard(
-                experience: experience,
-                showHeaderPeriod: false,
-              ),
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
@@ -3457,77 +3569,157 @@ class _TimelineInlineMeta extends StatelessWidget {
   }
 }
 
-class _StickyTimelineMeta extends StatefulWidget {
-  const _StickyTimelineMeta({required this.experience});
+class _TimelineNodeRail extends StatelessWidget {
+  const _TimelineNodeRail({
+    required this.experience,
+    required this.isLast,
+  });
+
+  static const double nodeSize = 42;
 
   final Experience experience;
+  final bool isLast;
 
   @override
-  State<_StickyTimelineMeta> createState() => _StickyTimelineMetaState();
+  Widget build(final BuildContext context) {
+    return SizedBox(
+      width: nodeSize,
+      child: Column(
+        children: [
+          _TimelineNode(experience: experience),
+          if (!isLast)
+            Expanded(
+              child: _TimelineConnector(
+                margin: const EdgeInsets.symmetric(vertical: Dimens.padding),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
 }
 
-class _StickyTimelineMetaState extends State<_StickyTimelineMeta> {
-  static const double _cardHeight = 164;
+class _TimelineNode extends StatefulWidget {
+  const _TimelineNode({
+    required this.experience,
+    this.animated = false,
+    this.integrated = false,
+    this.scrollProgress,
+  });
 
-  final GlobalKey _measurementKey = GlobalKey();
-  ScrollPosition? _scrollPosition;
+  final Experience experience;
+  final bool animated;
+  final bool integrated;
+  final double? scrollProgress;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _scrollPosition = Scrollable.maybeOf(context)?.position;
+  State<_TimelineNode> createState() => _TimelineNodeState();
+}
+
+class _TimelineNodeState extends State<_TimelineNode>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 3600),
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.animated && widget.scrollProgress == null) {
+      _controller.repeat();
+    }
+  }
+
+  @override
+  void didUpdateWidget(final _TimelineNode oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.animated &&
+        widget.scrollProgress == null &&
+        !_controller.isAnimating) {
+      _controller.repeat();
+    } else if ((!widget.animated || widget.scrollProgress != null) &&
+        _controller.isAnimating) {
+      _controller.stop();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(final BuildContext context) {
-    final Listenable scrollSignal =
-        _scrollPosition ?? const AlwaysStoppedAnimation<double>(0);
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+    final double progress = widget.scrollProgress ?? _controller.value;
 
-    return KeyedSubtree(
-      key: _measurementKey,
-      child: LayoutBuilder(
-        builder: (final context, final constraints) {
-          final double sectionHeight = constraints.hasBoundedHeight
-              ? constraints.maxHeight
-              : _cardHeight;
+    if (widget.integrated) {
+      return SizedBox(
+        width: 56,
+        height: 56,
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (final context, final _) {
+            if (!widget.animated) {
+              return Icon(
+                _experienceIcon(widget.experience.company),
+                color: scheme.primary,
+                size: 32,
+              );
+            }
 
-          return SizedBox(
-            height: sectionHeight,
-            child: AnimatedBuilder(
-              animation: scrollSignal,
-              builder: (final context, final child) {
-                final double maxTop = math.max(
-                  0,
-                  sectionHeight - _cardHeight,
-                );
-                double top = 0;
-                final RenderBox? box = _measurementKey.currentContext
-                    ?.findRenderObject() as RenderBox?;
-                if (box != null && box.hasSize && box.attached) {
-                  final double globalTop = box.localToGlobal(Offset.zero).dy;
-                  final double viewportHeight = MediaQuery.sizeOf(
-                    context,
-                  ).height;
-                  final double anchorY =
-                      viewportHeight - _cardHeight - Dimens.extraLargePadding;
-                  top = (anchorY - globalTop).clamp(0.0, maxTop);
-                }
+            return Center(
+              child: CustomPaint(
+                size: const Size.square(46),
+                painter: _TimelineGlyphPainter(
+                  kind: _timelineGlyphKind(widget.experience.company),
+                  progress: progress,
+                  color: scheme.primary,
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    }
 
-                return Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      top: top,
-                      child: child!,
-                    ),
-                  ],
-                );
-              },
-              child: _TimelineMetaCard(
-                experience: widget.experience,
-                elevated: true,
+    return Container(
+      width: _TimelineNodeRail.nodeSize,
+      height: _TimelineNodeRail.nodeSize,
+      decoration: BoxDecoration(
+        color: scheme.primary.withValues(alpha: 0.14),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: scheme.primary.withValues(alpha: 0.28),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: scheme.primary.withValues(alpha: 0.12),
+            blurRadius: 18,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (final context, final _) {
+          if (!widget.animated) {
+            return Icon(
+              _experienceIcon(widget.experience.company),
+              color: scheme.primary,
+              size: 22,
+            );
+          }
+
+          return Center(
+            child: CustomPaint(
+              size: const Size.square(24),
+              painter: _TimelineGlyphPainter(
+                kind: _timelineGlyphKind(widget.experience.company),
+                color: scheme.primary,
+                progress: progress,
               ),
             ),
           );
@@ -3537,78 +3729,477 @@ class _StickyTimelineMetaState extends State<_StickyTimelineMeta> {
   }
 }
 
-class _TimelineMetaCard extends StatelessWidget {
-  const _TimelineMetaCard({
-    required this.experience,
-    required this.elevated,
+enum _TimelineGlyphKind {
+  education,
+  construction,
+  water,
+  pos,
+  search,
+  app,
+}
+
+class _TimelineGlyphPainter extends CustomPainter {
+  const _TimelineGlyphPainter({
+    required this.kind,
+    required this.color,
+    required this.progress,
   });
 
-  final Experience experience;
-  final bool elevated;
+  final _TimelineGlyphKind kind;
+  final Color color;
+  final double progress;
+
+  @override
+  void paint(final Canvas canvas, final Size size) {
+    final double strokeWidth = math.max(2.6, size.shortestSide * 0.075);
+    final Paint stroke = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    final Paint fill = Paint()
+      ..color = color.withValues(alpha: 0.3)
+      ..style = PaintingStyle.fill;
+
+    switch (kind) {
+      case _TimelineGlyphKind.education:
+        _paintEducation(canvas, size, stroke, fill);
+      case _TimelineGlyphKind.construction:
+        _paintConstruction(canvas, size, stroke, fill);
+      case _TimelineGlyphKind.water:
+        _paintWater(canvas, size, stroke, fill);
+      case _TimelineGlyphKind.pos:
+        _paintPos(canvas, size, stroke, fill);
+      case _TimelineGlyphKind.search:
+        _paintSearch(canvas, size, stroke, fill);
+      case _TimelineGlyphKind.app:
+        _paintApp(canvas, size, stroke, fill);
+    }
+  }
+
+  void _paintEducation(
+    final Canvas canvas,
+    final Size size,
+    final Paint stroke,
+    final Paint fill,
+  ) {
+    final double lift = math.sin(progress * math.pi * 2) * size.height * 0.07;
+    final Path cap = Path()
+      ..moveTo(size.width * 0.12, size.height * 0.42 + lift)
+      ..lineTo(size.width * 0.50, size.height * 0.22 + lift)
+      ..lineTo(size.width * 0.88, size.height * 0.42 + lift)
+      ..lineTo(size.width * 0.50, size.height * 0.62 + lift)
+      ..close();
+    canvas.drawPath(cap, fill);
+    canvas.drawPath(cap, stroke);
+    canvas.drawLine(
+      Offset(size.width * 0.34, size.height * 0.58 + lift),
+      Offset(size.width * 0.34, size.height * 0.73),
+      stroke,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.66, size.height * 0.58 + lift),
+      Offset(size.width * 0.66, size.height * 0.73),
+      stroke,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.32, size.height * 0.73),
+      Offset(size.width * 0.68, size.height * 0.73),
+      stroke,
+    );
+    final double swing = math.sin(progress * math.pi * 2) * size.width * 0.12;
+    final Offset tasselTop = Offset(size.width * 0.72, size.height * 0.47);
+    final Offset tasselEnd = Offset(
+      size.width * 0.72 + swing,
+      size.height * 0.72,
+    );
+    canvas.drawLine(tasselTop, tasselEnd, stroke);
+    canvas.drawCircle(tasselEnd, size.shortestSide * 0.06, fill..color = color);
+  }
+
+  void _paintConstruction(
+    final Canvas canvas,
+    final Size size,
+    final Paint stroke,
+    final Paint fill,
+  ) {
+    final List<Offset> nodes = [
+      Offset(size.width * 0.2, size.height * 0.28),
+      Offset(size.width * 0.55, size.height * 0.44),
+      Offset(size.width * 0.32, size.height * 0.78),
+      Offset(size.width * 0.82, size.height * 0.72),
+    ];
+    for (int i = 0; i < nodes.length - 1; i++) {
+      canvas.drawLine(nodes[i], nodes[i + 1], stroke);
+    }
+    final double nodeRadius = size.shortestSide * 0.075;
+    for (final Offset node in nodes) {
+      canvas.drawCircle(node, nodeRadius, fill);
+      canvas.drawCircle(node, nodeRadius, stroke);
+    }
+    final int segment = (progress * (nodes.length - 1)).floor();
+    final double local = (progress * (nodes.length - 1)) % 1;
+    final Offset start = nodes[segment.clamp(0, nodes.length - 2)];
+    final Offset end = nodes[(segment + 1).clamp(1, nodes.length - 1)];
+    final Offset pulse = Offset.lerp(start, end, local)!;
+    canvas.drawCircle(pulse, size.shortestSide * 0.11, Paint()..color = color);
+  }
+
+  void _paintWater(
+    final Canvas canvas,
+    final Size size,
+    final Paint stroke,
+    final Paint fill,
+  ) {
+    final Path drop = Path()
+      ..moveTo(size.width * 0.5, size.height * 0.12)
+      ..cubicTo(
+        size.width * 0.78,
+        size.height * 0.42,
+        size.width * 0.8,
+        size.height * 0.72,
+        size.width * 0.5,
+        size.height * 0.86,
+      )
+      ..cubicTo(
+        size.width * 0.2,
+        size.height * 0.72,
+        size.width * 0.22,
+        size.height * 0.42,
+        size.width * 0.5,
+        size.height * 0.12,
+      )
+      ..close();
+    canvas.drawPath(drop, fill);
+    canvas.drawPath(drop, stroke);
+    final double wave = math.sin(progress * math.pi * 2) * size.height * 0.08;
+    final Path inner = Path()
+      ..moveTo(size.width * 0.31, size.height * 0.59 + wave)
+      ..quadraticBezierTo(
+        size.width * 0.5,
+        size.height * 0.51 - wave,
+        size.width * 0.69,
+        size.height * 0.59 + wave,
+      );
+    canvas.drawPath(inner, stroke);
+  }
+
+  void _paintPos(
+    final Canvas canvas,
+    final Size size,
+    final Paint stroke,
+    final Paint fill,
+  ) {
+    final RRect terminal = RRect.fromRectAndRadius(
+      Rect.fromLTWH(
+        size.width * 0.18,
+        size.height * 0.18,
+        size.width * 0.64,
+        size.height * 0.64,
+      ),
+      const Radius.circular(3),
+    );
+    canvas.drawRRect(terminal, fill);
+    canvas.drawRRect(terminal, stroke);
+    canvas.drawLine(
+      Offset(size.width * 0.32, size.height * 0.34),
+      Offset(size.width * 0.68, size.height * 0.34),
+      stroke,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.36, size.height * 0.66),
+      Offset(size.width * 0.64, size.height * 0.66),
+      stroke,
+    );
+    final double scanY = size.height * (0.42 + 0.16 * progress);
+    canvas.drawLine(
+      Offset(size.width * 0.25, scanY),
+      Offset(size.width * 0.75, scanY),
+      Paint()
+        ..color = color
+        ..strokeWidth = math.max(2.2, size.shortestSide * 0.055)
+        ..strokeCap = StrokeCap.round,
+    );
+  }
+
+  void _paintSearch(
+    final Canvas canvas,
+    final Size size,
+    final Paint stroke,
+    final Paint fill,
+  ) {
+    final Offset center = Offset(size.width * 0.45, size.height * 0.43);
+    canvas.drawCircle(center, size.width * 0.24, fill);
+    canvas.drawCircle(center, size.width * 0.24, stroke);
+    canvas.drawLine(
+      Offset(size.width * 0.61, size.height * 0.61),
+      Offset(size.width * 0.8, size.height * 0.8),
+      stroke,
+    );
+    final double scanX = size.width * (0.32 + 0.26 * progress);
+    canvas.drawLine(
+      Offset(scanX, size.height * 0.27),
+      Offset(scanX, size.height * 0.59),
+      Paint()
+        ..color = color
+        ..strokeWidth = math.max(2.1, size.shortestSide * 0.052)
+        ..strokeCap = StrokeCap.round,
+    );
+  }
+
+  void _paintApp(
+    final Canvas canvas,
+    final Size size,
+    final Paint stroke,
+    final Paint fill,
+  ) {
+    final List<Offset> cells = [
+      Offset(size.width * 0.28, size.height * 0.28),
+      Offset(size.width * 0.62, size.height * 0.28),
+      Offset(size.width * 0.28, size.height * 0.62),
+      Offset(size.width * 0.62, size.height * 0.62),
+    ];
+    final int active = (progress * cells.length).floor() % cells.length;
+    for (int index = 0; index < cells.length; index++) {
+      final double side = size.shortestSide * (index == active ? 0.24 : 0.18);
+      final Rect rect = Rect.fromCenter(
+        center: cells[index],
+        width: side,
+        height: side,
+      );
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(rect, const Radius.circular(1.6)),
+        index == active ? (Paint()..color = color) : fill,
+      );
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(rect, const Radius.circular(1.6)),
+        stroke,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(final _TimelineGlyphPainter oldDelegate) {
+    return oldDelegate.kind != kind ||
+        oldDelegate.color != color ||
+        oldDelegate.progress != progress;
+  }
+}
+
+class _TimelineConnector extends StatelessWidget {
+  const _TimelineConnector({this.margin = EdgeInsets.zero});
+
+  final EdgeInsetsGeometry margin;
 
   @override
   Widget build(final BuildContext context) {
     final ColorScheme scheme = Theme.of(context).colorScheme;
 
-    return SizedBox(
-      height: elevated ? _StickyTimelineMetaState._cardHeight : null,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: scheme.surface.withValues(alpha: elevated ? 0.9 : 0),
-          borderRadius: BorderRadius.circular(8),
-          border: elevated
-              ? Border.all(color: scheme.primary.withValues(alpha: 0.24))
-              : null,
-          boxShadow: elevated
-              ? [
-                  BoxShadow(
-                    color: scheme.primary.withValues(alpha: 0.12),
-                    blurRadius: 28,
-                    offset: const Offset(0, 18),
-                  ),
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.24),
-                    blurRadius: 34,
-                    offset: const Offset(0, 18),
-                  ),
-                ]
-              : null,
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(elevated ? Dimens.mediumPadding : 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _MiniBadge(experience.period),
-              const SizedBox(height: Dimens.padding),
-              Text(
-                _timelineSummary(experience.company),
-                style: TextStyle(
-                  color: elevated ? scheme.onSurface : scheme.onSurfaceVariant,
-                  height: 1.22,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              if (elevated) ...[
-                const SizedBox(height: Dimens.padding),
-                Text(
-                  experience.company,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: scheme.onSurfaceVariant,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ],
+    return Container(
+      width: 1,
+      margin: margin,
+      color: scheme.outlineVariant.withValues(alpha: 0.36),
+    );
+  }
+}
+
+class _TimelineMetaCard extends StatelessWidget {
+  const _TimelineMetaCard({
+    required this.experience,
+    required this.elevated,
+    this.showAttachedNode = false,
+    this.animateAttachedNode = false,
+    this.attachedNodeProgress,
+  });
+
+  final Experience experience;
+  final bool elevated;
+  final bool showAttachedNode;
+  final bool animateAttachedNode;
+  final double? attachedNodeProgress;
+
+  @override
+  Widget build(final BuildContext context) {
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+    final Widget cardContent = Padding(
+      padding: EdgeInsets.all(elevated ? Dimens.mediumPadding : 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _MiniBadge(experience.period),
+          const SizedBox(height: Dimens.padding),
+          Text(
+            _timelineSummary(experience.company),
+            style: TextStyle(
+              color: elevated ? scheme.onSurface : scheme.onSurfaceVariant,
+              height: 1.22,
+              fontWeight: FontWeight.w900,
+            ),
           ),
+          if (elevated) ...[
+            const SizedBox(height: Dimens.padding),
+            Text(
+              experience.company,
+              maxLines: 2,
+              softWrap: true,
+              overflow: TextOverflow.visible,
+              style: TextStyle(
+                color: scheme.onSurfaceVariant,
+                fontSize: 12,
+                height: 1.2,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+    final Decoration cardDecoration = BoxDecoration(
+      color: scheme.surface.withValues(alpha: elevated ? 0.9 : 0),
+      borderRadius: BorderRadius.circular(8),
+      border: elevated
+          ? Border.all(color: scheme.primary.withValues(alpha: 0.24))
+          : null,
+      boxShadow: elevated
+          ? [
+              BoxShadow(
+                color: scheme.primary.withValues(alpha: 0.12),
+                blurRadius: 28,
+                offset: const Offset(0, 18),
+              ),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.24),
+                blurRadius: 34,
+                offset: const Offset(0, 18),
+              ),
+            ]
+          : null,
+    );
+    final Widget card = DecoratedBox(
+      decoration: cardDecoration,
+      child: SizedBox(
+        height: elevated ? _StickyTimelineLead.cardHeight : null,
+        child: Align(
+          alignment: elevated ? Alignment.centerLeft : Alignment.topLeft,
+          child: cardContent,
         ),
       ),
     );
+
+    if (!showAttachedNode) {
+      return SizedBox(
+        height: elevated ? _StickyTimelineLead.cardHeight : null,
+        child: card,
+      );
+    }
+
+    return SizedBox(
+      width: _StickyTimelineLead.width,
+      height: _StickyTimelineLead.cardHeight,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: _StickyTimelineLead.metaWidth,
+            child: card,
+          ),
+          Positioned(
+            right: 0,
+            top: (_StickyTimelineLead.cardHeight -
+                    _StickyTimelineLead.nodeBoxSize) /
+                2,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: scheme.surface.withValues(alpha: 0.9),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: scheme.primary.withValues(alpha: 0.24),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: scheme.primary.withValues(alpha: 0.12),
+                    blurRadius: 22,
+                    offset: const Offset(0, 14),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.22),
+                    blurRadius: 28,
+                    offset: const Offset(0, 16),
+                  ),
+                ],
+              ),
+              child: SizedBox.square(
+                dimension: _StickyTimelineLead.nodeBoxSize,
+                child: Center(
+                  child: _TimelineNode(
+                    experience: experience,
+                    animated: animateAttachedNode,
+                    integrated: true,
+                    scrollProgress: attachedNodeProgress,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
+}
+
+double _stickyOffsetForSection({
+  required final BuildContext context,
+  required final GlobalKey sectionKey,
+  required final double sectionHeight,
+  required final double anchorHeight,
+}) {
+  final double maxTop = math.max(
+    0,
+    sectionHeight - anchorHeight,
+  );
+  double top = 0;
+  final RenderBox? box =
+      sectionKey.currentContext?.findRenderObject() as RenderBox?;
+  if (box != null && box.hasSize && box.attached) {
+    final double globalTop = box.localToGlobal(Offset.zero).dy;
+    final double viewportHeight = MediaQuery.sizeOf(context).height;
+    final double anchorY =
+        viewportHeight - anchorHeight - Dimens.extraLargePadding;
+    top = (anchorY - globalTop).clamp(0.0, maxTop);
+    final double pixelRatio = MediaQuery.devicePixelRatioOf(context);
+    top = (top * pixelRatio).roundToDouble() / pixelRatio;
+  }
+  return top;
+}
+
+double _stickyProgressForSection({
+  required final BuildContext context,
+  required final GlobalKey sectionKey,
+  required final double sectionHeight,
+  required final double anchorHeight,
+}) {
+  final double maxTop = math.max(0, sectionHeight - anchorHeight);
+  if (maxTop <= 0) {
+    return 0;
+  }
+
+  final RenderBox? box =
+      sectionKey.currentContext?.findRenderObject() as RenderBox?;
+  if (box == null || !box.hasSize || !box.attached) {
+    return 0;
+  }
+
+  final double globalTop = box.localToGlobal(Offset.zero).dy;
+  final double viewportHeight = MediaQuery.sizeOf(context).height;
+  final double anchorY =
+      viewportHeight - anchorHeight - Dimens.extraLargePadding;
+  final double top = (anchorY - globalTop).clamp(0.0, maxTop);
+  return Curves.easeInOutCubic.transform((top / maxTop).clamp(0.0, 1.0));
 }
 
 class _ExperienceCard extends StatelessWidget {
@@ -4649,6 +5240,27 @@ IconData _experienceIcon(final String company) {
     return Icons.manage_search_rounded;
   }
   return Icons.apps_rounded;
+}
+
+_TimelineGlyphKind _timelineGlyphKind(final String company) {
+  final String normalized = company.toLowerCase();
+  if (normalized.contains('bourse')) {
+    return _TimelineGlyphKind.education;
+  }
+  if (normalized.contains('keel')) {
+    return _TimelineGlyphKind.water;
+  }
+  if (normalized.contains('independent') ||
+      normalized.contains('construction')) {
+    return _TimelineGlyphKind.construction;
+  }
+  if (normalized.contains('computer') || normalized.contains('technologies')) {
+    return _TimelineGlyphKind.pos;
+  }
+  if (normalized.contains('resume')) {
+    return _TimelineGlyphKind.search;
+  }
+  return _TimelineGlyphKind.app;
 }
 
 String _timelineSummary(final String company) {
