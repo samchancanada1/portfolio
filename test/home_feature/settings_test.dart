@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:portfolio/core/theme/colors.dart';
 import 'package:portfolio/feature/home_feature/data/data_sources/local/settings_local_data_source.dart';
 import 'package:portfolio/feature/home_feature/data/repositories/persistent_settings_repository.dart';
 import 'package:portfolio/feature/home_feature/domain/entities/theme_preference.dart';
@@ -123,8 +124,9 @@ void main() {
     expect(cubit.state.primaryColor, Colors.red);
     expect(cubit.state.lightPrimaryColor, Colors.red);
 
-    cubit.setGreenColor();
-    expect(cubit.state.primaryColor, Colors.green);
+    cubit.setOrangeColor();
+    expect(cubit.state.primaryColor, AppColors.orange);
+    expect(cubit.state.lightPrimaryColor, AppColors.orange);
 
     cubit.setBlueColor();
     expect(cubit.state.primaryColor, Colors.blue);

@@ -4064,27 +4064,11 @@ class _TimelineMetaCard extends StatelessWidget {
         ],
       ),
     );
-    final Decoration cardDecoration = BoxDecoration(
-      color: scheme.surface.withValues(alpha: elevated ? 0.9 : 0),
-      borderRadius: BorderRadius.circular(8),
-      border: elevated
-          ? Border.all(color: scheme.primary.withValues(alpha: 0.24))
-          : null,
-      boxShadow: elevated
-          ? [
-              BoxShadow(
-                color: scheme.primary.withValues(alpha: 0.12),
-                blurRadius: 28,
-                offset: const Offset(0, 18),
-              ),
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.24),
-                blurRadius: 34,
-                offset: const Offset(0, 18),
-              ),
-            ]
-          : null,
-    );
+    final Decoration cardDecoration = elevated
+        ? _glowFrameDecoration(context)
+        : BoxDecoration(
+            color: scheme.surface.withValues(alpha: 0),
+          );
     final Widget card = DecoratedBox(
       decoration: cardDecoration,
       child: SizedBox(
@@ -4122,25 +4106,7 @@ class _TimelineMetaCard extends StatelessWidget {
                     _StickyTimelineLead.nodeBoxSize) /
                 2,
             child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: scheme.surface.withValues(alpha: 0.9),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: scheme.primary.withValues(alpha: 0.24),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: scheme.primary.withValues(alpha: 0.12),
-                    blurRadius: 22,
-                    offset: const Offset(0, 14),
-                  ),
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.22),
-                    blurRadius: 28,
-                    offset: const Offset(0, 16),
-                  ),
-                ],
-              ),
+              decoration: _glowFrameDecoration(context, compact: true),
               child: SizedBox.square(
                 dimension: _StickyTimelineLead.nodeBoxSize,
                 child: Center(
@@ -4719,9 +4685,9 @@ class _SettingsView extends StatelessWidget {
                         context.read<PrimaryColorCubit>().setBlueColor(),
                   ),
                   _ColorDot(
-                    color: Colors.green,
+                    color: AppColors.orange,
                     onTap: () =>
-                        context.read<PrimaryColorCubit>().setGreenColor(),
+                        context.read<PrimaryColorCubit>().setOrangeColor(),
                   ),
                   _ColorDot(
                     color: Colors.red,
@@ -5102,31 +5068,46 @@ class _Panel extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    final ColorScheme scheme = Theme.of(context).colorScheme;
-
     return Container(
       padding: const EdgeInsets.all(Dimens.largePadding),
-      decoration: BoxDecoration(
-        color: scheme.surface.withValues(
-          alpha: checkDarkMode(context) ? 0.56 : 0.62,
-        ),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: scheme.outlineVariant.withValues(alpha: 0.22),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(
-              alpha: checkDarkMode(context) ? 0.08 : 0.03,
-            ),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
+      decoration: _glowFrameDecoration(context),
       child: child,
     );
   }
+}
+
+BoxDecoration _glowFrameDecoration(
+  final BuildContext context, {
+  final bool compact = false,
+}) {
+  final ColorScheme scheme = Theme.of(context).colorScheme;
+  final bool dark = checkDarkMode(context);
+
+  return BoxDecoration(
+    color: scheme.surface.withValues(alpha: dark ? 0.62 : 0.72),
+    borderRadius: BorderRadius.circular(8),
+    border: Border.all(
+      color: scheme.primary.withValues(alpha: dark ? 0.3 : 0.34),
+    ),
+    boxShadow: [
+      BoxShadow(
+        color: scheme.primary.withValues(alpha: dark ? 0.14 : 0.1),
+        blurRadius: compact ? 28 : 38,
+        spreadRadius: compact ? 1 : 2,
+        offset: const Offset(0, 16),
+      ),
+      BoxShadow(
+        color: scheme.primary.withValues(alpha: dark ? 0.08 : 0.06),
+        blurRadius: compact ? 58 : 78,
+        spreadRadius: compact ? 8 : 14,
+      ),
+      BoxShadow(
+        color: Colors.black.withValues(alpha: dark ? 0.28 : 0.08),
+        blurRadius: compact ? 30 : 42,
+        offset: const Offset(0, 20),
+      ),
+    ],
+  );
 }
 
 class _Eyebrow extends StatelessWidget {

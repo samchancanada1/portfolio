@@ -21,11 +21,11 @@ class PrimaryColorCubit extends Cubit<PrimaryColorState> {
     );
   }
 
-  void setGreenColor() {
+  void setOrangeColor() {
     emit(
       state.copyWith(
-        primaryColor: Colors.green,
-        lightPrimaryColor: Colors.green,
+        primaryColor: AppColors.orange,
+        lightPrimaryColor: AppColors.orange,
       ),
     );
   }

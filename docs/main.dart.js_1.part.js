@@ -1,9 +1,9 @@
 ((a,b)=>{a[b]=a[b]||{}})(self,"$__dart_deferred_initializers__")
 $__dart_deferred_initializers__.current=function(a,b,c,$){var B,C,A={
-aSU(d,e,f){var x=new B.pa(C.hL,d,y.c),w=new A.Y_(x)
-x.r=A.b90(w)
+aSV(d,e,f){var x=new B.pa(C.hL,d,y.c),w=new A.Y_(x)
+x.r=A.b91(w)
 return w},
-b8Z(d,e){var x="Fran\xe7ais"
+b9_(d,e){var x="Fran\xe7ais"
 switch(e){case"mainScreen.title":return"Le titre fran\xe7ais"
 case"mainScreen.counter":return new A.aGz(d)
 case"mainScreen.tapMe":return"Appuyez-moi"
@@ -48,7 +48,7 @@ case"home_screen.collapse":return"R\xe9duire"
 case"home_screen.expand":return"D\xe9velopper"
 case"home_screen.projectLink":return"Lien du projet"
 default:return null}},
-b90(d){return new A.aGB(d)},
+b91(d){return new A.aGB(d)},
 Y_:function Y_(d){this.a=d
 this.d=this.b=$},
 aFy:function aFy(){},
@@ -85,16 +85,16 @@ ga0V(){return"Couleur du th\xe8me"},
 ga_u(){return"Langue"}}
 var z=a.updateTypes([])
 A.aGB.prototype={
-$1(d){return A.b8Z(this.a,d)},
+$1(d){return A.b9_(this.a,d)},
 $S:76}
 A.aGz.prototype={
 $1$n(d){var x
 this.a.gV2()
-x=B.aRy("fr")
+x=B.aRz("fr")
 return x.$3$one$other(d,"Vous avez appuy\xe9 une fois.","Vous avez appuy\xe9 "+B.k(d)+" fois.")},
 $S:233};(function inheritance(){var x=a.inheritMany
 x(B.A,[A.Y_,A.aFy])
-x(B.lP,[A.aGB,A.aGz])})()
-B.aTY(b.typeUniverse,JSON.parse('{"Y_":{"h6":[],"iO":["fV","h6"]}}'))
+x(B.lO,[A.aGB,A.aGz])})()
+B.aTZ(b.typeUniverse,JSON.parse('{"Y_":{"h6":[],"iO":["fV","h6"]}}'))
 var y={g:B.ag("l"),c:B.ag("pa<fV,h6>")}};
-(a=>{a["DgTLhc1OM70iAST+YDAOE/nfySM="]=a.current})($__dart_deferred_initializers__);
+(a=>{a["24BkZ0cXq78lexezsKs8hL7XZ18="]=a.current})($__dart_deferred_initializers__);
