@@ -147,6 +147,7 @@ class Experience {
     required this.points,
     required this.tech,
     this.links = const [],
+    this.screenPaths = const [],
   });
 
   final String company;
@@ -156,6 +157,7 @@ class Experience {
   final List<String> points;
   final List<String> tech;
   final List<ResumeLink> links;
+  final List<String> screenPaths;
 }
 
 class DesignLens {

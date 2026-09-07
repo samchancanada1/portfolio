@@ -1,11 +1,11 @@
 ((a,b)=>{a[b]=a[b]||{}})(self,"$__dart_deferred_initializers__")
 $__dart_deferred_initializers__.current=function(a,b,c,$){var B,C,A={
-aNJ(d,e,f){var x=new B.oB(C.hm,d,y.c),w=new A.VI(x)
-x.r=A.b3F(w)
+aR9(d,e,f){var x=new B.oU(C.hy,d,y.c),w=new A.X7(x)
+x.r=A.b7c(w)
 return w},
-b3E(d,e){var x="Fran\xe7ais"
+b7b(d,e){var x="Fran\xe7ais"
 switch(e){case"mainScreen.title":return"Le titre fran\xe7ais"
-case"mainScreen.counter":return new A.aBT(d)
+case"mainScreen.counter":return new A.aF1(d)
 case"mainScreen.tapMe":return"Appuyez-moi"
 case"locales.en":return"Anglais"
 case"locales.fr":return x
@@ -21,8 +21,8 @@ case"home_screen.iAm":return"Je suis "
 case"home_screen.developer":return"D\xe9veloppeur"
 case"home_screen.designer":return"Designer"
 case"home_screen.freelancer":return"Pigiste"
-case"home_screen.aboutTitle":return"D\xe9veloppeur Flutter et sp\xe9cialiste des applications mobiles"
-case"home_screen.aboutMeDescription":return"D\xe9veloppeur mobile Flutter avec plus de 6 ans d'exp\xe9rience dans la conception, le d\xe9veloppement et la maintenance d'applications mobiles multiplateformes pour iOS et Android. Solide exp\xe9rience en Flutter, Dart, Clean Architecture, Firebase, int\xe9gration d'API REST, modules natifs Kotlin/Swift, automatisation CI/CD et processus de publication App Store / Google Play."
+case"home_screen.aboutTitle":return"D\xe9veloppeur senior Flutter et applications mobiles"
+case"home_screen.aboutMeDescription":return"D\xe9veloppeur senior Flutter et applications mobiles avec plus de 6 ans d'exp\xe9rience dans la conception, la livraison et le support d'applications iOS, Android et Flutter Web dans les domaines de l'\xe9ducation, du retail d'entreprise, de l'IoT et de la construction. Exp\xe9rience en ownership produit de bout en bout, architecture mobile et syst\xe8me, int\xe9grations natives Java/Kotlin/Swift, backend serverless Firebase, APIs REST, workflows offline-first, CI/CD, release management et support production."
 case"home_screen.statistics":return"Statistiques"
 case"home_screen.website":return"Site Web"
 case"home_screen.phone":return"Num\xe9ro de t\xe9l\xe9phone"
@@ -48,53 +48,53 @@ case"home_screen.collapse":return"R\xe9duire"
 case"home_screen.expand":return"D\xe9velopper"
 case"home_screen.projectLink":return"Lien du projet"
 default:return null}},
-b3F(d){return new A.aBU(d)},
-VI:function VI(d){this.a=d
+b7c(d){return new A.aF2(d)},
+X7:function X7(d){this.a=d
 this.d=this.b=$},
-aAX:function aAX(){},
-aBU:function aBU(d){this.a=d},
-aBT:function aBT(d){this.a=d}}
+aE0:function aE0(){},
+aF2:function aF2(d){this.a=d},
+aF1:function aF1(d){this.a=d}}
 B=c[0]
 C=c[2]
 A=a.updateHolder(c[3],A)
-A.VI.prototype={
-i(d,e){return this.a.KO(e)},
-gSA(){var x=this.b
+A.X7.prototype={
+j(d,e){return this.a.M6(e)},
+gUc(){var x=this.b
 return x===$?this.b=this:x},
-gJ2(){var x=y.g
+gKi(){var x=y.g
 return B.aC(["en","Anglais","fr","Fran\xe7ais"],x,x)},
-gYf(){return"Page introuvable"},
-ghX(){var x=this,w=x.d
-if(w===$){x.gSA()
-x.d!==$&&B.ay()
-w=x.d=new A.aAX()}return w},
-$ifQ:1,
-$iim:1,
-gws(){return this.a}}
-A.aAX.prototype={
-gX7(){return"D'accueil"},
-gUj(){return"\xc0 propos de"},
-gZf(){return"Reprendre"},
-gLp(){return"Comp\xe9tences"},
-gCR(){return"Param\xe8tres"},
-gJf(){return"Hiu Tung Chan"},
-gWA(){return"Fran\xe7ais"},
-gWb(){return"Anglais"},
-gZl(){return"Mode th\xe8me"},
-gZk(){return"Couleur du th\xe8me"},
-gXU(){return"Langue"}}
+gZS(){return"Page introuvable"},
+ghx(){var x=this,w=x.d
+if(w===$){x.gUc()
+x.d!==$&&B.aB()
+w=x.d=new A.aE0()}return w},
+$ih0:1,
+$iiE:1,
+gwS(){return this.a}}
+A.aE0.prototype={
+gYM(){return"D'accueil"},
+gVX(){return"\xc0 propos de"},
+ga_Q(){return"Reprendre"},
+gMO(){return"Comp\xe9tences"},
+gDE(){return"Param\xe8tres"},
+gBD(){return"Hiu Tung Chan"},
+gYd(){return"Fran\xe7ais"},
+gXN(){return"Anglais"},
+ga_X(){return"Mode th\xe8me"},
+ga_W(){return"Couleur du th\xe8me"},
+gZw(){return"Langue"}}
 var z=a.updateTypes([])
-A.aBU.prototype={
-$1(d){return A.b3E(this.a,d)},
-$S:76}
-A.aBT.prototype={
+A.aF2.prototype={
+$1(d){return A.b7b(this.a,d)},
+$S:83}
+A.aF1.prototype={
 $1$n(d){var x
-this.a.gSA()
-x=B.aMr("fr")
+this.a.gUc()
+x=B.aPQ("fr")
 return x.$3$one$other(d,"Vous avez appuy\xe9 une fois.","Vous avez appuy\xe9 "+B.k(d)+" fois.")},
-$S:215};(function inheritance(){var x=a.inheritMany
-x(B.z,[A.VI,A.aAX])
-x(B.lp,[A.aBU,A.aBT])})()
-B.aOK(b.typeUniverse,JSON.parse('{"VI":{"fQ":[],"im":["fE","fQ"]}}'))
-var y={g:B.ad("l"),c:B.ad("oB<fE,fQ>")}};
-(a=>{a["UIv0Wtrdb6GqwkrFQfTV1H9BAQ8="]=a.current})($__dart_deferred_initializers__);
+$S:226};(function inheritance(){var x=a.inheritMany
+x(B.A,[A.X7,A.aE0])
+x(B.lC,[A.aF2,A.aF1])})()
+B.aSd(b.typeUniverse,JSON.parse('{"X7":{"h0":[],"iE":["fN","h0"]}}'))
+var y={g:B.ah("l"),c:B.ah("oU<fN,h0>")}};
+(a=>{a["Z/mK3yaEWKG54AyRSv6qQnCy/UA="]=a.current})($__dart_deferred_initializers__);

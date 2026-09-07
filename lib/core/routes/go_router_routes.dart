@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../../feature/home_feature/presentation/cubit/home_navigation_cubit.dart';
 import '../../feature/home_feature/presentation/screens/home_screen.dart';
 import '../../feature/home_feature/presentation/screens/not_found_screen.dart';
-import '../../feature/home_feature/presentation/screens/splash_screen.dart';
 import 'go_routes_path.dart';
 
 final GoRouter routes = GoRouter(
@@ -16,7 +15,7 @@ final GoRouter routes = GoRouter(
     GoRoute(
       path: GoRoutesPath.splash,
       builder: (final BuildContext context, final GoRouterState state) {
-        return const SplashScreen();
+        return const HomeScreen(initialSection: HomeSection.home);
       },
     ),
     GoRoute(

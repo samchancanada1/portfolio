@@ -90,10 +90,9 @@ class TranslationsHomeScreenEn {
   String get developer => 'Developer';
   String get designer => 'Designer';
   String get freelancer => 'Freelancer';
-  String get aboutTitle =>
-      'Flutter Developer and Mobile Application Specialist';
+  String get aboutTitle => 'Senior Flutter & Mobile Application Developer';
   String get aboutMeDescription =>
-      'Flutter Mobile Developer with 6+ years of experience designing, building, and maintaining cross-platform mobile applications for iOS and Android. Strong background in Flutter, Dart, Clean Architecture, Firebase, REST API integration, native Kotlin/Swift modules, CI/CD automation, and App Store / Google Play release workflows. Experienced across scholarship technology, retail POS, IoT, fitness, and enterprise applications.';
+      'Senior Flutter & Mobile Application Developer with 6+ years of experience designing, delivering, and supporting iOS, Android, and Flutter Web applications across education technology, enterprise retail, IoT, and construction technology. Experienced in end-to-end product ownership, mobile and system architecture, native Java/Kotlin/Swift integrations, Firebase serverless backend development, REST API integration, offline-first workflows, CI/CD, release management, and production support.';
   String get statistics => 'Statistics';
   String get website => 'Website';
   String get phone => 'Phone number';
@@ -165,9 +164,9 @@ extension on Translations {
       case 'home_screen.freelancer':
         return 'Freelancer';
       case 'home_screen.aboutTitle':
-        return 'Flutter Developer and Mobile Application Specialist';
+        return 'Senior Flutter & Mobile Application Developer';
       case 'home_screen.aboutMeDescription':
-        return 'Flutter Mobile Developer with 6+ years of experience designing, building, and maintaining cross-platform mobile applications for iOS and Android. Strong background in Flutter, Dart, Clean Architecture, Firebase, REST API integration, native Kotlin/Swift modules, CI/CD automation, and App Store / Google Play release workflows. Experienced across scholarship technology, retail POS, IoT, fitness, and enterprise applications.';
+        return 'Senior Flutter & Mobile Application Developer with 6+ years of experience designing, delivering, and supporting iOS, Android, and Flutter Web applications across education technology, enterprise retail, IoT, and construction technology. Experienced in end-to-end product ownership, mobile and system architecture, native Java/Kotlin/Swift integrations, Firebase serverless backend development, REST API integration, offline-first workflows, CI/CD, release management, and production support.';
       case 'home_screen.statistics':
         return 'Statistics';
       case 'home_screen.website':

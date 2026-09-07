@@ -36,17 +36,17 @@ void main() {
   });
 
   test('app color palette exposes all named colors', () {
-    expect(AppColors.primaryColor, const Color(0xff00A896));
-    expect(AppColors.lightPrimaryColor, const Color(0xff35D0BA));
-    expect(AppColors.secondColor, const Color(0xffE76F51));
+    expect(AppColors.primaryColor, const Color(0xff1DB954));
+    expect(AppColors.lightPrimaryColor, const Color(0xff36D979));
+    expect(AppColors.secondColor, const Color(0xffB8C2BA));
     expect(AppColors.colorAttention, const Color(0xffE85D75));
-    expect(AppColors.ink, const Color(0xff061316));
-    expect(AppColors.ivory, const Color(0xffF8F6EF));
-    expect(AppColors.mist, const Color(0xffEDF6F5));
+    expect(AppColors.ink, const Color(0xff020405));
+    expect(AppColors.ivory, const Color(0xffF3F5F1));
+    expect(AppColors.mist, const Color(0xffE8EFEA));
     expect(AppColors.disableColor, const Color(0xff757575));
     expect(AppColors.lightGray, const Color(0xffD5D5D5));
     expect(AppColors.gray, const Color(0xffE0E0E0));
-    expect(AppColors.green, const Color(0xff4CAF50));
+    expect(AppColors.green, const Color(0xff1DB954));
     expect(AppColors.white, const Color(0xffffffff));
     expect(AppColors.black, const Color(0xff000000));
     expect(AppColors.gray70, const Color(0xff707070));
@@ -127,7 +127,7 @@ void main() {
     final expectedDarkScheme = ColorScheme.fromSeed(
       seedColor: AppColors.lightPrimaryColor,
       brightness: Brightness.dark,
-      surface: const Color(0xff11181A),
+      surface: const Color(0xff080B0C),
     );
 
     expect(theme.lightTheme.colorScheme.primary, expectedLightScheme.primary);

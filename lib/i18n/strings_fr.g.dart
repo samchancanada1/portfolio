@@ -104,11 +104,10 @@ class _TranslationsHomeScreenFr implements TranslationsHomeScreenEn {
   @override
   String get freelancer => 'Pigiste';
   @override
-  String get aboutTitle =>
-      'Développeur Flutter et spécialiste des applications mobiles';
+  String get aboutTitle => 'Développeur senior Flutter et applications mobiles';
   @override
   String get aboutMeDescription =>
-      'Développeur mobile Flutter avec plus de 6 ans d\'expérience dans la conception, le développement et la maintenance d\'applications mobiles multiplateformes pour iOS et Android. Solide expérience en Flutter, Dart, Clean Architecture, Firebase, intégration d\'API REST, modules natifs Kotlin/Swift, automatisation CI/CD et processus de publication App Store / Google Play.';
+      'Développeur senior Flutter et applications mobiles avec plus de 6 ans d\'expérience dans la conception, la livraison et le support d\'applications iOS, Android et Flutter Web dans les domaines de l\'éducation, du retail d\'entreprise, de l\'IoT et de la construction. Expérience en ownership produit de bout en bout, architecture mobile et système, intégrations natives Java/Kotlin/Swift, backend serverless Firebase, APIs REST, workflows offline-first, CI/CD, release management et support production.';
   @override
   String get statistics => 'Statistiques';
   @override
@@ -204,9 +203,9 @@ extension on TranslationsFr {
       case 'home_screen.freelancer':
         return 'Pigiste';
       case 'home_screen.aboutTitle':
-        return 'Développeur Flutter et spécialiste des applications mobiles';
+        return 'Développeur senior Flutter et applications mobiles';
       case 'home_screen.aboutMeDescription':
-        return 'Développeur mobile Flutter avec plus de 6 ans d\'expérience dans la conception, le développement et la maintenance d\'applications mobiles multiplateformes pour iOS et Android. Solide expérience en Flutter, Dart, Clean Architecture, Firebase, intégration d\'API REST, modules natifs Kotlin/Swift, automatisation CI/CD et processus de publication App Store / Google Play.';
+        return 'Développeur senior Flutter et applications mobiles avec plus de 6 ans d\'expérience dans la conception, la livraison et le support d\'applications iOS, Android et Flutter Web dans les domaines de l\'éducation, du retail d\'entreprise, de l\'IoT et de la construction. Expérience en ownership produit de bout en bout, architecture mobile et système, intégrations natives Java/Kotlin/Swift, backend serverless Firebase, APIs REST, workflows offline-first, CI/CD, release management et support production.';
       case 'home_screen.statistics':
         return 'Statistiques';
       case 'home_screen.website':

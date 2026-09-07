@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../utils/locale_handler.dart';
 import '../theme/colors.dart';
 
 class AppTheme {
@@ -8,23 +7,26 @@ class AppTheme {
     final Color primaryColor,
     final Color lightPrimaryColor,
   ) {
-    final String fontFamily =
-        checkEnState(context) ? 'IranYekanX' : 'IranYekanXFaNum';
+    const String appFontFamily = 'SF Pro Text';
+    const String displayFontFamily = 'SF Pro Display';
     final TextTheme baseTextTheme = TextTheme(
       displayLarge: const TextStyle(
         fontSize: 72,
         fontWeight: FontWeight.w900,
         letterSpacing: 0,
+        fontFamily: displayFontFamily,
       ),
       displaySmall: const TextStyle(
         fontSize: 42,
         fontWeight: FontWeight.w900,
         letterSpacing: 0,
+        fontFamily: displayFontFamily,
       ),
       headlineSmall: const TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.w800,
         letterSpacing: 0,
+        fontFamily: displayFontFamily,
       ),
       titleMedium: const TextStyle(
         fontSize: 18,
@@ -35,7 +37,7 @@ class AppTheme {
       bodyMedium: const TextStyle(height: 1.55, letterSpacing: 0),
       bodyLarge: const TextStyle(height: 1.55, letterSpacing: 0),
       labelLarge: const TextStyle(letterSpacing: 0),
-    ).apply(fontFamily: fontFamily);
+    ).apply(fontFamily: appFontFamily);
 
     lightTheme = ThemeData(
       useMaterial3: true,
@@ -90,12 +92,12 @@ class AppTheme {
       navigationRailTheme: NavigationRailThemeData(
         selectedIconTheme: IconThemeData(color: primaryColor),
       ),
-      fontFamily: fontFamily,
+      fontFamily: appFontFamily,
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.ivory,
         elevation: 0,
         toolbarTextStyle: TextStyle(
-          fontFamily: fontFamily,
+          fontFamily: appFontFamily,
           fontWeight: FontWeight.bold,
         ),
         centerTitle: true,
@@ -108,7 +110,7 @@ class AppTheme {
       colorScheme: ColorScheme.fromSeed(
         seedColor: lightPrimaryColor,
         brightness: Brightness.dark,
-        surface: const Color(0xff11181A),
+        surface: const Color(0xff080B0C),
       ),
       textTheme: baseTextTheme.apply(
         bodyColor: const Color(0xffEFF7F5),
@@ -155,12 +157,12 @@ class AppTheme {
           return const IconThemeData(color: Color(0xffB7C6C3));
         }),
       ),
-      fontFamily: fontFamily,
+      fontFamily: appFontFamily,
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.ink,
         elevation: 0,
         toolbarTextStyle: TextStyle(
-          fontFamily: fontFamily,
+          fontFamily: appFontFamily,
           fontWeight: FontWeight.bold,
         ),
         centerTitle: true,

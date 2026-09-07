@@ -16,7 +16,7 @@ void main() {
     await locator.reset();
     SharedPreferences.setMockInitialValues({});
     await setupServiceLocator();
-    await LocaleSettings.setLocale(AppLocale.en);
+    LocaleSettings.setLocaleSync(AppLocale.en);
     routes.go('/home');
   });
 
@@ -54,18 +54,18 @@ void main() {
     );
   }
 
-  testWidgets('splash screen animates then opens home', (
+  Future<void> pumpPortfolio(final WidgetTester tester) async {
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 900));
+  }
+
+  testWidgets('root route opens home without splash', (
     final WidgetTester tester,
   ) async {
     routes.go('/');
 
     await tester.pumpWidget(buildTestApp());
-
-    expect(find.byType(Image), findsWidgets);
-    expect(find.text('Hiu Tung Chan'), findsNothing);
-
-    await tester.pump(const Duration(milliseconds: 2100));
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     expect(find.text('Hiu Tung Chan'), findsWidgets);
   });
@@ -75,45 +75,48 @@ void main() {
   ) async {
     await tester.pumpWidget(buildTestApp());
 
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     expect(find.text('Hiu Tung Chan'), findsWidgets);
     expect(
-      find.textContaining('cross-platform iOS and Android apps'),
+      find.text('Senior Flutter products, shipped.'),
       findsOneWidget,
     );
-    expect(find.text('Core stack'), findsOneWidget);
-    expect(find.text('Clean Architecture'), findsWidgets);
+    expect(find.textContaining('Flutter'), findsWidgets);
+    expect(find.text('View case studies'), findsOneWidget);
 
     await tester.tap(find.text('About'));
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     expect(find.textContaining('6+ years'), findsWidgets);
     expect(find.text('Markham, ON, CA'), findsOneWidget);
 
     await tester.tap(find.text('Resume'));
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     expect(find.text('BoursePad'), findsOneWidget);
     expect(find.text('CORE COMPETENCIES'), findsOneWidget);
-    expect(find.text('Core competencies from the resume'), findsOneWidget);
+    expect(find.text('What I bring to a product team'), findsOneWidget);
     expect(find.text('KeelWorks Foundation'), findsOneWidget);
-    expect(find.text('Computer And Technologies Holdings'), findsOneWidget);
+    expect(
+      find.text('Computer And Technologies Holdings Limited'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('section tags update the browser route', (
     final WidgetTester tester,
   ) async {
     await tester.pumpWidget(buildTestApp());
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     await tester.tap(find.text('About'));
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     expect(routes.routeInformationProvider.value.uri.path, '/about');
 
     await tester.tap(find.text('Resume'));
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     expect(routes.routeInformationProvider.value.uri.path, '/resume');
   });
@@ -124,10 +127,10 @@ void main() {
     routes.go('/skills');
 
     await tester.pumpWidget(buildTestApp());
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     expect(
-      find.text('Technical skills from the updated resume'),
+      find.text('Production-ready mobile skills'),
       findsOneWidget,
     );
   });
@@ -141,15 +144,15 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
 
     await tester.pumpWidget(buildTestApp());
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     await tester.tap(find.text('About'));
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     expect(find.textContaining('6+ years'), findsWidgets);
 
     await tester.tap(find.text('Resume'));
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     expect(find.text('BoursePad'), findsWidgets);
     expect(find.text('KeelWorks Foundation'), findsOneWidget);
@@ -164,29 +167,32 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
 
     await tester.pumpWidget(buildTestApp());
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     expect(find.text('Hiu Tung Chan'), findsWidgets);
-    expect(find.text('Currently shipping'), findsOneWidget);
+    expect(find.text('Production Flutter projects'), findsOneWidget);
   });
 
   testWidgets('skills page presents resume-aligned technical categories', (
     final WidgetTester tester,
   ) async {
     await tester.pumpWidget(buildTestApp());
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     await tester.tap(find.text('Skills'));
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     expect(
-        find.text('Technical skills from the updated resume'), findsOneWidget);
+      find.text('Production-ready mobile skills'),
+      findsOneWidget,
+    );
     expect(find.text('Mobile'), findsOneWidget);
     expect(find.text('Architecture'), findsWidgets);
-    expect(find.text('Backend and APIs'), findsOneWidget);
+    expect(find.text('Backend and cloud'), findsOneWidget);
+    expect(find.text('APIs and data'), findsOneWidget);
     expect(find.text('CI/CD and release'), findsOneWidget);
-    expect(find.text('Mobile features'), findsOneWidget);
-    expect(find.text('Detailed toolbox'), findsOneWidget);
+    expect(find.text('Platform capabilities'), findsOneWidget);
+    expect(find.text('Technical toolbox'), findsOneWidget);
     expect(find.text('Firebase Auth'), findsWidgets);
   });
 
@@ -194,21 +200,21 @@ void main() {
     final WidgetTester tester,
   ) async {
     await tester.pumpWidget(buildTestApp());
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     await tester.tap(find.text('Settings').first);
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     expect(find.text('Theme Mode'), findsOneWidget);
     expect(tester.widget<Switch>(find.byType(Switch)).value, isTrue);
 
     await tester.tap(find.byType(Switch));
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     expect(tester.widget<Switch>(find.byType(Switch)).value, isFalse);
 
     await tester.tap(find.byTooltip('Select color').last);
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     final context = tester.element(find.text('Theme Color'));
     expect(
@@ -225,19 +231,19 @@ void main() {
     final WidgetTester tester,
   ) async {
     await tester.pumpWidget(buildTestApp());
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     await tester.tap(find.text('Settings').first);
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     await tester.tap(find.text('Language'));
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     expect(find.text('French'), findsWidgets);
     expect(find.text('English'), findsWidgets);
 
     await tester.tap(find.text('English').last);
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     expect(await LocaleHandler().getLocale(), AppLocale.en);
   });
@@ -246,7 +252,7 @@ void main() {
     final WidgetTester tester,
   ) async {
     await tester.pumpWidget(buildTestApp());
-    await tester.pumpAndSettle();
+    await pumpPortfolio(tester);
 
     routes.go('/missing');
     await tester.pump();

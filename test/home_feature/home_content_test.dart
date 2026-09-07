@@ -11,12 +11,15 @@ void main() {
   test('static repository exposes complete portfolio sections', () {
     const repository = StaticPortfolioRepository();
 
-    expect(repository.getHeroProfile().role, 'Flutter Mobile Developer');
+    expect(
+      repository.getHeroProfile().role,
+      'Senior Flutter & Mobile Application Developer',
+    );
     expect(repository.getHeroProfile().metrics, hasLength(2));
     expect(repository.getAboutProfile().info.map((final item) => item.label),
         contains('Email'));
     expect(repository.getCoreCompetencies().impacts, hasLength(4));
-    expect(repository.getSkillsOverview().toolboxTitle, 'Detailed toolbox');
+    expect(repository.getSkillsOverview().toolboxTitle, 'Technical toolbox');
     expect(repository.getDesignLenses(), hasLength(4));
     expect(repository.getStats(), hasLength(4));
     expect(repository.getExperiences().length, greaterThan(3));
@@ -36,8 +39,12 @@ void main() {
     expect(content.hero.stack.chips, contains('Firebase'));
     expect(content.about.info.map((final item) => item.value),
         contains('samchancanada1@gmail.com'));
-    expect(content.coreCompetencies.badges, contains('Offline-first'));
-    expect(content.skillsOverview.description, contains('mobile development'));
+    expect(
+        content.coreCompetencies.badges, contains('Offline-first workflows'));
+    expect(
+      content.skillsOverview.description,
+      contains('shipping cross-platform apps'),
+    );
     expect(content.designLenses.map((final item) => item.icon),
         contains(HomeIconKey.devices));
     expect(content.stats.map((final item) => item.value), contains('6+'));
@@ -45,6 +52,12 @@ void main() {
         contains('Architecture'));
     expect(content.contactActions.map((final item) => item.label),
         contains('LinkedIn'));
+    expect(
+      content.experiences
+          .firstWhere((final item) => item.company == 'BoursePad')
+          .screenPaths,
+      hasLength(3),
+    );
   });
 
   test('home content state copies values and compares by props', () {
@@ -135,5 +148,6 @@ void main() {
     expect(lens.description, 'Clear flow');
     expect(group.skills.single, 'BLoC');
     expect(experience.links.single.url, 'https://example.com');
+    expect(experience.screenPaths, isEmpty);
   });
 }
