@@ -9,43 +9,55 @@ import 'go_routes_path.dart';
 final GoRouter routes = GoRouter(
   initialLocation: GoRoutesPath.splash,
   errorBuilder: (final BuildContext context, final GoRouterState state) {
-    return const NotFoundScreen();
+    return _selectablePage(const NotFoundScreen());
   },
   routes: <RouteBase>[
     GoRoute(
       path: GoRoutesPath.splash,
       builder: (final BuildContext context, final GoRouterState state) {
-        return const HomeScreen(initialSection: HomeSection.home);
+        return _selectablePage(
+          const HomeScreen(initialSection: HomeSection.home),
+        );
       },
     ),
     GoRoute(
       path: GoRoutesPath.home,
       builder: (final BuildContext context, final GoRouterState state) {
-        return const HomeScreen(initialSection: HomeSection.home);
+        return _selectablePage(
+          const HomeScreen(initialSection: HomeSection.home),
+        );
       },
     ),
     GoRoute(
       path: GoRoutesPath.about,
       builder: (final BuildContext context, final GoRouterState state) {
-        return const HomeScreen(initialSection: HomeSection.about);
+        return _selectablePage(
+          const HomeScreen(initialSection: HomeSection.about),
+        );
       },
     ),
     GoRoute(
       path: GoRoutesPath.resume,
       builder: (final BuildContext context, final GoRouterState state) {
-        return const HomeScreen(initialSection: HomeSection.resume);
+        return _selectablePage(
+          const HomeScreen(initialSection: HomeSection.resume),
+        );
       },
     ),
     GoRoute(
       path: GoRoutesPath.skills,
       builder: (final BuildContext context, final GoRouterState state) {
-        return const HomeScreen(initialSection: HomeSection.skills);
+        return _selectablePage(
+          const HomeScreen(initialSection: HomeSection.skills),
+        );
       },
     ),
     GoRoute(
       path: GoRoutesPath.settings,
       builder: (final BuildContext context, final GoRouterState state) {
-        return const HomeScreen(initialSection: HomeSection.settings);
+        return _selectablePage(
+          const HomeScreen(initialSection: HomeSection.settings),
+        );
       },
     ),
     // GoRoute(
@@ -70,3 +82,7 @@ final GoRouter routes = GoRouter(
     // ),
   ],
 );
+
+Widget _selectablePage(final Widget child) {
+  return SelectionArea(child: child);
+}

@@ -77,6 +77,7 @@ void main() {
 
     await pumpPortfolio(tester);
 
+    expect(find.byType(SelectionArea), findsOneWidget);
     expect(find.text('Hiu Tung Chan'), findsWidgets);
     expect(
       find.text('Senior Flutter products, shipped.'),

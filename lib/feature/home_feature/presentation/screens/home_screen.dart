@@ -3390,58 +3390,66 @@ class _TimelineExperienceItemState extends State<_TimelineExperienceItem> {
 
   @override
   Widget build(final BuildContext context) {
-    return KeyedSubtree(
-      key: _sectionKey,
-      child: IntrinsicHeight(
-        child: widget.useStickyMeta
-            ? Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+    final Widget item = widget.useStickyMeta
+        ? Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _StickyTimelineLead(
-                    experience: widget.experience,
-                    isLast: widget.isLast,
-                    sectionKey: _sectionKey,
-                  ),
+                  const SizedBox(width: _StickyTimelineLead.width),
                   const SizedBox(width: Dimens.largePadding),
                   Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                        bottom: widget.isLast ? 0 : Dimens.extraLargePadding,
-                      ),
-                      child: _ExperienceCard(
-                        experience: widget.experience,
-                        showHeaderPeriod: false,
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            : Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  SizedBox(
-                    width: 180,
-                    child: _TimelineInlineMeta(experience: widget.experience),
-                  ),
-                  const SizedBox(width: Dimens.largePadding),
-                  _TimelineNodeRail(
-                    experience: widget.experience,
-                    isLast: widget.isLast,
-                  ),
-                  const SizedBox(width: Dimens.largePadding),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                        bottom: widget.isLast ? 0 : Dimens.extraLargePadding,
-                      ),
-                      child: _ExperienceCard(
-                        experience: widget.experience,
-                        showHeaderPeriod: false,
-                      ),
+                    child: _ExperienceCard(
+                      experience: widget.experience,
+                      showHeaderPeriod: false,
                     ),
                   ),
                 ],
               ),
+              Positioned(
+                left: 0,
+                top: 0,
+                bottom: 0,
+                child: _StickyTimelineLead(
+                  experience: widget.experience,
+                  isLast: widget.isLast,
+                  sectionKey: _sectionKey,
+                ),
+              ),
+            ],
+          )
+        : IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(
+                  width: 180,
+                  child: _TimelineInlineMeta(experience: widget.experience),
+                ),
+                const SizedBox(width: Dimens.largePadding),
+                _TimelineNodeRail(
+                  experience: widget.experience,
+                  isLast: widget.isLast,
+                ),
+                const SizedBox(width: Dimens.largePadding),
+                Expanded(
+                  child: _ExperienceCard(
+                    experience: widget.experience,
+                    showHeaderPeriod: false,
+                  ),
+                ),
+              ],
+            ),
+          );
+
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: widget.isLast ? 0 : Dimens.extraLargePadding,
+      ),
+      child: KeyedSubtree(
+        key: _sectionKey,
+        child: item,
       ),
     );
   }
