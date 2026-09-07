@@ -8,7 +8,7 @@ BASE_HREF="${BASE_HREF:-/portfolio/}"
 COMMIT_MESSAGE="${1:-Update portfolio}"
 
 echo "Building Flutter Web with base href: $BASE_HREF"
-flutter build web --base-href "$BASE_HREF" --pwa-strategy=none
+flutter build web --base-href "$BASE_HREF" --no-wasm-dry-run
 
 echo "Copying service worker retirement file..."
 cp web/flutter_service_worker.js build/web/flutter_service_worker.js

@@ -61,6 +61,9 @@ dependencies:
   # A Flutter plugin for launching a URL.
   url_launcher: ^6.3.1
 
+  # Icon font referenced by Flutter/Cupertino icon data during web builds.
+  cupertino_icons: ^1.0.8
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
