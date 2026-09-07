@@ -41,12 +41,13 @@ Use a custom commit message if needed:
 The script will:
 
 ```sh
-flutter build web --base-href /portfolio/ --no-wasm-dry-run
-cp web/flutter_service_worker.js build/web/flutter_service_worker.js
-rsync -a --delete build/web/ docs/
+BUILD_DIR="$(mktemp -d "${TMPDIR:-/tmp}/portfolio-web-build.XXXXXX")"
+flutter build web --base-href /portfolio/ --no-wasm-dry-run -o "$BUILD_DIR"
+cp web/flutter_service_worker.js "$BUILD_DIR/flutter_service_worker.js"
+rsync -a --delete "$BUILD_DIR/" docs/
 git add .
 git commit -m "Update portfolio"
 git push
 ```
 
-Flutter no longer needs `--pwa-strategy=none`; newer Flutter Web builds do not generate or manage a service worker by default. The custom `web/flutter_service_worker.js` is kept only to retire older cached Flutter service workers for returning visitors. After `git push`, GitHub Pages may take a minute or two to publish the new `docs/` build.
+Flutter no longer needs `--pwa-strategy=none`. The custom `web/flutter_bootstrap.js` starts the app without registering a new service worker and clears older Flutter web caches before loading the app. The custom `web/flutter_service_worker.js` is kept only to retire older cached Flutter service workers for returning visitors. After `git push`, GitHub Pages may take a minute or two to publish the new `docs/` build.

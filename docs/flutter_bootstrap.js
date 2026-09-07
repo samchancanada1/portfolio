@@ -35,8 +35,36 @@ if (!window._flutter) {
 }
 _flutter.buildConfig = {"engineRevision":"83675ed27633283e7fc296c8bca22e841224c096","builds":[{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js"}]};
 
-_flutter.loader.load({
-  serviceWorkerSettings: {
-    serviceWorkerVersion: "1189448108" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */
+
+async function retireOldFlutterCaches() {
+  if ('serviceWorker' in navigator) {
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(
+      registrations.map((registration) => {
+        const worker =
+          registration.active || registration.waiting || registration.installing;
+        const scriptUrl = worker?.scriptURL || '';
+        const isPortfolioWorker =
+          registration.scope.includes('/portfolio/') ||
+          scriptUrl.includes('flutter_service_worker.js');
+
+        return isPortfolioWorker
+          ? registration.unregister()
+          : Promise.resolve(false);
+      }),
+    );
   }
-});
+
+  if ('caches' in window) {
+    const keys = await caches.keys();
+    await Promise.all(keys.map((key) => caches.delete(key)));
+  }
+}
+
+retireOldFlutterCaches()
+  .catch((error) => {
+    console.warn('Unable to clear old Flutter web cache:', error);
+  })
+  .finally(() => {
+    _flutter.loader.load();
+  });

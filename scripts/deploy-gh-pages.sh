@@ -6,15 +6,21 @@ cd "$ROOT_DIR"
 
 BASE_HREF="${BASE_HREF:-/portfolio/}"
 COMMIT_MESSAGE="${1:-Update portfolio}"
+BUILD_DIR="$(mktemp -d "${TMPDIR:-/tmp}/portfolio-web-build.XXXXXX")"
+
+cleanup() {
+  rm -rf "$BUILD_DIR"
+}
+trap cleanup EXIT
 
 echo "Building Flutter Web with base href: $BASE_HREF"
-flutter build web --base-href "$BASE_HREF" --no-wasm-dry-run
+flutter build web --base-href "$BASE_HREF" --no-wasm-dry-run -o "$BUILD_DIR"
 
 echo "Copying service worker retirement file..."
-cp web/flutter_service_worker.js build/web/flutter_service_worker.js
+cp web/flutter_service_worker.js "$BUILD_DIR/flutter_service_worker.js"
 
 echo "Syncing build output to docs/ for GitHub Pages..."
-rsync -a --delete build/web/ docs/
+rsync -a --delete "$BUILD_DIR/" docs/
 touch docs/.nojekyll
 
 echo "Staging changes..."
