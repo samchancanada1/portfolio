@@ -71,10 +71,9 @@ class Assets {
   static const $AssetsAnimationsGen animations = $AssetsAnimationsGen();
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
-  static const String pubspec = 'pubspec.yaml';
 
   /// List of all assets
-  static List<String> get values => [pubspec];
+  static List<String> get values => [];
 }
 
 class AssetGenImage {

@@ -20,7 +20,7 @@ void main() {
   });
 
   test('route paths expose the public home locations', () {
-    expect(GoRoutesPath.splash, '/');
+    expect(GoRoutesPath.root, '/');
     expect(GoRoutesPath.home, '/home');
     expect(GoRoutesPath.about, '/about');
     expect(GoRoutesPath.resume, '/resume');

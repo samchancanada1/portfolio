@@ -7,13 +7,13 @@ import '../../feature/home_feature/presentation/screens/not_found_screen.dart';
 import 'go_routes_path.dart';
 
 final GoRouter routes = GoRouter(
-  initialLocation: GoRoutesPath.splash,
+  initialLocation: GoRoutesPath.root,
   errorBuilder: (final BuildContext context, final GoRouterState state) {
     return _selectablePage(const NotFoundScreen());
   },
   routes: <RouteBase>[
     GoRoute(
-      path: GoRoutesPath.splash,
+      path: GoRoutesPath.root,
       builder: (final BuildContext context, final GoRouterState state) {
         return _selectablePage(
           const HomeScreen(initialSection: HomeSection.home),
@@ -60,26 +60,6 @@ final GoRouter routes = GoRouter(
         );
       },
     ),
-    // GoRoute(
-    //   path: GoRoutesPath.login,
-    //   builder: (final BuildContext context, final GoRouterState state) {
-    //     return const Login();
-    //   },
-    // ),
-    // GoRoute(
-    //   path: GoRoutesPath.verifyOtp,
-    //   builder: (final BuildContext context, final GoRouterState state) {
-    //     return VerifyOtp(
-    //       mobileNumber: state.extra as String,
-    //     );
-    //   },
-    // ),
-    // GoRoute(
-    //   path: GoRoutesPath.editProfile,
-    //   builder: (final BuildContext context, final GoRouterState state) {
-    //     return const EditProfile();
-    //   },
-    // ),
   ],
 );
 
