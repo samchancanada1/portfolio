@@ -3335,6 +3335,8 @@ class _ExperienceTimeline extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     final bool wide = MediaQuery.sizeOf(context).width >= 860;
+    final Size viewport = MediaQuery.sizeOf(context);
+    final bool stickyRail = viewport.width >= 960 && viewport.height >= 600;
 
     if (!wide) {
       return Column(
@@ -3358,6 +3360,7 @@ class _ExperienceTimeline extends StatelessWidget {
             experience: experiences[index],
             isFirst: index == 0,
             isLast: index == experiences.length - 1,
+            useStickyMeta: stickyRail,
           ),
       ],
     );
@@ -3369,11 +3372,13 @@ class _TimelineExperienceItem extends StatelessWidget {
     required this.experience,
     required this.isFirst,
     required this.isLast,
+    required this.useStickyMeta,
   });
 
   final Experience experience;
   final bool isFirst;
   final bool isLast;
+  final bool useStickyMeta;
 
   @override
   Widget build(final BuildContext context) {
@@ -3384,22 +3389,10 @@ class _TimelineExperienceItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SizedBox(
-            width: 180,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _MiniBadge(experience.period),
-                const SizedBox(height: Dimens.padding),
-                Text(
-                  _timelineSummary(experience.company),
-                  style: TextStyle(
-                    color: scheme.onSurfaceVariant,
-                    height: 1.3,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
+            width: useStickyMeta ? 236 : 180,
+            child: useStickyMeta
+                ? _StickyTimelineMeta(experience: experience)
+                : _TimelineInlineMeta(experience: experience),
           ),
           const SizedBox(width: Dimens.largePadding),
           Column(
@@ -3445,6 +3438,174 @@ class _TimelineExperienceItem extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _TimelineInlineMeta extends StatelessWidget {
+  const _TimelineInlineMeta({required this.experience});
+
+  final Experience experience;
+
+  @override
+  Widget build(final BuildContext context) {
+    return _TimelineMetaCard(
+      experience: experience,
+      elevated: false,
+    );
+  }
+}
+
+class _StickyTimelineMeta extends StatefulWidget {
+  const _StickyTimelineMeta({required this.experience});
+
+  final Experience experience;
+
+  @override
+  State<_StickyTimelineMeta> createState() => _StickyTimelineMetaState();
+}
+
+class _StickyTimelineMetaState extends State<_StickyTimelineMeta> {
+  static const double _cardHeight = 164;
+
+  final GlobalKey _measurementKey = GlobalKey();
+  ScrollPosition? _scrollPosition;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _scrollPosition = Scrollable.maybeOf(context)?.position;
+  }
+
+  @override
+  Widget build(final BuildContext context) {
+    final Listenable scrollSignal =
+        _scrollPosition ?? const AlwaysStoppedAnimation<double>(0);
+
+    return KeyedSubtree(
+      key: _measurementKey,
+      child: LayoutBuilder(
+        builder: (final context, final constraints) {
+          final double sectionHeight = constraints.hasBoundedHeight
+              ? constraints.maxHeight
+              : _cardHeight;
+
+          return SizedBox(
+            height: sectionHeight,
+            child: AnimatedBuilder(
+              animation: scrollSignal,
+              builder: (final context, final child) {
+                final double maxTop = math.max(
+                  0,
+                  sectionHeight - _cardHeight,
+                );
+                double top = 0;
+                final RenderBox? box = _measurementKey.currentContext
+                    ?.findRenderObject() as RenderBox?;
+                if (box != null && box.hasSize && box.attached) {
+                  final double globalTop = box.localToGlobal(Offset.zero).dy;
+                  final double viewportHeight = MediaQuery.sizeOf(
+                    context,
+                  ).height;
+                  final double anchorY =
+                      viewportHeight - _cardHeight - Dimens.extraLargePadding;
+                  top = (anchorY - globalTop).clamp(0.0, maxTop);
+                }
+
+                return Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      top: top,
+                      child: child!,
+                    ),
+                  ],
+                );
+              },
+              child: _TimelineMetaCard(
+                experience: widget.experience,
+                elevated: true,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _TimelineMetaCard extends StatelessWidget {
+  const _TimelineMetaCard({
+    required this.experience,
+    required this.elevated,
+  });
+
+  final Experience experience;
+  final bool elevated;
+
+  @override
+  Widget build(final BuildContext context) {
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+
+    return SizedBox(
+      height: elevated ? _StickyTimelineMetaState._cardHeight : null,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: scheme.surface.withValues(alpha: elevated ? 0.9 : 0),
+          borderRadius: BorderRadius.circular(8),
+          border: elevated
+              ? Border.all(color: scheme.primary.withValues(alpha: 0.24))
+              : null,
+          boxShadow: elevated
+              ? [
+                  BoxShadow(
+                    color: scheme.primary.withValues(alpha: 0.12),
+                    blurRadius: 28,
+                    offset: const Offset(0, 18),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.24),
+                    blurRadius: 34,
+                    offset: const Offset(0, 18),
+                  ),
+                ]
+              : null,
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(elevated ? Dimens.mediumPadding : 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _MiniBadge(experience.period),
+              const SizedBox(height: Dimens.padding),
+              Text(
+                _timelineSummary(experience.company),
+                style: TextStyle(
+                  color: elevated ? scheme.onSurface : scheme.onSurfaceVariant,
+                  height: 1.22,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              if (elevated) ...[
+                const SizedBox(height: Dimens.padding),
+                Text(
+                  experience.company,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: scheme.onSurfaceVariant,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }
