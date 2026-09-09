@@ -19,6 +19,7 @@ To provide a comprehensive overview of my professional growth and project contri
 ## GitHub Pages release
 
 This repo is published by GitHub Pages from the `docs/` folder on the `main` branch.
+The production portfolio domain is `https://portfolio.tungworks.com/`.
 
 Run the release script after you finish local changes:
 
@@ -42,7 +43,7 @@ The script will:
 
 ```sh
 BUILD_DIR="$(mktemp -d "${TMPDIR:-/tmp}/portfolio-web-build.XXXXXX")"
-flutter build web --base-href /portfolio/ --no-wasm-dry-run -o "$BUILD_DIR"
+flutter build web --base-href / --no-wasm-dry-run -o "$BUILD_DIR"
 cp web/flutter_service_worker.js "$BUILD_DIR/flutter_service_worker.js"
 rsync -a --delete "$BUILD_DIR/" docs/
 git add .
@@ -51,3 +52,5 @@ git push
 ```
 
 Flutter no longer needs `--pwa-strategy=none`. The custom `web/flutter_bootstrap.js` starts the app without registering a new service worker and clears older Flutter web caches before loading the app. The custom `web/flutter_service_worker.js` is kept only to retire older cached Flutter service workers for returning visitors. After `git push`, GitHub Pages may take a minute or two to publish the new `docs/` build.
+
+The `web/CNAME` file is copied into `docs/CNAME` during each build so GitHub Pages keeps using `portfolio.tungworks.com`.

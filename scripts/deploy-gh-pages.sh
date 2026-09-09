@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(git rev-parse --show-toplevel)"
 cd "$ROOT_DIR"
 
-BASE_HREF="${BASE_HREF:-/portfolio/}"
+BASE_HREF="${BASE_HREF:-/}"
 COMMIT_MESSAGE="${1:-Update portfolio}"
 BUILD_DIR="$(mktemp -d "${TMPDIR:-/tmp}/portfolio-web-build.XXXXXX")"
 
