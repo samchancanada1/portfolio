@@ -23,8 +23,8 @@ void main() async {
   /// Allow the imperative API affects browser URL bar.
   GoRouter.optionURLReflectsImperativeAPIs = true;
 
-  /// Remove # from end of URL
-  setUrlStrategy(PathUrlStrategy());
+  /// Use path routes while preserving anchors such as /home#contact on reload.
+  setUrlStrategy(PathUrlStrategy(BrowserPlatformLocation(), true));
 
   /// Get locale from device storage and set it
   await LocaleSettings.setLocale(await LocaleHandler().getLocale());
