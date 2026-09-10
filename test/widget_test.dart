@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:portfolio/core/di/service_locator.dart';
@@ -59,6 +60,23 @@ void main() {
     await tester.pump(const Duration(milliseconds: 900));
   }
 
+  Future<void> navigateTo(WidgetTester tester, String label) async {
+    final menuButton = find.byKey(const ValueKey('website-menu-button'));
+    if (menuButton.evaluate().isNotEmpty &&
+        find.byKey(const ValueKey('website-menu')).evaluate().isEmpty) {
+      await tester.tap(menuButton);
+      await pumpPortfolio(tester);
+    }
+    final desktopSettings = find.byKey(const ValueKey('website-settings'));
+    final target = label == 'Settings' && desktopSettings.evaluate().isNotEmpty
+        ? desktopSettings
+        : find.descendant(
+            of: find.byKey(const ValueKey('website-header')),
+            matching: find.text(label));
+    await tester.ensureVisible(target);
+    await tester.tap(target);
+  }
+
   testWidgets('root route opens home without splash', (
     final WidgetTester tester,
   ) async {
@@ -86,13 +104,13 @@ void main() {
     expect(find.textContaining('Flutter'), findsWidgets);
     expect(find.text('View case studies'), findsOneWidget);
 
-    await tester.tap(find.text('About'));
+    await navigateTo(tester, 'About');
     await pumpPortfolio(tester);
 
     expect(find.textContaining('6+ years'), findsWidgets);
     expect(find.text('Markham, ON, CA'), findsOneWidget);
 
-    await tester.tap(find.text('Resume'));
+    await navigateTo(tester, 'Resume');
     await pumpPortfolio(tester);
 
     expect(find.text('BoursePad'), findsOneWidget);
@@ -111,12 +129,12 @@ void main() {
     await tester.pumpWidget(buildTestApp());
     await pumpPortfolio(tester);
 
-    await tester.tap(find.text('About'));
+    await navigateTo(tester, 'About');
     await pumpPortfolio(tester);
 
     expect(routes.routeInformationProvider.value.uri.path, '/about');
 
-    await tester.tap(find.text('Resume'));
+    await navigateTo(tester, 'Resume');
     await pumpPortfolio(tester);
 
     expect(routes.routeInformationProvider.value.uri.path, '/resume');
@@ -147,12 +165,12 @@ void main() {
     await tester.pumpWidget(buildTestApp());
     await pumpPortfolio(tester);
 
-    await tester.tap(find.text('About'));
+    await navigateTo(tester, 'About');
     await pumpPortfolio(tester);
 
     expect(find.textContaining('6+ years'), findsWidgets);
 
-    await tester.tap(find.text('Resume'));
+    await navigateTo(tester, 'Resume');
     await pumpPortfolio(tester);
 
     expect(find.text('BoursePad'), findsWidgets);
@@ -180,7 +198,7 @@ void main() {
     await tester.pumpWidget(buildTestApp());
     await pumpPortfolio(tester);
 
-    await tester.tap(find.text('Skills'));
+    await navigateTo(tester, 'Skills');
     await pumpPortfolio(tester);
 
     expect(
@@ -203,7 +221,7 @@ void main() {
     await tester.pumpWidget(buildTestApp());
     await pumpPortfolio(tester);
 
-    await tester.tap(find.text('Settings').first);
+    await navigateTo(tester, 'Settings');
     await pumpPortfolio(tester);
 
     expect(find.text('Theme Mode'), findsOneWidget);
@@ -234,7 +252,7 @@ void main() {
     await tester.pumpWidget(buildTestApp());
     await pumpPortfolio(tester);
 
-    await tester.tap(find.text('Settings').first);
+    await navigateTo(tester, 'Settings');
     await pumpPortfolio(tester);
 
     await tester.tap(find.text('Language'));
@@ -247,6 +265,148 @@ void main() {
     await pumpPortfolio(tester);
 
     expect(await LocaleHandler().getLocale(), AppLocale.en);
+  });
+
+  testWidgets(
+      'desktop navigation uses a top header and leaves equal page margins',
+      (tester) async {
+    tester.view.physicalSize = const Size(1440, 900);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(buildTestApp());
+    await pumpPortfolio(tester);
+    expect(find.byType(NavigationBar), findsNothing);
+    expect(find.byType(NavigationRail), findsNothing);
+    expect(find.byKey(const ValueKey('website-menu-button')), findsNothing);
+    final header = tester.getRect(find.byKey(const ValueKey('website-header')));
+    expect(header.top, 0);
+    expect(header.width, 1440);
+    final page = tester.getRect(find.byType(CustomScrollView).first);
+    expect(page.top, greaterThanOrEqualTo(header.bottom));
+    await navigateTo(tester, 'About');
+    await pumpPortfolio(tester);
+    expect(routes.routeInformationProvider.value.uri.path, '/about');
+    await tester.tap(find.byKey(const ValueKey('website-brand')));
+    await pumpPortfolio(tester);
+    expect(routes.routeInformationProvider.value.uri.path, '/home');
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('contact link scrolls Home and works again from other sections',
+      (tester) async {
+    tester.view.physicalSize = const Size(1440, 900);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(buildTestApp());
+    await pumpPortfolio(tester);
+
+    Future<void> openContact() async {
+      await tester.tap(find.byKey(const ValueKey('website-contact')));
+      await pumpPortfolio(tester);
+      await pumpPortfolio(tester);
+      await pumpPortfolio(tester);
+      expect(routes.routeInformationProvider.value.uri.toString(),
+          '/home#contact');
+      final contact = tester.getRect(find.text('CONTACT'));
+      final header =
+          tester.getRect(find.byKey(const ValueKey('website-header')));
+      expect(contact.top, greaterThanOrEqualTo(header.bottom));
+      expect(contact.bottom, lessThan(900));
+      expect(find.text('CONTACT').hitTestable(), findsOneWidget);
+    }
+
+    await openContact();
+
+    // The same URL must still scroll after the visitor manually returns upward.
+    final scrollable = tester.state<ScrollableState>(find
+        .descendant(
+            of: find.byType(CustomScrollView).first,
+            matching: find.byType(Scrollable))
+        .first);
+    scrollable.position.jumpTo(0);
+    await pumpPortfolio(tester);
+    await openContact();
+
+    for (final section in ['About', 'Resume', 'Skills', 'Settings']) {
+      await navigateTo(tester, section);
+      await pumpPortfolio(tester);
+      await openContact();
+    }
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('mobile contact deep link and menu link reveal CONTACT',
+      (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    routes.go('/home#contact');
+    await tester.pumpWidget(buildTestApp());
+    await pumpPortfolio(tester);
+    await pumpPortfolio(tester);
+    await pumpPortfolio(tester);
+    expect(find.text('CONTACT').hitTestable(), findsOneWidget);
+
+    await navigateTo(tester, 'About');
+    await pumpPortfolio(tester);
+    await tester.tap(find.byKey(const ValueKey('website-menu-button')));
+    await pumpPortfolio(tester);
+    final contactButton = find.byKey(const ValueKey('website-contact'));
+    await tester.ensureVisible(contactButton);
+    await tester.tap(contactButton);
+    await pumpPortfolio(tester);
+    await pumpPortfolio(tester);
+    await pumpPortfolio(tester);
+    expect(
+        routes.routeInformationProvider.value.uri.toString(), '/home#contact');
+    expect(find.byKey(const ValueKey('website-menu')), findsNothing);
+    expect(find.text('CONTACT').hitTestable(), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('mobile menu closes after navigation and Escape returns focus',
+      (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(buildTestApp());
+    await pumpPortfolio(tester);
+    expect(find.byType(NavigationBar), findsNothing);
+    await navigateTo(tester, 'Skills');
+    await pumpPortfolio(tester);
+    expect(find.byKey(const ValueKey('website-menu')), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('website-menu-button')));
+    await pumpPortfolio(tester);
+    expect(find.byKey(const ValueKey('website-menu')), findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await pumpPortfolio(tester);
+    expect(find.byKey(const ValueKey('website-menu')), findsNothing);
+    final button = tester
+        .widget<IconButton>(find.byKey(const ValueKey('website-menu-button')));
+    expect(button.focusNode!.hasFocus, isTrue);
+  });
+
+  testWidgets('French header fits a short desktop viewport', (tester) async {
+    tester.view.physicalSize = const Size(1100, 650);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    routes.go('/skills');
+    await tester.pumpWidget(buildTestApp());
+    await pumpPortfolio(tester);
+    try {
+      await tester.runAsync(() => LocaleSettings.setLocale(AppLocale.fr));
+      await pumpPortfolio(tester);
+      expect(find.byKey(const ValueKey('website-header')), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    } finally {
+      await tester.runAsync(() => LocaleSettings.setLocale(AppLocale.en));
+      await pumpPortfolio(tester);
+    }
   });
 
   testWidgets('unknown route renders the not found screen', (

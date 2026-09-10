@@ -1,0 +1,78 @@
+{
+  "mode": "built-in image_gen",
+  "execution": "One parallel batch, exactly three calls; no variants or retries.",
+  "calls": [
+    {
+      "filename": "boursepad-discovery-store-v2.png",
+      "mode": "built-in image_gen",
+      "intent": "reference-guided generation",
+      "use_case": "ui-mockup",
+      "tool": "tools.image_gen__imagegen",
+      "arguments": {
+        "prompt": "Use case: ui-mockup.\nAsset type: final flat portrait BoursePad app-screen raster for insertion inside an existing website phone frame.\nInput image 1 is a reference for the actual BoursePad home/discovery UI only. Recreate its inner screen faithfully at high resolution, ideally 1080 × 1920 pixels, exactly 9:16 portrait. Adapt spacing to that aspect ratio while preserving the real feature order, official card styles, typography, and colors.\nOUTPUT COMPOSITION: the entire rectangular canvas IS the app screen, front-on, edge-to-edge. Delete all reference marketing poster material, mint outer background, poster headline, phone housing, black bezel, device outline, notch, camera, operating-system status bar, bottom system home indicator, shadows around a device, and perspective. There must be no device or frame anywhere. Four square canvas corners.\nSCREEN: bright emerald #1ABC76 full-width welcome header at top. White circular avatar on left, white text “Welcome Back” alongside it, white bell on right. Omit the personal name/greeting entirely. A white rounded Search input, thin magnifier icon and pale grey “Search” overlaps the emerald header and offwhite content below. Use the source's clean sans-serif typography, dark teal bold section headings, green “See All” links, generous but economical spacing.\nExact feature order:\n1. “Public Scholarships” heading with “See All” on right. Horizontal emerald rounded scholarship cards, one main card and a partially visible next card at right, like source. Small white BoursePad graduation-cap mark, pale green double-arc corner decoration, white left-aligned title, small white circular right-arrow. First title exactly “SpaceTech Masters Scholarship at Graz University of Technology (T...” as a truncated source title. Second card title “University of Turin Scholarships 2025” may visibly clip at screen edge as in reference. Main small subtitle exactly “Eligible Country: Nigeria”. Omit creation dates if needed for legibility. Do not invent scholarship titles, claims, match scores or award amounts.\n2. “Scholarship Opportunities” heading, “See All” at right. One centered narrower emerald rounded “Demo Sponsor” card with same white cap logo and pale green arc detail, and white pill “Apply”. Omit reference demo deadline and applicant count to fit and keep text crisp; do not replace with other claims.\n3. “Upcoming Events” heading with “See All” at right.\n4. Full-width white bottom navigation attached to bottom of canvas, slight soft top separation and source-style rounded upper corners. Four evenly spaced icon/label items: green home icon “Home” selected, pale grey graduation cap “Scholarship”, pale grey chat “Messages”, pale grey person “Account”. All four labels fully visible; reasonable safe bottom spacing.\nMaintain authentic source layout and emerald/offwhite/dark teal palette. Crisp readable spelling, smooth clean small icons, excellent high-resolution UI reproduction. Source is the fidelity guide, not an invitation to redesign. No marketing captions, no title outside screen, no additional sections, no invented badges, no phone hardware, no black framing, no system bars.",
+        "referenced_image_paths": [
+          "/tmp/boursepad-store-refs-v2/apple-1-large.jpg"
+        ]
+      },
+      "generated_path": "/Users/hiutungchan/.codex/generated_images/01a08c6e-af50-77c0-8777-cef71d5804b0/exec-d8210b97-e8a2-4276-b9c3-2fc8972b67ee.png",
+      "saved_path": "assets/images/boursepad-discovery-store-v2.png",
+      "requested_dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "status": "fulfilled",
+      "actual_dimensions": {
+        "width": 941,
+        "height": 1672
+      }
+    },
+    {
+      "filename": "boursepad-scholarship-store-v2.png",
+      "mode": "built-in image_gen",
+      "intent": "reference-guided generation",
+      "use_case": "ui-mockup",
+      "tool": "tools.image_gen__imagegen",
+      "arguments": {
+        "prompt": "Use case: ui-mockup.\nAsset type: final flat portrait BoursePad scholarship-detail app-screen raster for insertion inside an existing website phone frame.\nInput image 1 is a reference for the actual BoursePad scholarship detail UI. Recreate only its inner app interface faithfully as a high-resolution flat front-on screenshot, ideally 1080 × 1920 pixels, exactly 9:16 portrait. Adapt vertical spacing to fit the requested ratio while preserving source order, typography style, colors, photo and real text.\nOUTPUT COMPOSITION: the entire rectangular canvas IS the app screen, edge-to-edge with square corners. REMOVE all marketing poster/background/headline, mint exterior, phone housing, black bezel, frame, notch, camera, perspective, device shadow, operating-system status bar with time and battery. No enclosing device or hardware.\nSCREEN from top to bottom:\nBright emerald #1ABC76 app header at top, white back arrow at left and centered bold white “Scholarships”. The header green continues behind top part of a large inset rounded-corner photograph faithfully like reference: close-up hands using a yellow pencil to draw mobile interface wireframes on white paper. Preserve photo composition and documentary look.\nA near-white article panel extends edge-to-edge below and partly behind photograph, with source-style rounded top corners. Below photo, black bold title “Women in STEM Scholarship” with black outline bookmark on right. Good readable typography, comfortable side padding; wrap title only if necessary.\nRender these strings VERBATIM, in the official order, dark grey body type:\n“Application Deadline: November 30, 2023”\n“Provider: STEM Diversity Organization”\n“Type: Field-Specific”\n“Amount: $7,500”\n“Status: Open”\nThese are historical examples shown by the official store reference. Keep them exactly as historical source text; do not add assertions or live/current claims.\nThen bold blue underlined “Enrollment Information”.\nThen black bold “Introduction”.\nThen the exact grey paragraph:\nSTEM Diversity Organization is pleased to announce the \"Women in STEM Scholarship,\" aimed at supporting and empowering women pursuing studies in STEM fields.\nThen black bold “Application Deadline” accordion heading with down chevron on right. End naturally after this visible first accordion section, or include its reference paragraph only if space permits using the identical Introduction paragraph already specified. Do not invent further copy.\nSource clean sans-serif font with black/dark-grey article text, emerald header and blue Enrollment Information link. Preserve the source's actual UI and avoid redesign. Text must be crisp, aligned, spelled correctly and fully readable. All essential stated strings fit inside canvas with good margins. No bottom navigation, no new CTA, no invented icons/badges, no marketing headings, no phone frame or system bars.",
+        "referenced_image_paths": [
+          "/tmp/boursepad-store-refs-v2/google-6-full.jpg"
+        ]
+      },
+      "generated_path": "/Users/hiutungchan/.codex/generated_images/01a08c6e-af50-77c0-8777-cef71d5804b0/exec-d25b1c71-2dfa-46bd-8eb5-321a1779fb16.png",
+      "saved_path": "assets/images/boursepad-scholarship-store-v2.png",
+      "requested_dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "status": "fulfilled",
+      "actual_dimensions": {
+        "width": 941,
+        "height": 1672
+      }
+    },
+    {
+      "filename": "boursepad-verification-store-v2.png",
+      "mode": "built-in image_gen",
+      "intent": "reference-guided generation",
+      "use_case": "ui-mockup",
+      "tool": "tools.image_gen__imagegen",
+      "arguments": {
+        "prompt": "Use case: ui-mockup.\nAsset type: final flat portrait BoursePad ID-verification app-screen raster for insertion inside an existing website phone frame.\nInput image 1 is a reference for the authentic BoursePad ID Verification UI. Recreate only the inner camera-screen interface faithfully, high-resolution, ideally 1080 × 1920 pixels, exactly 9:16 portrait. Preserve the source's dark slate-blue camera-screen treatment, clean white sans-serif typography, arrangement, and emerald button.\nOUTPUT COMPOSITION: the entire rectangular image IS the flat front-on app screen, edge-to-edge, square canvas corners. Remove reference marketing poster headline “Secure Verification & Document Upload”, all mint exterior background, phone housing, black bezel, frame, notch, camera, system status bar/time/battery, perspective and device shadow. No extra frame or hardware.\nSCREEN: deep muted slate blue background matching reference, with its subtle darkened out-of-focus camera/environment shapes. Upper header contains a white left back arrow and centered bold white exact title “ID Verification”, with sensible inset padding.\nAbove middle, centered larger white “Scan Front Side” and immediately below smaller white “Keep your phone straight”.\nMiddle area: four separate white rounded corner scanning guides framing a horizontal light grey generic ID card illustration. Faithful source layout: pale rounded ID document with darker grey heading strip “ID CARD”, simple grey profile silhouette, placeholder bars, small chip motif and faint abstract map texture. No real person's photograph or identity, no serial numbers or digits anywhere; replace the source serial line with neutral grey placeholder bar or omit it. Keep the document fully inside scanning guides.\nBelow the scanner, centered multiline exact instruction in pale white/grey:\n“Position your document inside the frame. Make sure that all the data is clearly visible.”\nNear bottom, a bright emerald #1ABC76 rounded rectangular button with exact white text “Scan Code”. Entire button fully visible with generous bottom breathing room, as in original.\nPreserve source layout and actual app style rather than redesigning it. Keep all stated text readable and sharp. No invented claims, no security badges, no lock icons, no extra metadata, no navigation footer, no marketing titles, no device frame or system bars.",
+        "referenced_image_paths": [
+          "/tmp/boursepad-store-refs-v2/google-8-full.jpg"
+        ]
+      },
+      "generated_path": "/Users/hiutungchan/.codex/generated_images/01a08c6e-af50-77c0-8777-cef71d5804b0/exec-88d250f7-3f54-4826-bfed-1d2a38f41a7c.png",
+      "saved_path": "assets/images/boursepad-verification-store-v2.png",
+      "requested_dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "status": "fulfilled",
+      "actual_dimensions": {
+        "width": 941,
+        "height": 1672
+      }
+    }
+  ]
+}

@@ -409,9 +409,9 @@ const List<Experience> _experiences = [
       'Google Play Console',
     ],
     screenPaths: [
-      'assets/images/boursepad-mockup.png',
-      'assets/images/boursepad-detail-mockup.png',
-      'assets/images/boursepad-applications-mockup.png',
+      'assets/images/boursepad-discovery-store-v2.png',
+      'assets/images/boursepad-scholarship-store-v2.png',
+      'assets/images/boursepad-verification-store-v2.png',
     ],
     links: [
       ResumeLink(

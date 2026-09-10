@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -45,101 +46,76 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _HomeScreenView extends StatelessWidget {
+class _HomeScreenView extends StatefulWidget {
   const _HomeScreenView();
+
+  @override
+  State<_HomeScreenView> createState() => _HomeScreenViewState();
+}
+
+class _HomeScreenViewState extends State<_HomeScreenView> {
+  final GlobalKey<_HomeViewState> _homeKey = GlobalKey<_HomeViewState>();
 
   List<_NavItem> get _items => [
         _NavItem(
           t.home_screen.home,
-          Icons.grid_view_rounded,
           HomeSection.home,
         ),
         _NavItem(
           t.home_screen.about,
-          Icons.person_pin_rounded,
           HomeSection.about,
         ),
         _NavItem(
           t.home_screen.resume,
-          Icons.work_history_rounded,
           HomeSection.resume,
         ),
         _NavItem(
           t.home_screen.skills,
-          Icons.auto_awesome_motion_rounded,
           HomeSection.skills,
         ),
         _NavItem(
           t.home_screen.settings,
-          Icons.tune_rounded,
           HomeSection.settings,
         ),
       ];
 
   @override
   Widget build(final BuildContext context) {
-    final bool isWide = MediaQuery.sizeOf(context).width >= 960;
     final List<_NavItem> items = _items;
 
     return BlocBuilder<HomeNavigationCubit, HomeSection>(
       builder: (final context, final selectedSection) {
         final int selectedIndex = selectedSection.index;
         return Scaffold(
-          extendBody: true,
           backgroundColor: AppColors.ink,
           body: _PortfolioBackground(
             child: SafeArea(
               bottom: false,
-              child: Stack(
-                children: [
-                  Positioned.fill(
+              child: Column(children: [
+                _WebsiteNavigation(
+                    items: items,
+                    selectedIndex: selectedIndex,
+                    onSelected: (index) =>
+                        _openSection(context, items[index].section),
+                    onContact: () => _openContact(context)),
+                Expanded(
                     child: PageTransitionSwitcher(
-                      transitionBuilder: (
-                        final Widget child,
-                        final Animation<double> animation,
-                        final Animation<double> secondaryAnimation,
-                      ) {
-                        return SharedAxisTransition(
+                  duration: MediaQuery.disableAnimationsOf(context)
+                      ? Duration.zero
+                      : const Duration(milliseconds: 300),
+                  transitionBuilder: (child, animation, secondaryAnimation) =>
+                      SharedAxisTransition(
                           animation: animation,
                           secondaryAnimation: secondaryAnimation,
-                          transitionType: SharedAxisTransitionType.scaled,
-                          child: child,
-                        );
-                      },
-                      child: KeyedSubtree(
-                        key: ValueKey<HomeSection>(selectedSection),
-                        child: _sectionFor(selectedSection),
-                      ),
-                    ),
-                  ),
-                  if (isWide)
-                    Positioned(
-                      left: 0,
-                      top: 0,
-                      bottom: 0,
-                      child: _SideNavigation(
-                        items: items,
-                        selectedIndex: selectedIndex,
-                        onSelected: (final index) => _openSection(
-                          context,
-                          items[index].section,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
+                          transitionType: SharedAxisTransitionType.horizontal,
+                          child: child),
+                  child: KeyedSubtree(
+                      key: ValueKey<HomeSection>(selectedSection),
+                      child: _sectionFor(selectedSection)),
+                )),
+              ]),
             ),
           ),
-          bottomNavigationBar: isWide
-              ? null
-              : _BottomNavigation(
-                  items: items,
-                  selectedIndex: selectedIndex,
-                  onSelected: (final index) => _openSection(
-                    context,
-                    items[index].section,
-                  ),
-                ),
         );
       },
     );
@@ -154,6 +130,18 @@ class _HomeScreenView extends StatelessWidget {
     if (GoRouterState.of(context).uri.path != routePath) {
       context.go(routePath);
     }
+  }
+
+  void _openContact(final BuildContext context) {
+    final Uri uri = GoRouterState.of(context).uri;
+    if (uri.path == GoRoutesPath.home && uri.fragment == 'contact') {
+      // Wait for the compact menu to close before measuring the viewport.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _homeKey.currentState?._jumpToContact();
+      });
+      return;
+    }
+    context.go('${GoRoutesPath.home}#contact');
   }
 
   String _routePathFor(final HomeSection section) {
@@ -174,7 +162,7 @@ class _HomeScreenView extends StatelessWidget {
   Widget _sectionFor(final HomeSection section) {
     switch (section) {
       case HomeSection.home:
-        return const _HomeView();
+        return _HomeView(key: _homeKey);
       case HomeSection.about:
         return const _AboutView();
       case HomeSection.resume:
@@ -261,261 +249,262 @@ class _StudioGridPainter extends CustomPainter {
   }
 }
 
-class _SideNavigation extends StatefulWidget {
-  const _SideNavigation({
-    required this.items,
-    required this.selectedIndex,
-    required this.onSelected,
-  });
-
+class _WebsiteNavigation extends StatefulWidget {
+  const _WebsiteNavigation(
+      {required this.items,
+      required this.selectedIndex,
+      required this.onSelected,
+      required this.onContact});
   final List<_NavItem> items;
   final int selectedIndex;
   final ValueChanged<int> onSelected;
-
+  final VoidCallback onContact;
   @override
-  State<_SideNavigation> createState() => _SideNavigationState();
+  State<_WebsiteNavigation> createState() => _WebsiteNavigationState();
 }
 
-class _SideNavigationState extends State<_SideNavigation> {
-  bool _expanded = false;
-
+class _WebsiteNavigationState extends State<_WebsiteNavigation> {
+  bool _menuOpen = false;
+  final _menuFocus = FocusNode();
   @override
-  Widget build(final BuildContext context) {
-    final ColorScheme scheme = Theme.of(context).colorScheme;
-    const Duration duration = Duration(milliseconds: 220);
-
-    return MouseRegion(
-      onEnter: (_) => setState(() => _expanded = true),
-      onExit: (_) => setState(() => _expanded = false),
-      child: AnimatedContainer(
-        duration: duration,
-        curve: Curves.easeOutCubic,
-        width: _expanded ? 292 : 84,
-        margin: const EdgeInsets.fromLTRB(16, 16, 0, 16),
-        padding: EdgeInsets.symmetric(
-          horizontal: _expanded ? Dimens.largePadding : 12,
-          vertical: Dimens.largePadding,
-        ),
-        decoration: BoxDecoration(
-          color: scheme.surface.withValues(alpha: _expanded ? 0.86 : 0.68),
-          borderRadius: BorderRadius.circular(Dimens.corners),
-          border: Border.all(
-            color: scheme.outlineVariant.withValues(alpha: 0.3),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: _expanded ? 0.22 : 0.12),
-              blurRadius: _expanded ? 34 : 18,
-              offset: const Offset(0, 18),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment:
-              _expanded ? CrossAxisAlignment.start : CrossAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: _expanded
-                  ? MainAxisAlignment.start
-                  : MainAxisAlignment.center,
-              children: [
-                Tooltip(
-                  message: t.home_screen.myName,
-                  child: CircleAvatar(
-                    radius: _expanded ? 27 : 24,
-                    backgroundImage:
-                        AssetImage(Assets.images.profileImage.path),
-                  ),
-                ),
-                AnimatedSwitcher(
-                  duration: duration,
-                  switchInCurve: Curves.easeOutCubic,
-                  switchOutCurve: Curves.easeInCubic,
-                  child: _expanded
-                      ? Padding(
-                          key: const ValueKey<String>('identity-expanded'),
-                          padding: const EdgeInsets.only(
-                            left: Dimens.mediumPadding,
-                          ),
-                          child: SizedBox(
-                            width: 176,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  t.home_screen.myName,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium
-                                      ?.copyWith(
-                                        fontWeight: FontWeight.w800,
-                                      ),
-                                ),
-                                Text(
-                                  _homeContent(context).hero.role,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall
-                                      ?.copyWith(
-                                        color: scheme.onSurfaceVariant,
-                                      ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      : const SizedBox.shrink(
-                          key: ValueKey<String>('identity-collapsed'),
-                        ),
-                ),
-              ],
-            ),
-            const SizedBox(height: Dimens.extraLargePadding),
-            ...List.generate(widget.items.length, (final int index) {
-              return _NavButton(
-                item: widget.items[index],
-                selected: widget.selectedIndex == index,
-                compact: !_expanded,
-                onTap: () => widget.onSelected(index),
-              );
-            }),
-            const Spacer(),
-            AnimatedSwitcher(
-              duration: duration,
-              child: _expanded
-                  ? const _ContactStrip(
-                      key: ValueKey<String>('contact-expanded'),
-                      compact: true,
-                    )
-                  : IconButton.filledTonal(
-                      key: const ValueKey<String>('contact-collapsed'),
-                      style: IconButton.styleFrom(
-                        backgroundColor: scheme.primary.withValues(alpha: 0.16),
-                        foregroundColor: scheme.primary,
-                      ),
-                      tooltip: 'Email',
-                      onPressed: _launchMail,
-                      icon: const Icon(Icons.mail_rounded),
-                    ),
-            ),
-          ],
-        ),
-      ),
-    );
+  void dispose() {
+    _menuFocus.dispose();
+    super.dispose();
   }
+
+  void _select(int index) {
+    setState(() => _menuOpen = false);
+    widget.onSelected(index);
+  }
+
+  void _closeMenu() {
+    if (!_menuOpen) return;
+    setState(() => _menuOpen = false);
+    _menuFocus.requestFocus();
+  }
+
+  void _toggleMenu() {
+    setState(() => _menuOpen = !_menuOpen);
+    _menuFocus.requestFocus();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final compact = MediaQuery.sizeOf(context).width < 1080 ||
+        MediaQuery.textScalerOf(context).scale(1) > 1.25;
+    return CallbackShortcuts(
+        bindings: {
+          const SingleActivator(LogicalKeyboardKey.escape): _closeMenu,
+        },
+        child: Container(
+          key: const ValueKey('website-header'),
+          decoration: BoxDecoration(
+              color: scheme.surface.withValues(alpha: .92),
+              border: Border(
+                  bottom: BorderSide(
+                      color: scheme.outlineVariant.withValues(alpha: .26)))),
+          padding: EdgeInsets.symmetric(horizontal: _contentInset(context)),
+          child: Align(
+              alignment: Alignment.topCenter,
+              child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 1280),
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
+                    Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: compact ? 14 : 20),
+                        child: Row(children: [
+                          Expanded(
+                              child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: TextButton(
+                                      key: const ValueKey('website-brand'),
+                                      onPressed: () => _select(0),
+                                      style: TextButton.styleFrom(
+                                          padding: EdgeInsets.zero,
+                                          minimumSize: const Size(48, 48),
+                                          alignment: Alignment.centerLeft,
+                                          foregroundColor: scheme.onSurface,
+                                          shape:
+                                              const RoundedRectangleBorder()),
+                                      child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(t.home_screen.myName,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                    fontSize: 19,
+                                                    fontWeight: FontWeight.w800,
+                                                    letterSpacing: -.4)),
+                                            const SizedBox(height: 3),
+                                            Text('FLUTTER DEVELOPER',
+                                                style: TextStyle(
+                                                    fontSize: 11,
+                                                    fontWeight: FontWeight.w500,
+                                                    letterSpacing: 1.6,
+                                                    color: scheme
+                                                        .onSurfaceVariant)),
+                                          ])))),
+                          if (compact)
+                            Semantics(
+                                expanded: _menuOpen,
+                                child: IconButton(
+                                    key: const ValueKey('website-menu-button'),
+                                    focusNode: _menuFocus,
+                                    tooltip:
+                                        _menuOpen ? 'Close menu' : 'Open menu',
+                                    onPressed: _toggleMenu,
+                                    icon: Icon(
+                                        _menuOpen
+                                            ? Icons.close_rounded
+                                            : Icons.menu_rounded,
+                                        size: 24)))
+                          else ...[
+                            for (var i = 0;
+                                i < widget.items.length - 1;
+                                i++) ...[
+                              _WebsiteNavLink(
+                                  label: widget.items[i].label,
+                                  selected: widget.selectedIndex == i,
+                                  onTap: () => _select(i)),
+                              const SizedBox(width: 22),
+                            ],
+                            IconButton(
+                                tooltip: widget.items.last.label,
+                                key: const ValueKey('website-settings'),
+                                onPressed: () =>
+                                    _select(widget.items.length - 1),
+                                color: widget.selectedIndex ==
+                                        widget.items.length - 1
+                                    ? scheme.primary
+                                    : scheme.onSurfaceVariant,
+                                icon: const Icon(Icons.tune_rounded, size: 19)),
+                            const SizedBox(width: 22),
+                            _contactLink(context),
+                          ],
+                        ])),
+                    if (compact && _menuOpen)
+                      ConstrainedBox(
+                          constraints: BoxConstraints(
+                              maxHeight:
+                                  MediaQuery.sizeOf(context).height * .55),
+                          child: SingleChildScrollView(
+                              key: const ValueKey('website-menu'),
+                              child: Padding(
+                                  padding:
+                                      const EdgeInsets.only(top: 8, bottom: 22),
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        for (var i = 0;
+                                            i < widget.items.length;
+                                            i++)
+                                          _WebsiteNavLink(
+                                              label: widget.items[i].label,
+                                              selected:
+                                                  widget.selectedIndex == i,
+                                              expanded: true,
+                                              onTap: () => _select(i)),
+                                        const SizedBox(height: 18),
+                                        Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: _contactLink(context)),
+                                      ])))),
+                  ]))),
+        ));
+  }
+
+  Widget _contactLink(BuildContext context) => OutlinedButton(
+      key: const ValueKey('website-contact'),
+      onPressed: () {
+        setState(() => _menuOpen = false);
+        widget.onContact();
+      },
+      style: OutlinedButton.styleFrom(
+          foregroundColor: Theme.of(context).colorScheme.onSurface,
+          side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+          padding: const EdgeInsets.symmetric(horizontal: 19, vertical: 16),
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(4)))),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Text(LocaleSettings.currentLocale == AppLocale.fr
+            ? 'Me contacter'
+            : 'Let’s talk'),
+        const SizedBox(width: 12),
+        const Icon(Icons.north_east, size: 16),
+      ]));
 }
 
-class _NavButton extends StatelessWidget {
-  const _NavButton({
-    required this.item,
-    required this.selected,
-    required this.compact,
-    required this.onTap,
-  });
-
-  final _NavItem item;
-  final bool selected;
-  final bool compact;
+class _WebsiteNavLink extends StatefulWidget {
+  const _WebsiteNavLink(
+      {required this.label,
+      required this.selected,
+      required this.onTap,
+      this.expanded = false});
+  final String label;
+  final bool selected, expanded;
   final VoidCallback onTap;
-
   @override
-  Widget build(final BuildContext context) {
-    final ColorScheme scheme = Theme.of(context).colorScheme;
-    final Color foreground =
-        selected ? scheme.primary : scheme.onSurfaceVariant;
-    final Widget icon = Icon(item.icon, color: foreground, size: 21);
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: Dimens.padding),
-      child: Tooltip(
-        message: item.label,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(Dimens.corners),
-          onTap: onTap,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
-            curve: Curves.easeOutCubic,
-            height: 48,
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(
-              horizontal: compact ? 0 : Dimens.largePadding,
-            ),
-            decoration: BoxDecoration(
-              color: selected
-                  ? scheme.primary.withValues(alpha: compact ? 0.2 : 0.16)
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(Dimens.corners),
-              border: Border.all(
-                color: selected
-                    ? scheme.primary.withValues(alpha: 0.34)
-                    : Colors.transparent,
-              ),
-            ),
-            child: Center(
-              child: compact
-                  ? icon
-                  : Row(
-                      children: [
-                        icon,
-                        const SizedBox(width: Dimens.mediumPadding),
-                        Expanded(
-                          child: Text(
-                            item.label,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color:
-                                  selected ? scheme.primary : scheme.onSurface,
-                              fontWeight:
-                                  selected ? FontWeight.w800 : FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  State<_WebsiteNavLink> createState() => _WebsiteNavLinkState();
 }
 
-class _BottomNavigation extends StatelessWidget {
-  const _BottomNavigation({
-    required this.items,
-    required this.selectedIndex,
-    required this.onSelected,
-  });
-
-  final List<_NavItem> items;
-  final int selectedIndex;
-  final ValueChanged<int> onSelected;
-
+class _WebsiteNavLinkState extends State<_WebsiteNavLink> {
+  bool _hover = false, _focus = false;
   @override
-  Widget build(final BuildContext context) {
-    final ColorScheme scheme = Theme.of(context).colorScheme;
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(Dimens.corners),
-        child: NavigationBar(
-          backgroundColor: scheme.surface.withValues(alpha: 0.95),
-          indicatorColor: scheme.primary.withValues(alpha: 0.16),
-          selectedIndex: selectedIndex,
-          onDestinationSelected: onSelected,
-          destinations: [
-            for (final _NavItem item in items)
-              NavigationDestination(icon: Icon(item.icon), label: item.label),
-          ],
-        ),
-      ),
-    );
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final active = widget.selected || _hover || _focus;
+    return Semantics(
+        selected: widget.selected,
+        child: TextButton(
+          onPressed: widget.onTap,
+          onHover: (value) => setState(() => _hover = value),
+          onFocusChange: (value) => setState(() => _focus = value),
+          style: TextButton.styleFrom(
+              alignment: Alignment.centerLeft,
+              foregroundColor:
+                  active ? scheme.primary : scheme.onSurfaceVariant,
+              padding: EdgeInsets.zero,
+              minimumSize: const Size(48, 48),
+              shape: const RoundedRectangleBorder()),
+          child: AnimatedContainer(
+              duration: MediaQuery.disableAnimationsOf(context)
+                  ? Duration.zero
+                  : const Duration(milliseconds: 180),
+              padding:
+                  EdgeInsets.symmetric(vertical: widget.expanded ? 17 : 12),
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                          color: active
+                              ? scheme.primary
+                              : widget.expanded
+                                  ? scheme.outlineVariant.withValues(alpha: .24)
+                                  : Colors.transparent,
+                          width: widget.selected ? 2 : 1))),
+              child: Row(
+                  mainAxisSize:
+                      widget.expanded ? MainAxisSize.max : MainAxisSize.min,
+                  children: [
+                    if (widget.expanded)
+                      Expanded(
+                          child: Text(widget.label,
+                              style: const TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w500)))
+                    else
+                      Text(widget.label,
+                          style: const TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w500)),
+                    if (widget.expanded)
+                      Icon(
+                          widget.selected ? Icons.south_east : Icons.north_east,
+                          size: 16),
+                  ])),
+        ));
   }
 }
 
@@ -539,12 +528,14 @@ class _SectionScaffold extends StatelessWidget {
       slivers: [
         SliverPadding(
           padding: EdgeInsets.fromLTRB(
-            _contentInset(context, leading: true),
+            _contentInset(context),
             Dimens.extraLargePadding,
             _contentInset(context),
-            96,
+            48,
           ),
           sliver: SliverToBoxAdapter(
+              child: Align(
+            alignment: Alignment.topCenter,
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 1180),
               child: Column(
@@ -565,7 +556,7 @@ class _SectionScaffold extends StatelessWidget {
                 ],
               ),
             ),
-          ),
+          )),
         ),
       ],
     );
@@ -573,7 +564,7 @@ class _SectionScaffold extends StatelessWidget {
 }
 
 class _HomeView extends StatefulWidget {
-  const _HomeView();
+  const _HomeView({super.key});
 
   @override
   State<_HomeView> createState() => _HomeViewState();
@@ -583,6 +574,20 @@ class _HomeViewState extends State<_HomeView> {
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _workKey = GlobalKey();
   final GlobalKey _contactKey = GlobalKey();
+  String? _lastFragment;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final String fragment = GoRouterState.of(context).uri.fragment;
+    if (fragment == _lastFragment) return;
+    _lastFragment = fragment;
+    if (fragment == 'contact') {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _jumpToContact();
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -600,10 +605,10 @@ class _HomeViewState extends State<_HomeView> {
         SliverToBoxAdapter(
           child: Padding(
             padding: EdgeInsets.fromLTRB(
-              _contentInset(context, leading: true),
+              _contentInset(context),
               Dimens.largePadding,
               _contentInset(context),
-              96,
+              48,
             ),
             child: Align(
               alignment: Alignment.topCenter,
@@ -633,10 +638,10 @@ class _HomeViewState extends State<_HomeView> {
                       child: _DesignLensStrip(),
                     ),
                     const SizedBox(height: Dimens.extraLargePadding),
-                    _ScrollReveal(
-                      delay: const Duration(milliseconds: 180),
-                      child: KeyedSubtree(
-                        key: _contactKey,
+                    KeyedSubtree(
+                      key: _contactKey,
+                      child: const _ScrollReveal(
+                        delay: Duration(milliseconds: 180),
                         child: _ContactStrip(),
                       ),
                     ),
@@ -672,21 +677,28 @@ class _HomeViewState extends State<_HomeView> {
   }
 
   void _jumpToContact() {
+    final Duration duration = MediaQuery.disableAnimationsOf(context)
+        ? Duration.zero
+        : const Duration(milliseconds: 900);
     final BuildContext? targetContext = _contactKey.currentContext;
     if (targetContext != null) {
       Scrollable.ensureVisible(
         targetContext,
-        duration: const Duration(milliseconds: 900),
+        duration: duration,
         curve: Curves.easeOutCubic,
-        alignment: 0.08,
+        alignment: 0,
       );
       return;
     }
 
     if (_scrollController.hasClients) {
+      if (duration == Duration.zero) {
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+        return;
+      }
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 900),
+        duration: duration,
         curve: Curves.easeOutCubic,
       );
     }
@@ -1053,12 +1065,12 @@ class _HeroProductWall extends StatefulWidget {
 class _HeroProductWallState extends State<_HeroProductWall>
     with SingleTickerProviderStateMixin {
   static const List<String> _screens = [
-    'assets/images/boursepad-mockup.png',
+    'assets/images/boursepad-discovery-store-v2.png',
     'assets/images/construction-workforce-dashboard-mockup.png',
     'assets/images/construction-documents-mockup.png',
     'assets/images/coach-products-mockup.png',
     'assets/images/coach-payment-mockup.png',
-    'assets/images/boursepad-detail-mockup.png',
+    'assets/images/boursepad-scholarship-store-v2.png',
   ];
 
   late final AnimationController _controller;
@@ -1645,9 +1657,9 @@ class _FeaturedWorkShowcase extends StatelessWidget {
         impact:
             'Cleaner architecture, safer releases, and stronger production support.',
         screenPaths: [
-          'assets/images/boursepad-mockup.png',
-          'assets/images/boursepad-detail-mockup.png',
-          'assets/images/boursepad-applications-mockup.png',
+          'assets/images/boursepad-discovery-store-v2.png',
+          'assets/images/boursepad-scholarship-store-v2.png',
+          'assets/images/boursepad-verification-store-v2.png',
         ],
         chips: [
           'Flutter',
@@ -3465,7 +3477,7 @@ class _StickyTimelineLead extends StatefulWidget {
   static const double metaWidth = 236;
   static const double nodeGap = 36;
   static const double nodeBoxSize = 88;
-  static const double cardHeight = 164;
+  static const double cardHeight = 172;
   static const double width = metaWidth + nodeGap + nodeBoxSize;
 
   final Experience experience;
@@ -4132,6 +4144,9 @@ double _stickyOffsetForSection({
   required final double sectionHeight,
   required final double anchorHeight,
 }) {
+  if (Scrollable.maybeOf(context)?.position.hasContentDimensions != true) {
+    return 0;
+  }
   final double maxTop = math.max(
     0,
     sectionHeight - anchorHeight,
@@ -4157,6 +4172,9 @@ double _stickyProgressForSection({
   required final double sectionHeight,
   required final double anchorHeight,
 }) {
+  if (Scrollable.maybeOf(context)?.position.hasContentDimensions != true) {
+    return 0;
+  }
   final double maxTop = math.max(0, sectionHeight - anchorHeight);
   if (maxTop <= 0) {
     return 0;
@@ -4828,9 +4846,7 @@ class _ColorDot extends StatelessWidget {
 }
 
 class _ContactStrip extends StatelessWidget {
-  const _ContactStrip({super.key, this.compact = false});
-
-  final bool compact;
+  const _ContactStrip();
 
   @override
   Widget build(final BuildContext context) {
@@ -4840,25 +4856,6 @@ class _ContactStrip extends StatelessWidget {
       (final action) => action.label == 'Email',
       orElse: () => actions.last,
     );
-
-    if (compact) {
-      return Wrap(
-        spacing: Dimens.padding,
-        runSpacing: Dimens.padding,
-        children: [
-          for (final ContactAction action in actions)
-            IconButton.filledTonal(
-              style: IconButton.styleFrom(
-                backgroundColor: scheme.primary,
-                foregroundColor: Colors.white,
-              ),
-              tooltip: action.label,
-              onPressed: () => _launch(action.url),
-              icon: _ContactActionIcon(action: action, size: 20),
-            ),
-        ],
-      );
-    }
 
     return Container(
       width: double.infinity,
@@ -5358,10 +5355,9 @@ Color _caseAccent(final String label, final ColorScheme scheme) {
 }
 
 class _NavItem {
-  const _NavItem(this.label, this.icon, this.section);
+  const _NavItem(this.label, this.section);
 
   final String label;
-  final IconData icon;
   final HomeSection section;
 }
 
@@ -5435,26 +5431,12 @@ const HomeContent _emptyHomeContent = HomeContent(
   contactActions: [],
 );
 
-double _contentInset(
-  final BuildContext context, {
-  final bool leading = false,
-}) {
-  final double width = MediaQuery.sizeOf(context).width;
-  final double baseInset = switch (width) {
+double _contentInset(final BuildContext context) {
+  return switch (MediaQuery.sizeOf(context).width) {
     >= 1200 => Dimens.extraLargePadding * 2,
     >= 700 => Dimens.extraLargePadding,
     _ => Dimens.largePadding,
   };
-  if (leading && width >= 960) {
-    return baseInset + 132;
-  }
-  return baseInset;
-}
-
-Future<void> _launchMail() async {
-  await _launch(
-    'mailto:samchancanada1@gmail.com?subject=We%20are%20interested%20in%20you!',
-  );
 }
 
 Future<void> _launch(final String value) async {
